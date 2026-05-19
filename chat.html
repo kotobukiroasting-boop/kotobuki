@@ -494,8 +494,7 @@
 
   // 名前変更ボタン
   document.getElementById("changeNameBtn").addEventListener("click", () => {
-    if (confirm("名前を変更しますか？
-チャットの履歴はそのまま残ります。")) {
+    if (confirm("名前を変更しますか？\nチャットの履歴はそのまま残ります。")) {
       localStorage.removeItem("chatUserName");
       localStorage.removeItem("chatJoinedAt");
       document.getElementById("nameInput").value = userName;
