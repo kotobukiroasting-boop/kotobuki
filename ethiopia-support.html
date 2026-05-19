@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>素晴らしきエチオピア — Kotobuki Roaster</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+JP:wght@300;400;600&family=Bebas+Neue&family=Space+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --earth: #2C1810;
+    --coffee: #4A2C17;
+    --amber: #C8860A;
+    --gold: #E8A820;
+    --cream: #F5EED8;
+    --warm: #EDE0C4;
+    --sand: #D4B896;
+    --text: #1A0F08;
+    --muted: #6B4C35;
+    --green: #2D4A2A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--text);
+    font-family: 'Noto Serif JP', serif;
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    background: var(--earth);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 80%, rgba(200,134,10,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 20%, rgba(74,44,23,0.8) 0%, transparent 70%),
+      repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 40px,
+        rgba(200,134,10,0.03) 40px,
+        rgba(200,134,10,0.03) 41px
+      );
+  }
+
+  .hero-grain {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .hero-tagline {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(0.55rem, 1.2vw, 0.75rem);
+    letter-spacing: 0.35em;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 1s 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem, 15vw, 13rem);
+    letter-spacing: 0.05em;
+    line-height: 0.85;
+    color: var(--cream);
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    animation: fadeUp 1s 0.5s forwards;
+  }
+
+  .hero-title span {
+    display: block;
+    color: var(--amber);
+    font-size: 0.38em;
+    letter-spacing: 0.2em;
+    margin-top: 0.5em;
+  }
+
+  .hero-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    font-style: italic;
+    color: var(--sand);
+    margin-top: 2.5rem;
+    letter-spacing: 0.08em;
+    opacity: 0;
+    animation: fadeUp 1s 0.7s forwards;
+  }
+
+  .hero-line {
+    width: 1px;
+    height: 80px;
+    background: linear-gradient(to bottom, var(--amber), transparent);
+    margin: 3rem auto 0;
+    opacity: 0;
+    animation: fadeUp 1s 1s forwards;
+  }
+
+  /* countdown */
+  .countdown-wrap {
+    position: relative;
+    z-index: 2;
+    margin-top: 4rem;
+    opacity: 0;
+    animation: fadeUp 1s 0.9s forwards;
+  }
+
+  .countdown-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.4em;
+    color: var(--amber);
+    text-align: center;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+  }
+
+  .countdown-grid {
+    display: flex;
+    gap: 1px;
+    background: rgba(200,134,10,0.2);
+    border: 1px solid rgba(200,134,10,0.3);
+  }
+
+  .cd-unit {
+    background: rgba(26,15,8,0.7);
+    padding: 1.2rem 1.8rem;
+    text-align: center;
+    min-width: 80px;
+  }
+
+  .cd-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.8rem;
+    color: var(--cream);
+    line-height: 1;
+    display: block;
+  }
+
+  .cd-txt {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.5rem;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-top: 0.3rem;
+    display: block;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+    animation: fadeIn 1s 1.5s forwards;
+  }
+
+  .scroll-hint span {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.5rem;
+    letter-spacing: 0.4em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .scroll-arrow {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--amber), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  /* ── DONATION BANNER ── */
+  .donation-banner {
+    background: var(--coffee);
+    border-top: 2px solid var(--amber);
+    border-bottom: 2px solid var(--amber);
+    padding: 2.5rem 2rem;
+    text-align: center;
+  }
+
+  .donation-amount {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .donation-note {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.35em;
+    color: var(--sand);
+    margin-top: 0.5rem;
+    text-transform: uppercase;
+  }
+
+  .donation-btn {
+    display: inline-block;
+    margin-top: 1.5rem;
+    padding: 0.9rem 2.5rem;
+    background: var(--amber);
+    color: var(--earth);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .donation-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gold);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .donation-btn:hover::before { transform: translateX(0); }
+  .donation-btn span { position: relative; z-index: 1; }
+  .donation-btn:hover { color: var(--earth); }
+
+  /* ── SECTIONS ── */
+  .section {
+    padding: clamp(4rem, 8vw, 7rem) clamp(1.5rem, 6vw, 5rem);
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-full {
+    padding: clamp(4rem, 8vw, 7rem) clamp(1.5rem, 6vw, 5rem);
+  }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.45em;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .section-label::after {
+    content: '';
+    height: 1px;
+    width: 40px;
+    background: var(--amber);
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 300;
+    line-height: 1.15;
+    color: var(--earth);
+    margin-bottom: 2rem;
+  }
+
+  .section-text {
+    font-size: clamp(0.88rem, 1.5vw, 0.98rem);
+    line-height: 2;
+    color: #3D2518;
+    max-width: 700px;
+  }
+
+  .section-text + .section-text {
+    margin-top: 1.2rem;
+  }
+
+  /* ── INTRO BLOCK ── */
+  .intro-block {
+    background: var(--earth);
+    color: var(--cream);
+    padding: clamp(4rem, 8vw, 7rem) clamp(1.5rem, 6vw, 5rem);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .intro-block::before {
+    content: 'ETHIOPIA';
+    position: absolute;
+    right: -2%;
+    top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(6rem, 18vw, 16rem);
+    color: rgba(200,134,10,0.06);
+    pointer-events: none;
+    white-space: nowrap;
+    letter-spacing: 0.1em;
+  }
+
+  .intro-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+  }
+
+  @media (max-width: 750px) {
+    .intro-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+  }
+
+  .intro-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.4rem, 3.5vw, 2.4rem);
+    font-style: italic;
+    line-height: 1.6;
+    color: var(--cream);
+    border-left: 2px solid var(--amber);
+    padding-left: 1.5rem;
+  }
+
+  .intro-quote cite {
+    display: block;
+    margin-top: 1rem;
+    font-size: 0.65em;
+    font-style: normal;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.2em;
+    color: var(--amber);
+  }
+
+  .intro-text {
+    font-size: 0.93rem;
+    line-height: 2.1;
+    color: var(--sand);
+  }
+
+  /* ── STORY CARDS ── */
+  .story-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2px;
+    background: var(--sand);
+    margin: 0;
+  }
+
+  .story-card {
+    background: var(--cream);
+    padding: 3rem 2.5rem 0;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s ease;
+  }
+
+  .story-card:hover { background: var(--warm); }
+
+  .story-card::before {
+    content: attr(data-num);
+    position: absolute;
+    top: 1.5rem;
+    right: 2rem;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 4rem;
+    color: rgba(200,134,10,0.12);
+    line-height: 1;
+  }
+
+  .story-card-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.5rem;
+    letter-spacing: 0.4em;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+  }
+
+  .story-card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--earth);
+    margin-bottom: 1rem;
+    line-height: 1.3;
+  }
+
+  .story-card img {
+    width: calc(100% + 5rem);
+    height: 220px;
+    object-fit: cover;
+    display: block;
+    margin: 1.5rem -2.5rem 0;
+    filter: sepia(20%) contrast(1.05);
+    transition: filter 0.3s ease;
+  }
+
+  .story-card:hover img { filter: sepia(0%) contrast(1.1); }
+
+  /* ── DARK SECTION ── */
+  .dark-section {
+    background: var(--coffee);
+    color: var(--cream);
+  }
+
+  .dark-section .section-title { color: var(--cream); }
+  .dark-section .section-text { color: var(--sand); }
+
+  /* ── SUPPORTER TABLE ── */
+  .supporter-section {
+    background: var(--earth);
+    padding: clamp(4rem, 8vw, 7rem) clamp(1.5rem, 6vw, 5rem);
+  }
+
+  .supporter-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .supporter-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    color: var(--cream);
+    margin-bottom: 0.5rem;
+    font-weight: 300;
+  }
+
+  .supporter-sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.4em;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-bottom: 3rem;
+  }
+
+  .supporter-group-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.4em;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin: 2.5rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(200,134,10,0.3);
+  }
+
+  .supporter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 2px;
+    background: rgba(200,134,10,0.15);
+  }
+
+  .supporter-item {
+    background: rgba(26,15,8,0.7);
+    padding: 1rem 1.2rem;
+    font-size: 0.82rem;
+    color: var(--warm);
+    line-height: 1.5;
+  }
+
+  .supporter-item a {
+    color: var(--amber);
+    text-decoration: none;
+    font-size: 0.72rem;
+    display: block;
+    margin-top: 0.3rem;
+    word-break: break-all;
+  }
+
+  .supporter-note {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem;
+    color: var(--muted);
+    margin-top: 1.5rem;
+    letter-spacing: 0.1em;
+  }
+
+  /* ── REASON SECTION ── */
+  .reason-section {
+    background: var(--cream);
+    padding: clamp(4rem, 8vw, 7rem) clamp(1.5rem, 6vw, 5rem);
+    position: relative;
+  }
+
+  .reason-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .reason-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    margin-top: 3rem;
+  }
+
+  @media (max-width: 700px) {
+    .reason-grid { grid-template-columns: 1fr; gap: 2rem; }
+  }
+
+  .reason-item {
+    padding: 2rem;
+    border: 1px solid var(--sand);
+    position: relative;
+  }
+
+  .reason-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--amber);
+  }
+
+  .reason-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--earth);
+    margin-bottom: 0.8rem;
+  }
+
+  .reason-text {
+    font-size: 0.85rem;
+    line-height: 1.9;
+    color: var(--muted);
+  }
+
+  /* ── EVENTS ── */
+  .events-section {
+    background: #1A0F08;
+    padding: clamp(4rem, 8vw, 7rem) clamp(1.5rem, 6vw, 5rem);
+  }
+
+  .events-inner {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .event-item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid rgba(200,134,10,0.15);
+    align-items: start;
+  }
+
+  .event-done {
+    opacity: 0.4;
+  }
+
+  .event-badge {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    padding: 0.4rem 0.8rem;
+    white-space: nowrap;
+  }
+
+  .event-badge.done {
+    background: rgba(200,134,10,0.1);
+    color: var(--muted);
+    border: 1px solid rgba(200,134,10,0.2);
+  }
+
+  .event-badge.upcoming {
+    background: var(--amber);
+    color: var(--earth);
+  }
+
+  .event-name {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 0.95rem;
+    color: var(--cream);
+    margin-bottom: 0.3rem;
+  }
+
+  .event-detail {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+  }
+
+  /* ── DIRECT TRADE STATEMENT ── */
+  .statement {
+    background: var(--amber);
+    padding: clamp(4rem, 8vw, 6rem) clamp(1.5rem, 6vw, 5rem);
+    text-align: center;
+  }
+
+  .statement-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.5rem, 4vw, 2.8rem);
+    font-weight: 300;
+    line-height: 1.5;
+    color: var(--earth);
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .statement-text strong {
+    display: block;
+    font-weight: 600;
+    font-size: 1.15em;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--earth);
+    padding: clamp(3rem, 6vw, 5rem) clamp(1.5rem, 6vw, 5rem);
+    border-top: 1px solid rgba(200,134,10,0.3);
+  }
+
+  .footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 3rem;
+    align-items: end;
+  }
+
+  @media (max-width: 600px) {
+    .footer-inner { grid-template-columns: 1fr; }
+  }
+
+  .footer-brand {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0.1em;
+    color: var(--amber);
+  }
+
+  .footer-tagline {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.35em;
+    color: var(--muted);
+    margin-top: 0.5rem;
+    text-transform: uppercase;
+  }
+
+  .footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    align-items: flex-end;
+  }
+
+  @media (max-width: 600px) {
+    .footer-links { align-items: flex-start; }
+  }
+
+  .footer-link {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: var(--sand);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .footer-link:hover { color: var(--amber); }
+
+  .footer-copy {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.5rem;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    margin-top: 3rem;
+    text-align: center;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(200,134,10,0.1);
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--amber), transparent);
+    margin: 0;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.2); }
+  }
+
+  /* ── INVIEW ANIMATION ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* ── HORIZONTAL RULE ── */
+  hr.amber {
+    border: none;
+    border-top: 1px solid rgba(200,134,10,0.25);
+    margin: 2rem 0;
+  }
+
+  /* ── NAV ── */
+  .nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 2.5rem;
+    background: rgba(44,24,16,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(200,134,10,0.15);
+    transform: translateY(-100%);
+    transition: transform 0.4s ease;
+  }
+
+  .nav.visible { transform: translateY(0); }
+
+  .nav-brand {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    letter-spacing: 0.15em;
+    color: var(--amber);
+    text-decoration: none;
+  }
+
+  .nav-cta {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 0.6rem 1.2rem;
+    background: var(--amber);
+    color: var(--earth);
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+
+  .nav-cta:hover { background: var(--gold); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <a href="#" class="nav-brand">素晴らしきエチオピア</a>
+  <a href="https://syncable.biz/associate/kotobuki" class="nav-cta" target="_blank" rel="noopener">寄付する</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grain"></div>
+  <p class="hero-tagline">Kotobuki Roaster × Ethiopia Direct Support</p>
+  <h1 class="hero-title">
+    素晴らしき<br>エチオピア
+    <span>Ethiopian Poverty Support</span>
+  </h1>
+  <p class="hero-sub">皆様のご支援を直接現地にお届けします</p>
+  <div class="countdown-wrap">
+    <p class="countdown-label">次回渡航まで — 2028</p>
+    <div class="countdown-grid">
+      <div class="cd-unit"><span class="cd-num" id="cd-d">---</span><span class="cd-txt">Days</span></div>
+      <div class="cd-unit"><span class="cd-num" id="cd-h">--</span><span class="cd-txt">Hours</span></div>
+      <div class="cd-unit"><span class="cd-num" id="cd-m">--</span><span class="cd-txt">Min</span></div>
+      <div class="cd-unit"><span class="cd-num" id="cd-s">--</span><span class="cd-txt">Sec</span></div>
+    </div>
+  </div>
+  <div class="hero-line"></div>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- DONATION BANNER -->
+<div class="donation-banner">
+  <div class="donation-amount reveal">これまでの寄付金合計 ¥584,200</div>
+  <div class="donation-note reveal reveal-delay-1">2026年5月時点 — ご支援ありがとうございます</div>
+  <a href="https://syncable.biz/associate/kotobuki" class="donation-btn reveal reveal-delay-2" target="_blank" rel="noopener">
+    <span>農園・子供たちへの寄付はこちら →</span>
+  </a>
+</div>
+
+<!-- INTRO -->
+<div class="intro-block">
+  <div class="intro-inner">
+    <div class="reveal">
+      <blockquote class="intro-quote">
+        「私はエチオピアに住む人々の笑顔が大好きだ」
+        <cite>— Kotobuki焙煎 田村寿之</cite>
+      </blockquote>
+    </div>
+    <div class="reveal reveal-delay-2">
+      <p class="intro-text">
+        エチオピアで伝わる「ヤギ使いのカルディのコーヒー伝説」は有名である。エチオピアでは、実に、6世紀からコーヒーが飲まれるようになりました。コーヒーが他国に広がるのは16世紀以降となるため、10世紀もの間、エチオピアで秘薬として重宝されたことになる。これが、コーヒーの起源の地と呼ばれる所以でもあります。
+      </p>
+      <p class="intro-text" style="margin-top:1rem;">
+        そして、現在でも日本の茶道に似た「コーヒーセレモニー」と呼ばれ、伝統的な淹れ方で、コーヒーを楽しむ文化が残る国です。生活は貧しくも、心が豊かなエチオピアの人々。きっと、未来の日本に手を差し伸べてくれるのは、彼らの強さと優しさだ。
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- STORY CARDS -->
+<div class="story-grid">
+  <div class="story-card reveal" data-num="01">
+    <div class="story-card-label">Coffee Harvest</div>
+    <div class="story-card-title">コーヒー豆の収穫</div>
+    <p class="story-card-text">コーヒー豆は「コーヒーチェリー」と呼ばれる美しい果実の種です。農園の皆様は手作業で一粒ずつ収穫します。茎を取ってしまうと次の収穫時に実ができなくなるため、チェリーだけを取る繊細で難しい作業。1本の木からとれるコーヒー豆は僅か500g（40杯）程度にしかなりません。</p>
+    <img src="https://ethiopia-support.apage.jp/img/1677818926761.webp" alt="コーヒー豆の収穫" loading="lazy">
+  </div>
+  <div class="story-card reveal reveal-delay-1" data-num="02">
+    <div class="story-card-label">Women of the Farm</div>
+    <div class="story-card-title">農園の女性たち</div>
+    <p class="story-card-text">女性の仕事はチェリーの収穫や選別の他に「アフリカンベッド」での乾燥管理。チェリーが腐らないよう毎日3回かき混ぜ、これを30日ほど続けます。力仕事も若い女性が活躍。しかし彼女たちは、いつも笑顔と歌とダンスが欠かせない。パワフルな歌声が耳に心地よい。</p>
+    <img src="https://ethiopia-support.apage.jp/img/1677826266382.webp" alt="農園の女性たち" loading="lazy">
+  </div>
+  <div class="story-card reveal reveal-delay-2" data-num="03">
+    <div class="story-card-label">Men's Labor</div>
+    <div class="story-card-title">農園の男性たち</div>
+    <p class="story-card-text">男性の仕事は過酷な力仕事が多い。一袋45〜60キロもの麻袋を背負い、夜中に収穫したチェリーを精製所へ運搬。脱穀作業が完了するのは朝方になることもしばしば。標高の高いコーヒー農園の夜は7℃ほどまで気温が下がる。男たちは火をくべて暖をとる。</p>
+    <img src="https://ethiopia-support.apage.jp/img/1677826499262.webp" alt="農園の男性たち" loading="lazy">
+  </div>
+  <div class="story-card reveal" data-num="04">
+    <div class="story-card-label">Coffee Ceremony</div>
+    <div class="story-card-title">コーヒーセレモニー</div>
+    <p class="story-card-text">エチオピアでは町中のいたるところでコーヒーを飲むことができる。コーヒーセレモニーは3回のサイクルで行われ、最初のAbol、次のTona、最後のBarakaと呼ばれる。お香の香りとコーヒーの焙煎の香りが混ざり合い、なんともいえない神秘的な空間が出来上がる。</p>
+    <img src="https://ethiopia-support.apage.jp/img/1677826714761.webp" alt="コーヒーセレモニー" loading="lazy">
+  </div>
+  <div class="story-card reveal reveal-delay-1" data-num="05">
+    <div class="story-card-label">Working Children</div>
+    <div class="story-card-title">働く子供たち</div>
+    <p class="story-card-text">エチオピアの子供たちは本当によく働く。早朝から漁に出たり、水汲みに何キロも歩いたり。靴磨きで得られる報酬は20ブルほど（日本円で約40円）。要求額よりも多めにチップを渡してあげると、飛び上がって大喜びしてくれる。稼ぐ力は生きる力だ。</p>
+    <img src="https://ethiopia-support.apage.jp/img/1677826837783.webp" alt="働く子供たち" loading="lazy">
+  </div>
+  <div class="story-card reveal reveal-delay-2" data-num="06">
+    <div class="story-card-label">Sidama Food</div>
+    <div class="story-card-title">シダマ州の主食</div>
+    <p class="story-card-text">農園があるシダマ州の主食は「コチョ」と呼ばれる偽バナナの木。根や葉をそぎ落とし、発酵させて焼いて食べる。エチオピアでは農薬を使う必要がないため、全てがオーガニック。村に住む人々はお金はなくとも、すべてが自給自足な暮らしがそこにあった。</p>
+    <img src="https://ethiopia-support.apage.jp/img/1677886083787.webp" alt="シダマ州の主食コチョ" loading="lazy">
+  </div>
+  <div class="story-card reveal" data-num="07">
+    <div class="story-card-label">Village Life</div>
+    <div class="story-card-title">村の人々の住居</div>
+    <p class="story-card-text">村の人々は、日本の竪穴式住居にも似たしっかりとした家に最大10人ほどで暮らしている。電気もトイレもない住居だが、エチオピアの寒暖差をしのげるほど居心地の良さを感じた。コチョなどの食材が周りに豊富にあるため、完全に自給自足が成り立っている。</p>
+    <img src="https://ethiopia-support.apage.jp/img/1677886101780.webp" alt="村の住居" loading="lazy">
+  </div>
+  <div class="story-card reveal reveal-delay-1" data-num="08">
+    <div class="story-card-label">Education</div>
+    <div class="story-card-title">学校への支援</div>
+    <p class="story-card-text">シダマ州の学校にノートと鉛筆を寄付した。生徒は1,600人在学しており、州内13か所の学校で2万人を超える生徒が存在している。校長先生は「ノートと鉛筆が買えないだけで、学校に通えない子供達がいる」とおっしゃった。日本製の文具・衣類をお届けする支援も開始する。</p>
+    <img src="https://ethiopia-support.apage.jp/img/1677886191781.webp" alt="学校への支援" loading="lazy">
+  </div>
+  <div class="story-card reveal reveal-delay-2" data-num="09">
+    <div class="story-card-label">Street Life</div>
+    <div class="story-card-title">物乞いと社会問題</div>
+    <p class="story-card-text">街にも物乞いは多い。車が停車していると、気が付くと50人くらいに囲まれていることもざらにある。できるかぎり自分で働くことが難しい高齢者や障碍者に渡すことが望ましい。去る時には皆がありがとうと会釈をしてくれた。私に沢山のお金があれば、と思った。</p>
+    <img src="https://ethiopia-support.apage.jp/img/1677827010517.webp" alt="街の様子" loading="lazy">
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- WHY DIRECT TRADE -->
+<section class="reason-section">
+  <div class="reason-inner">
+    <div class="section-label reveal">Philosophy</div>
+    <h2 class="section-title reveal">コーヒー農園を支援する理由</h2>
+    <p class="section-text reveal">
+      先進国では、バリスタが我が物顔でコーヒーを淹れます。コーヒーの味のほとんどは、豆のポテンシャルで決まります。コーヒー屋のビジネスは、農園の皆様が存在するおかげで成り立っています。だからこそ、素晴らしきエチオピアの人々を支援し続けるのです。
+    </p>
+    <div class="reason-grid">
+      <div class="reason-item reveal">
+        <div class="reason-heading">生産コストの上昇</div>
+        <p class="reason-text">肥料、農薬、種子、土地、労働力など、コーヒー生産に必要なコストが高くなっており、農家の収入は大きく減少しています。</p>
+      </div>
+      <div class="reason-item reveal reveal-delay-1">
+        <div class="reason-heading">コーヒー価格の低迷</div>
+        <p class="reason-text">コーヒー市場は生産コストよりも低い価格で買い付けることが多く、農家はコーヒーを高く売ることができません。</p>
+      </div>
+      <div class="reason-item reveal reveal-delay-2">
+        <div class="reason-heading">天候不順と気候変動</div>
+        <p class="reason-text">温暖化によって異常気象が増えており、コーヒー農家はますます困難に直面しています。収穫量の減少が農家の収入に直接響きます。</p>
+      </div>
+      <div class="reason-item reveal reveal-delay-3">
+        <div class="reason-heading">ダイレクトトレードが答え</div>
+        <p class="reason-text">フェアトレードも認証もビジネスです。直接現地の方にそのまま対価をお支払いする形がもっとも理想的です。だから、ダイレクトトレードしかありません。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATEMENT -->
+<div class="statement">
+  <p class="statement-text reveal">
+    <strong>皆様のお気持ちと支援者名の一覧も現地の皆様にお届けします</strong>
+    ２０２８年を目標として、店主が現地に直接手渡しします
+  </p>
+  <a href="https://syncable.biz/associate/kotobuki" class="donation-btn reveal reveal-delay-2" style="margin-top:2rem;background:var(--earth);color:var(--amber);" target="_blank" rel="noopener">
+    <span>今すぐ支援する →</span>
+  </a>
+</div>
+
+<!-- EVENTS -->
+<section class="events-section">
+  <div class="events-inner">
+    <div class="section-label reveal" style="color:var(--amber);">Support Events</div>
+    <h2 class="reveal" style="font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,4vw,3rem);color:var(--cream);font-weight:300;margin-bottom:0.5rem;">支援イベント 2025</h2>
+    <p class="reveal" style="font-family:'Space Mono',monospace;font-size:0.55rem;letter-spacing:0.3em;color:var(--muted);margin-bottom:2.5rem;text-transform:uppercase;">エチオピアコーヒー 飲み比べ チャリティー</p>
+
+    <div class="event-item event-done reveal">
+      <span class="event-badge done">終了</span>
+      <div>
+        <div class="event-name">妙経寺（大塩）</div>
+        <div class="event-detail">2/15（土）15:00〜16:30 — 参加費：無料</div>
+      </div>
+    </div>
+    <div class="event-item event-done reveal">
+      <span class="event-badge done">終了</span>
+      <div>
+        <div class="event-name">キノシタデンキ（東二見）</div>
+        <div class="event-detail">3/7（金）11:00〜16:00 — 参加費：無料 自由解散</div>
+      </div>
+    </div>
+    <div class="event-item event-done reveal">
+      <span class="event-badge done">終了</span>
+      <div>
+        <div class="event-name">カフェブルーノ（高砂）</div>
+        <div class="event-detail">3/9（日）14:00〜15:30 — 参加費：無料</div>
+      </div>
+    </div>
+    <div class="event-item event-done reveal">
+      <span class="event-badge done">終了</span>
+      <div>
+        <div class="event-name">Coffee icca（姫路）</div>
+        <div class="event-detail">3/14（金）1部 11:00〜12:00 / 2部 14:00〜15:00 — 参加費：無料</div>
+      </div>
+    </div>
+    <div class="event-item event-done reveal">
+      <span class="event-badge done">終了</span>
+      <div>
+        <div class="event-name">Arcgutect cafe ENNE 前川建設 幸木之家（加古川）</div>
+        <div class="event-detail">3/22（土）1部 11:00〜12:00 / 2部 14:00〜15:00 — ドリンク／デザートご注文をお願いします</div>
+      </div>
+    </div>
+    <div class="event-item event-done reveal">
+      <span class="event-badge done">終了</span>
+      <div>
+        <div class="event-name">まちの保健室cafeおはな（加古川）</div>
+        <div class="event-detail">4/10（木）1部 13:00〜14:00 / 2部 15:00〜16:00 — 参加費：無料</div>
+      </div>
+    </div>
+    <div class="event-item event-done reveal">
+      <span class="event-badge done">終了</span>
+      <div>
+        <div class="event-name">あづまやSannin（東二見）</div>
+        <div class="event-detail">4/19（土）1部 11:00〜12:00 / 2部 14:00〜15:00 — 各15名まで — 参加費：無料</div>
+      </div>
+    </div>
+    <div class="event-item event-done reveal">
+      <span class="event-badge done">終了</span>
+      <div>
+        <div class="event-name">kaku° -coffee stand & gallery-（加古川）</div>
+        <div class="event-detail">4/20（日）13:00〜14:00 — 参加費：無料</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SUPPORTERS -->
+<section class="supporter-section">
+  <div class="supporter-inner">
+    <div class="supporter-title reveal">ご支援いただいた皆様</div>
+    <div class="supporter-sub reveal">2023年3月24日〜 順不同・反映まで約1週間</div>
+
+    <div class="supporter-group-title reveal">◆ 募金箱の設置にご協力いただいた皆様 ◆</div>
+    <div class="supporter-grid reveal">
+      <div class="supporter-item">Relaxingcafe non<a href="https://www.instagram.com/relaxingcafe.non/" target="_blank" rel="noopener">@relaxingcafe.non</a></div>
+      <div class="supporter-item">居酒屋 iami<a href="https://www.instagram.com/iami0428/" target="_blank" rel="noopener">@iami0428</a></div>
+      <div class="supporter-item">レゲエバー Rustic</div>
+      <div class="supporter-item">I.DEE<a href="https://www.instagram.com/i.dee777/" target="_blank" rel="noopener">@i.dee777</a></div>
+      <div class="supporter-item">じゃがぱん<a href="https://www.instagram.com/zyagapann/" target="_blank" rel="noopener">@zyagapann</a></div>
+      <div class="supporter-item">RKクリエイト株式会社<a href="https://www.instagram.com/rk_beautyplus/" target="_blank" rel="noopener">@rk_beautyplus</a></div>
+      <div class="supporter-item">かこむ<a href="https://www.instagram.com/kacom_higashiharima/" target="_blank" rel="noopener">@kacom_higashiharima</a></div>
+      <div class="supporter-item">Voir<a href="https://www.instagram.com/voir_obanzai/" target="_blank" rel="noopener">@voir_obanzai</a></div>
+      <div class="supporter-item">ブランチカフェ古道</div>
+      <div class="supporter-item">あずまやsannin<a href="https://liff.line.me/1645278921-kWRPP32q/?accountId=471jqozh" target="_blank" rel="noopener">LINE</a></div>
+      <div class="supporter-item">おおきいクレヨン（休業中）</div>
+      <div class="supporter-item">トラントセット<a href="https://37tresepmarie-1.jimdosite.com/" target="_blank" rel="noopener">サイト</a></div>
+      <div class="supporter-item">なかむらさんち</div>
+      <div class="supporter-item" style="color:var(--amber);font-family:'Space Mono',monospace;font-size:0.65rem;display:flex;align-items:center;justify-content:center;">設置店 募集中</div>
+    </div>
+
+    <div class="supporter-group-title reveal" style="margin-top:2.5rem;">◆ ご支援いただいた個人・企業の皆様 ◆</div>
+    <div class="supporter-grid reveal">
+      <div class="supporter-item" style="border-left:3px solid var(--amber);">オークラサービス株式会社</div>
+      <div class="supporter-item" style="border-left:3px solid var(--amber);">金田電気工業所</div>
+      <div class="supporter-item" style="border-left:3px solid var(--amber);">株式会社リゾームケア</div>
+      <div class="supporter-item" style="border-left:3px solid var(--amber);">株式会社三洋産業</div>
+      <div class="supporter-item" style="border-left:3px solid var(--amber);">Relight</div>
+      <div class="supporter-item" style="border-left:3px solid var(--amber);">Coffee icca</div>
+      <div class="supporter-item" style="border-left:3px solid var(--amber);">tera-coffee 日に新た</div>
+      <div class="supporter-item" style="border-left:3px solid var(--amber);">and</div>
+      <div class="supporter-item" style="border-left:3px solid var(--amber);">フランス菓子工房 100万$本舗</div>
+      <div class="supporter-item" style="border-left:3px solid var(--amber);">ブランチカフェ古道</div>
+      <div class="supporter-item" style="border-left:3px solid var(--amber);">横山ファーム</div>
+      <div class="supporter-item" style="border-left:3px solid var(--amber);">キノシタデンキ</div>
+      <div class="supporter-item" style="border-left:3px solid var(--amber);">あづまやSannin</div>
+      <div class="supporter-item" style="border-left:3px solid var(--amber);">NEOBEAUTEARose販社</div>
+      <div class="supporter-item" style="border-left:3px solid var(--amber);">摩訶梵福</div>
+      <div class="supporter-item" style="border-left:3px solid var(--amber);">銀座屋</div>
+      <div class="supporter-item">武井 諭</div>
+      <div class="supporter-item">Body make-up studio01 新大阪<a href="https://www.xn--01-mu9ck98b562d.com/" target="_blank" rel="noopener">サイト</a></div>
+      <div class="supporter-item">株式会社 関西電機工業所<a href="https://www.kansai-denki-hyogo.com/" target="_blank" rel="noopener">サイト</a></div>
+      <div class="supporter-item">橋本 千代子</div>
+      <div class="supporter-item">藤本 悦子</div>
+      <div class="supporter-item">川口 昭美</div>
+      <div class="supporter-item">Sri Anna スリアンナ<a href="https://instagram.com/sri__anna" target="_blank" rel="noopener">Instagram</a></div>
+      <div class="supporter-item">株式会社べっぷカンパニー</div>
+      <div class="supporter-item">cafe MORE<a href="https://www.instagram.com/cafe.more/" target="_blank" rel="noopener">Instagram</a></div>
+      <div class="supporter-item">ハレルヤ建築事務所<a href="http://hale-archi.com/" target="_blank" rel="noopener">サイト</a></div>
+      <div class="supporter-item">あずまやsannin</div>
+      <div class="supporter-item">斉道 成美</div>
+      <div class="supporter-item">Synchronic（シンクロニック）<a href="https://akane-official.com/" target="_blank" rel="noopener">サイト</a></div>
+      <div class="supporter-item">株式会社EVO<a href="https://corp-evo.com/company/" target="_blank" rel="noopener">サイト</a></div>
+      <div class="supporter-item">おそうじ本舗 西明石店</div>
+      <div class="supporter-item">亀山 直美</div>
+      <div class="supporter-item">金岡 良夫</div>
+      <div class="supporter-item">中村 温子</div>
+      <div class="supporter-item">宮崎 章</div>
+    </div>
+    <div class="supporter-note reveal">SpecialThanks: Heleph Coffee Exporter</div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<div class="donation-banner" style="background:var(--coffee);">
+  <div class="reveal" style="font-family:'Cormorant Garamond',serif;font-size:clamp(1.3rem,3vw,2rem);color:var(--cream);font-weight:300;margin-bottom:0.5rem;">任意の金額でご支援を承っています</div>
+  <div class="donation-note reveal">企業様などのご支援はスポンサーとして現地支援時に紹介します</div>
+  <div class="reveal" style="margin-top:1.5rem;display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;">
+    <a href="https://syncable.biz/associate/kotobuki" class="donation-btn" target="_blank" rel="noopener">
+      <span>寄付する（Syncable）→</span>
+    </a>
+    <a href="https://page.line.me/013yyuhv?openQrModal=true" class="donation-btn" style="background:transparent;border:1px solid var(--amber);color:var(--amber);" target="_blank" rel="noopener">
+      <span>公式LINEに問い合わせ</span>
+    </a>
+  </div>
+  <div class="reveal" style="margin-top:1rem;">
+    <a href="https://lit.link/Kotobuki" class="footer-link" target="_blank" rel="noopener" style="color:var(--muted);font-family:'Space Mono',monospace;font-size:0.55rem;letter-spacing:0.2em;">Kotobuki焙煎 各種リンク</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">素晴らしきエチオピア</div>
+      <div class="footer-tagline">Kotobuki Roaster — Direct Support Since 2023</div>
+    </div>
+    <div class="footer-links">
+      <a href="https://syncable.biz/associate/kotobuki" class="footer-link" target="_blank" rel="noopener">寄付はこちら</a>
+      <a href="https://page.line.me/013yyuhv?openQrModal=true" class="footer-link" target="_blank" rel="noopener">公式LINE</a>
+      <a href="https://lit.link/Kotobuki" class="footer-link" target="_blank" rel="noopener">各種リンク</a>
+    </div>
+  </div>
+  <div class="footer-copy">© 素晴らしきエチオピア — Kotobuki Roaster. All Rights Reserved.</div>
+</footer>
+
+<script>
+  // NAV show after scroll
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('visible', window.scrollY > 80);
+  });
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Countdown to 2028-01-01
+  function updateCountdown() {
+    const target = new Date('2028-01-01T00:00:00+09:00');
+    const now = new Date();
+    const diff = target - now;
+    if (diff <= 0) {
+      document.getElementById('cd-d').textContent = '000';
+      document.getElementById('cd-h').textContent = '00';
+      document.getElementById('cd-m').textContent = '00';
+      document.getElementById('cd-s').textContent = '00';
+      return;
+    }
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    document.getElementById('cd-d').textContent = String(d).padStart(3,'0');
+    document.getElementById('cd-h').textContent = String(h).padStart(2,'0');
+    document.getElementById('cd-m').textContent = String(m).padStart(2,'0');
+    document.getElementById('cd-s').textContent = String(s).padStart(2,'0');
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+</script>
+</body>
+</html>

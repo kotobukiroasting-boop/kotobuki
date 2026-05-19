@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kotobuki焙煎 — Coffee Shop Training Program</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+JP:wght@200;300;400;500&family=Bebas+Neue&family=Noto+Sans+JP:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:     #02060d;
+  --s1:     #06101c;
+  --s2:     #0a1828;
+  --s3:     #102030;
+  --border: #16304a;
+  --blue:   #4ba8d8;
+  --blue2:  #80ccf0;
+  --blue3:  #bce4fc;
+  --cream:  #ddf0fc;
+  --muted:  #4e88aa;
+  --dim:    #244460;
+  --gold:   #c8a060;
+  --basic:  #4ba8d8;
+  --advance:#c080e8;
+  --master: #e0b040;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--bg); color:var(--cream); font-family:"Noto Serif JP",serif; font-weight:300; overflow-x:hidden; }
+::selection { background:var(--blue); color:#000; }
+
+/* ── HERO ── */
+.hero {
+  min-height:100vh; display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  text-align:center; position:relative; overflow:hidden; padding:80px 24px;
+}
+.hero-grain {
+  position:absolute; inset:0; pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size:200px; opacity:.35;
+}
+.hero-glow {
+  position:absolute; inset:0; pointer-events:none;
+  background:radial-gradient(ellipse 70% 55% at 50% 55%, rgba(74,168,216,.07) 0%, transparent 70%);
+}
+.hero-rule { position:absolute; left:10%; right:10%; height:1px; background:linear-gradient(90deg,transparent,var(--blue),transparent); opacity:.18; }
+.hero-rule.top { top:60px; } .hero-rule.bottom { bottom:60px; }
+.hero-inner { position:relative; z-index:2; max-width:760px; }
+.hero-eyebrow { font-family:"Cinzel",serif; font-size:.58rem; letter-spacing:.55em; color:var(--blue); opacity:.75; margin-bottom:32px; animation:fadeUp .9s ease both; }
+.hero-brand { font-family:"Bebas Neue",sans-serif; font-size:clamp(3.5rem,12vw,9rem); letter-spacing:.08em; line-height:.88; color:var(--cream); display:block; animation:fadeUp .9s .08s ease both; }
+.hero-brand-sub { font-family:"Bebas Neue",sans-serif; font-size:clamp(1.1rem,3.5vw,2.5rem); letter-spacing:.28em; color:var(--blue); display:block; margin-top:8px; text-shadow:0 0 60px rgba(74,168,216,.35); animation:fadeUp .9s .15s ease both; }
+.hero-divider { display:flex; align-items:center; gap:14px; justify-content:center; margin:28px 0; animation:fadeUp .9s .22s ease both; }
+.hero-divider::before,.hero-divider::after { content:""; display:block; width:60px; height:1px; background:linear-gradient(90deg,transparent,var(--blue)); opacity:.3; }
+.hero-divider::after { transform:scaleX(-1); }
+.hero-divider-text { font-family:"Cinzel",serif; font-size:.52rem; letter-spacing:.4em; color:var(--dim); }
+.hero-copy { font-family:"Noto Serif JP",serif; font-weight:300; font-size:clamp(.85rem,2vw,1.05rem); line-height:2.6; color:var(--muted); animation:fadeUp .9s .28s ease both; }
+.hero-copy strong { color:var(--cream); font-weight:400; }
+.hero-scroll { position:absolute; bottom:44px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:8px; font-family:"Cinzel",serif; font-size:.46rem; letter-spacing:.45em; color:var(--muted); opacity:.4; animation:fadeUp .9s .5s ease both; }
+.scroll-line { width:1px; height:44px; background:linear-gradient(to bottom,var(--blue),transparent); animation:scrollPulse 2.5s ease-in-out infinite; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:none} }
+@keyframes scrollPulse { 0%,100%{opacity:.15;transform:scaleY(.5);transform-origin:top} 50%{opacity:.7;transform:scaleY(1);transform-origin:top} }
+
+/* ── NAV ── */
+nav { position:sticky; top:0; z-index:99; background:rgba(2,6,13,.93); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); display:flex; align-items:center; overflow-x:auto; scrollbar-width:none; padding:0 24px; }
+nav::-webkit-scrollbar { display:none; }
+.n-logo { font-family:"Cinzel",serif; font-size:.62rem; letter-spacing:.22em; color:var(--blue); white-space:nowrap; padding:13px 18px 13px 0; border-right:1px solid var(--border); margin-right:18px; flex-shrink:0; display:flex; align-items:center; gap:9px; }
+.n-mark { width:20px; height:20px; border:1px solid var(--blue); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:.52rem; flex-shrink:0; }
+.n-link { font-family:"Cinzel",serif; font-size:.52rem; letter-spacing:.14em; color:var(--muted); white-space:nowrap; padding:15px 13px; text-decoration:none; text-transform:uppercase; transition:color .2s; flex-shrink:0; }
+.n-link:hover { color:var(--blue); }
+
+/* ── MAIN ── */
+main { max-width:1000px; margin:0 auto; padding:0 28px 140px; }
+
+/* ── REVEAL ── */
+.reveal { opacity:0; transform:translateY(22px); transition:opacity .7s ease,transform .7s ease; }
+.reveal.vis { opacity:1; transform:none; }
+
+/* ── SECTION BLOCK ── */
+.section-block { padding-top:88px; }
+.section-block + .section-block { border-top:1px solid var(--border); }
+
+/* ── SECTION HEADER ── */
+.sec-head { display:flex; align-items:flex-start; gap:20px; margin-bottom:36px; }
+.sec-num { font-family:"Bebas Neue",sans-serif; font-size:clamp(3rem,6vw,5rem); line-height:1; color:var(--border); flex-shrink:0; user-select:none; }
+.sec-info { padding-top:6px; }
+.sec-en { font-family:"Cinzel",serif; font-size:.52rem; letter-spacing:.48em; text-transform:uppercase; color:var(--blue); opacity:.8; margin-bottom:6px; }
+.sec-ja { font-family:"Noto Serif JP",serif; font-weight:300; font-size:clamp(1.1rem,2.4vw,1.5rem); letter-spacing:.12em; color:var(--cream); }
+
+/* ── LEAD ── */
+.lead { font-family:"Noto Serif JP",serif; font-weight:300; font-size:clamp(.82rem,1.6vw,.95rem); line-height:2.4; color:var(--muted); margin-bottom:20px; }
+.lead strong { color:var(--cream); font-weight:400; }
+.lead em { font-style:normal; color:var(--blue); font-weight:400; }
+
+/* ── PHILOSOPHY BOX ── */
+.phi-box { background:var(--s1); border:1px solid var(--border); padding:32px 28px; position:relative; overflow:hidden; margin-bottom:28px; }
+.phi-box::before { content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:linear-gradient(to bottom,var(--blue),transparent); }
+.phi-box::after { content:""; position:absolute; inset:0; background:radial-gradient(ellipse 70% 50% at 0% 50%,rgba(74,168,216,.04),transparent); pointer-events:none; }
+
+/* ── QUOTE ── */
+.quote-block { border-left:2px solid var(--blue); padding:18px 24px; margin:24px 0; background:var(--s2); position:relative; }
+.quote-text { font-family:"Noto Serif JP",serif; font-weight:400; font-size:clamp(.88rem,1.8vw,1.05rem); letter-spacing:.1em; line-height:2; color:var(--cream); }
+.quote-deco { font-family:"Cinzel",serif; font-size:3rem; color:var(--blue); opacity:.15; position:absolute; top:4px; left:16px; line-height:1; user-select:none; }
+
+/* ── COURSE CARDS ── */
+.course-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1px; background:var(--border); margin:28px 0; }
+.course-card { background:var(--s1); padding:28px 22px; position:relative; overflow:hidden; transition:background .2s; }
+.course-card:hover { background:var(--s2); }
+.course-card::before { content:""; position:absolute; top:0; left:0; right:0; height:2px; transition:transform .35s cubic-bezier(.16,1,.3,1); transform:scaleX(0); transform-origin:left; }
+.course-card:hover::before { transform:scaleX(1); }
+.cc-basic::before { background:var(--basic); }
+.cc-advance::before { background:var(--advance); }
+.cc-set::before { background:var(--gold); }
+.course-badge { font-family:"Cinzel",serif; font-size:.5rem; letter-spacing:.2em; padding:3px 10px; border:1px solid; text-transform:uppercase; display:inline-block; margin-bottom:14px; }
+.cc-basic .course-badge { color:var(--basic); border-color:var(--basic)44; background:#0a1e30; }
+.cc-advance .course-badge { color:var(--advance); border-color:var(--advance)44; background:#140820; }
+.cc-set .course-badge { color:var(--gold); border-color:var(--gold)44; background:#1a1000; }
+.course-name { font-family:"Bebas Neue",sans-serif; font-size:1.8rem; letter-spacing:.1em; line-height:1; margin-bottom:8px; }
+.cc-basic .course-name { color:var(--basic); }
+.cc-advance .course-name { color:var(--advance); }
+.cc-set .course-name { color:var(--gold); }
+.course-price { font-family:"Bebas Neue",sans-serif; font-size:2.8rem; line-height:1; margin-bottom:4px; }
+.cc-basic .course-price { color:var(--cream); }
+.cc-advance .course-price { color:var(--cream); }
+.cc-set .course-price { color:var(--gold); }
+.course-price-note { font-size:.58rem; color:var(--muted); letter-spacing:.06em; margin-bottom:12px; }
+.course-bar { height:1px; background:var(--border); margin:14px 0; }
+.course-feature { font-size:.65rem; color:var(--muted); line-height:2; }
+.course-feature li { list-style:none; padding-left:0; display:flex; align-items:flex-start; gap:6px; }
+.course-feature li::before { content:"—"; color:var(--dim); flex-shrink:0; }
+.original-price { font-size:.62rem; color:var(--dim); text-decoration:line-through; margin-bottom:4px; }
+.discount-badge { display:inline-block; font-family:"Cinzel",serif; font-size:.5rem; letter-spacing:.15em; padding:2px 8px; background:#1a1000; border:1px solid var(--gold)44; color:var(--gold); margin-bottom:8px; }
+
+/* ── CURRICULUM ── */
+.curriculum-list { display:flex; flex-direction:column; gap:1px; background:var(--border); margin-top:28px; }
+.curri-item { background:var(--s1); overflow:hidden; transition:background .2s; }
+.curri-item:hover { background:var(--s2); }
+.curri-header { display:flex; align-items:center; gap:0; cursor:pointer; user-select:none; }
+.curri-num { font-family:"Bebas Neue",sans-serif; font-size:2.2rem; line-height:1; color:var(--border); padding:18px 20px; flex-shrink:0; min-width:70px; text-align:center; border-right:1px solid var(--border); }
+.curri-meta { flex:1; padding:18px 20px; }
+.curri-title { font-family:"Noto Serif JP",serif; font-weight:400; font-size:clamp(.85rem,1.8vw,1rem); color:var(--cream); margin-bottom:5px; }
+.curri-hours { display:flex; flex-wrap:wrap; gap:6px; }
+.curri-badge { font-family:"Cinzel",serif; font-size:.46rem; letter-spacing:.14em; padding:2px 8px; text-transform:uppercase; }
+.cb-basic { background:#061828; color:var(--basic); border:1px solid var(--basic)33; }
+.cb-advance { background:#100818; color:var(--advance); border:1px solid var(--advance)33; }
+.curri-toggle { font-family:"Cinzel",serif; font-size:.55rem; color:var(--dim); padding:18px 20px; flex-shrink:0; transition:color .2s; }
+.curri-item:hover .curri-toggle { color:var(--blue); }
+.curri-body { display:none; border-top:1px solid var(--border); }
+.curri-body.open { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border); }
+.curri-section { background:var(--s2); padding:22px 20px; }
+.curri-section-label { font-family:"Cinzel",serif; font-size:.5rem; letter-spacing:.25em; text-transform:uppercase; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--border); }
+.cls-basic { color:var(--basic); }
+.cls-advance { color:var(--advance); }
+.curri-points { list-style:none; display:flex; flex-direction:column; gap:0; }
+.curri-points li { font-size:.68rem; color:var(--muted); line-height:1; padding:8px 0; border-bottom:1px solid var(--border); display:flex; align-items:flex-start; gap:8px; }
+.curri-points li:last-child { border-bottom:none; }
+.curri-points li::before { content:"›"; color:var(--blue); opacity:.6; flex-shrink:0; }
+.curri-time { font-family:"Cinzel",serif; font-size:.46rem; letter-spacing:.15em; color:var(--dim); margin-bottom:10px; }
+
+/* ── SINGLE COLUMN CURRI BODY ── */
+.curri-body.single { grid-template-columns:1fr; }
+
+/* ── OPTION TABLE ── */
+.option-grid { display:grid; grid-template-columns:1fr; gap:1px; background:var(--border); margin-top:16px; }
+.option-row { background:var(--s1); padding:18px 20px; display:flex; justify-content:space-between; align-items:center; gap:16px; transition:background .2s; }
+.option-row:hover { background:var(--s2); }
+.option-name { font-family:"Noto Serif JP",serif; font-weight:300; font-size:.82rem; color:var(--cream); line-height:1.8; }
+.option-name small { display:block; font-size:.62rem; color:var(--muted); }
+.option-price { font-family:"Bebas Neue",sans-serif; font-size:1.5rem; color:var(--gold); flex-shrink:0; white-space:nowrap; }
+.option-category { font-family:"Cinzel",serif; font-size:.48rem; letter-spacing:.18em; color:var(--master); text-transform:uppercase; margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--border); }
+
+/* ── RECOMMEND ── */
+.recommend-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1px; background:var(--border); margin-top:16px; }
+.rec-card { background:var(--s1); padding:22px 18px; transition:background .2s; }
+.rec-card:hover { background:var(--s2); }
+.rec-icon { font-size:1.8rem; margin-bottom:10px; line-height:1; }
+.rec-text { font-family:"Noto Serif JP",serif; font-weight:300; font-size:.78rem; color:var(--muted); line-height:1.9; }
+
+/* ── CONTACT ── */
+.contact-box { background:var(--s1); border:1px solid var(--border); padding:36px 32px; text-align:center; position:relative; overflow:hidden; margin-top:28px; }
+.contact-box::before { content:""; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(--blue),transparent); opacity:.5; }
+.contact-title { font-family:"Cinzel",serif; font-size:.58rem; letter-spacing:.4em; color:var(--blue); text-transform:uppercase; margin-bottom:18px; }
+.contact-lead { font-family:"Noto Serif JP",serif; font-weight:300; font-size:.85rem; color:var(--muted); line-height:2.2; margin-bottom:22px; }
+.contact-email { font-family:"DM Mono",monospace; font-size:.85rem; color:var(--cream); background:var(--s2); border:1px solid var(--border); padding:10px 20px; display:inline-block; letter-spacing:.06em; margin-bottom:20px; }
+.contact-sns { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
+.sns-btn { font-family:"Cinzel",serif; font-size:.52rem; letter-spacing:.2em; padding:7px 16px; border:1px solid var(--border); color:var(--muted); text-transform:uppercase; transition:all .2s; cursor:pointer; }
+.sns-btn:hover { border-color:var(--blue); color:var(--blue); background:var(--s2); }
+
+/* ── CLOSING ── */
+.closing-box { margin-top:80px; padding:52px 36px; text-align:center; border-top:1px solid var(--border); border-bottom:1px solid var(--border); position:relative; overflow:hidden; }
+.closing-box::before { content:""; position:absolute; inset:0; background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(74,168,216,.04),transparent); pointer-events:none; }
+.closing-rule { width:120px; height:1px; margin:0 auto 32px; background:linear-gradient(90deg,transparent,var(--blue),transparent); opacity:.4; }
+.closing-main { font-family:"Noto Serif JP",serif; font-weight:300; font-size:clamp(.88rem,1.9vw,1.05rem); line-height:2.8; letter-spacing:.1em; color:var(--muted); margin-bottom:28px; }
+.closing-main strong { color:var(--cream); font-weight:400; }
+.closing-brand { font-family:"Bebas Neue",sans-serif; font-size:clamp(2rem,6vw,4.5rem); letter-spacing:.28em; background:linear-gradient(135deg,var(--dim) 0%,var(--blue) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-top:20px; }
+.closing-tagline { font-family:"Cinzel",serif; font-size:.52rem; letter-spacing:.4em; color:var(--dim); margin-top:10px; text-transform:uppercase; }
+
+/* ── FOOTER ── */
+footer { text-align:center; padding:60px 20px; border-top:1px solid var(--border); position:relative; }
+footer::before { content:""; position:absolute; top:0; left:50%; transform:translateX(-50%); width:160px; height:1px; background:linear-gradient(90deg,transparent,var(--blue),transparent); opacity:.3; }
+.f-logo { font-family:"Bebas Neue",sans-serif; font-size:2.8rem; letter-spacing:.25em; background:linear-gradient(135deg,var(--dim) 0%,var(--muted) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.f-text { font-size:.52rem; letter-spacing:.25em; color:var(--dim); margin-top:12px; font-family:"Cinzel",serif; }
+
+@media (max-width:680px) {
+  main { padding:0 14px 80px; }
+  .curri-body.open { grid-template-columns:1fr; }
+  .course-grid { grid-template-columns:1fr; }
+  .recommend-grid { grid-template-columns:1fr 1fr; }
+  .sec-num { display:none; }
+  .closing-box { padding:36px 18px; }
+  .phi-box { padding:22px 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grain"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-rule top"></div>
+  <div class="hero-rule bottom"></div>
+  <div class="hero-inner">
+    <p class="hero-eyebrow">Coffee Shop Training Program — 全8回</p>
+    <span class="hero-brand">TRAINING</span>
+    <span class="hero-brand-sub">PROGRAM</span>
+    <div class="hero-divider"><span class="hero-divider-text">Kotobuki 焙煎</span></div>
+    <p class="hero-copy">
+      <strong>コーヒーが好き、だけでは続かない。</strong><br>
+      けれど、想いと技術があれば、続けていける。
+    </p>
+  </div>
+  <div class="hero-scroll"><span>SCROLL</span><div class="scroll-line"></div></div>
+</section>
+
+<nav>
+  <span class="n-logo"><span class="n-mark">K</span>KOTOBUKI 焙煎</span>
+  <a class="n-link" href="#sec-about">概要</a>
+  <a class="n-link" href="#sec-course">コース・料金</a>
+  <a class="n-link" href="#sec-curriculum">カリキュラム</a>
+  <a class="n-link" href="#sec-master">MASTERオプション</a>
+  <a class="n-link" href="#sec-support">運営サポート</a>
+  <a class="n-link" href="#sec-recommend">こんな方に</a>
+  <a class="n-link" href="#sec-contact">お問い合わせ</a>
+</nav>
+
+<main>
+
+  <!-- 01 概要 -->
+  <section class="section-block reveal" id="sec-about">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-info">
+        <div class="sec-en">About This Program</div>
+        <div class="sec-ja">プログラムについて</div>
+      </div>
+    </div>
+    <div class="phi-box">
+      <p class="lead">
+        Kotobuki焙煎では、これからコーヒー屋を始めたい方、将来の開業を視野に入れている方を対象に、<br>
+        <strong>「現場で使える知識と技術」を軸とした育成プログラム</strong>を行います。
+      </p>
+      <p class="lead" style="margin-bottom:0">
+        本講座は、Kotobuki焙煎の理念にご賛同いただき、<em>共に正しいコーヒーの価値を広めていただける方</em>が対象です。<br>
+        資格取得や理論だけの詰め込みではありません。
+      </p>
+    </div>
+    <div class="quote-block">
+      <div class="quote-deco">"</div>
+      <p class="quote-text">
+        本プログラムは、コーヒーの技術習得にとどまらず、<br>
+        「なぜこの一杯がこの価格なのか」を語れる人を育てるための<strong>実践的カリキュラム</strong>です。
+      </p>
+    </div>
+    <p class="lead">
+      生産者の背景、流通の現実、価格の構造を理解し、<br>
+      <strong>一般消費者に正しいコーヒーの価値を伝える担い手となること</strong>を目的としています。
+    </p>
+    <div class="phi-box" style="background:var(--s2);border-color:var(--advance)33">
+      <p class="lead" style="margin-bottom:0;font-size:.8rem">
+        講座内容・時間・提供価値を考慮すると、現在の受講料は<strong>意図的に抑えた価格設定</strong>となっています。<br>
+        これは、技術や知識を「安売り」するためではなく、<em>Kotobuki焙煎の想いに共感し、それを自らの言葉で伝えてくださる仲間を育てるための価格</em>です。
+      </p>
+    </div>
+  </section>
+
+  <!-- 02 コース・料金 -->
+  <section class="section-block reveal" id="sec-course">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-info">
+        <div class="sec-en">Course &amp; Pricing</div>
+        <div class="sec-ja">受講コース・料金</div>
+      </div>
+    </div>
+    <div class="course-grid">
+      <div class="course-card cc-basic">
+        <div class="course-badge">Basic Course</div>
+        <div class="course-name">BASIC</div>
+        <div class="course-price">¥140,000</div>
+        <div class="course-price-note">各種テキスト付き</div>
+        <div class="course-bar"></div>
+        <ul class="course-feature">
+          <li>全8講座のBASICパート</li>
+          <li>座学・実技を組み合わせた構成</li>
+          <li>現場で使える基礎知識を体系的に習得</li>
+        </ul>
+      </div>
+      <div class="course-card cc-advance">
+        <div class="course-badge">Advance Course</div>
+        <div class="course-name">ADVANCE</div>
+        <div class="course-price">¥300,000</div>
+        <div class="course-price-note">各種テキスト付き ／ クリスタルトロフィー修了証授与</div>
+        <div class="course-bar"></div>
+        <ul class="course-feature">
+          <li>全8講座のADVANCEパート</li>
+          <li>実機操作・ブラインドカッピングなど実践重視</li>
+          <li>修了証（クリスタルトロフィー）授与</li>
+        </ul>
+      </div>
+      <div class="course-card cc-set">
+        <div class="discount-badge">▶ SET DISCOUNT</div>
+        <div class="course-badge">Full Program</div>
+        <div class="course-name">BASIC + ADVANCE</div>
+        <div class="original-price">通常価格：¥440,000</div>
+        <div class="course-price">¥320,000</div>
+        <div class="course-price-note">セット割引価格 ／ 各種テキスト付き ／ 修了証授与</div>
+        <div class="course-bar"></div>
+        <ul class="course-feature">
+          <li>全8講座 完全受講</li>
+          <li>¥120,000 お得なセット価格</li>
+          <li>クリスタルトロフィー修了証授与</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 カリキュラム -->
+  <section class="section-block reveal" id="sec-curriculum">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-info">
+        <div class="sec-en">Curriculum</div>
+        <div class="sec-ja">カリキュラム内容（全8回）</div>
+      </div>
+    </div>
+    <p class="lead">各講座のタイトルをクリック・タップすると詳細を展開できます。</p>
+    <div class="curriculum-list" id="curriculum-list">
+
+      <!-- ① -->
+      <div class="curri-item">
+        <div class="curri-header" onclick="toggleCurri(this)">
+          <div class="curri-num">01</div>
+          <div class="curri-meta">
+            <div class="curri-title">コーヒーの基礎と現在地</div>
+            <div class="curri-hours">
+              <span class="curri-badge cb-basic">BASIC ｜ 4h 座学</span>
+            </div>
+          </div>
+          <div class="curri-toggle">▶ 詳細</div>
+        </div>
+        <div class="curri-body single">
+          <div class="curri-section">
+            <div class="curri-section-label cls-basic">Basic — 4時間 座学</div>
+            <ul class="curri-points">
+              <li>コーヒーの歴史と産地</li>
+              <li>等級・評価の考え方</li>
+              <li>コモディティとスペシャルティの違い</li>
+              <li>国際相場と価格変動の現実</li>
+              <li>フェアトレードとダイレクトトレード</li>
+              <li>Kotobuki焙煎の想い</li>
+              <li>日本のコーヒー屋の今とこれから</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ② -->
+      <div class="curri-item">
+        <div class="curri-header" onclick="toggleCurri(this)">
+          <div class="curri-num">02</div>
+          <div class="curri-meta">
+            <div class="curri-title">精製と発酵の理解</div>
+            <div class="curri-hours">
+              <span class="curri-badge cb-basic">BASIC ｜ 2h 座学・実技</span>
+              <span class="curri-badge cb-advance">ADVANCE ｜ 2h 座学・実技</span>
+            </div>
+          </div>
+          <div class="curri-toggle">▶ 詳細</div>
+        </div>
+        <div class="curri-body">
+          <div class="curri-section">
+            <div class="curri-section-label cls-basic">Basic — 2時間 座学・実技</div>
+            <ul class="curri-points">
+              <li>精製とは何か</li>
+              <li>ウォッシュド／ナチュラル／ハニー</li>
+              <li>アナエロビック／インフューズド／カルチャリング</li>
+            </ul>
+          </div>
+          <div class="curri-section">
+            <div class="curri-section-label cls-advance">Advance — 2時間 座学・実技</div>
+            <ul class="curri-points">
+              <li>精製と欠点豆の関係</li>
+              <li>流行の精製をどう扱うか</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ③ -->
+      <div class="curri-item">
+        <div class="curri-header" onclick="toggleCurri(this)">
+          <div class="curri-num">03</div>
+          <div class="curri-meta">
+            <div class="curri-title">豆の品種と味わい</div>
+            <div class="curri-hours">
+              <span class="curri-badge cb-basic">BASIC ｜ 2h 座学</span>
+              <span class="curri-badge cb-advance">ADVANCE ｜ 3h 座学・実技</span>
+            </div>
+          </div>
+          <div class="curri-toggle">▶ 詳細</div>
+        </div>
+        <div class="curri-body">
+          <div class="curri-section">
+            <div class="curri-section-label cls-basic">Basic — 2時間 座学</div>
+            <ul class="curri-points">
+              <li>主要品種と風味特性</li>
+            </ul>
+          </div>
+          <div class="curri-section">
+            <div class="curri-section-label cls-advance">Advance — 3時間 座学・実技</div>
+            <ul class="curri-points">
+              <li>遺伝子世代（在来種・F1世代）</li>
+              <li>テロワールと品種の関係</li>
+              <li>同じ品種での味の違い</li>
+              <li>エチオピア在来種が特別な理由</li>
+              <li>品種をどうお客様に伝えるか</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ④ -->
+      <div class="curri-item">
+        <div class="curri-header" onclick="toggleCurri(this)">
+          <div class="curri-num">04</div>
+          <div class="curri-meta">
+            <div class="curri-title">焙煎｜生豆を知り、味を設計する</div>
+            <div class="curri-hours">
+              <span class="curri-badge cb-basic">BASIC ｜ 3h 座学・実技</span>
+              <span class="curri-badge cb-advance">ADVANCE ｜ 6h 座学・実技</span>
+            </div>
+          </div>
+          <div class="curri-toggle">▶ 詳細</div>
+        </div>
+        <div class="curri-body">
+          <div class="curri-section">
+            <div class="curri-section-label cls-basic">Basic — 3時間 座学・実技</div>
+            <ul class="curri-points">
+              <li>生産国の生豆の保管</li>
+              <li>最終精製工程</li>
+              <li>国内での荷姿と劣化のしくみ</li>
+              <li>生豆の見極め（含水・密度・欠点）</li>
+              <li>焙煎による味の変化</li>
+              <li>焙煎度合いの判断</li>
+            </ul>
+          </div>
+          <div class="curri-section">
+            <div class="curri-section-label cls-advance">Advance — 6時間 座学・実技</div>
+            <ul class="curri-points">
+              <li>失敗ローストの原因分析</li>
+              <li>焙煎機実機での焙煎（深煎り1kg・浅煎り1kg）</li>
+              <li>カッピング手法（複数検体でのブラインドカッピング）</li>
+              <li>「自分の店の味」の作り方</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ⑤ -->
+      <div class="curri-item">
+        <div class="curri-header" onclick="toggleCurri(this)">
+          <div class="curri-num">05</div>
+          <div class="curri-meta">
+            <div class="curri-title">グラインドと品質管理</div>
+            <div class="curri-hours">
+              <span class="curri-badge cb-basic">BASIC ｜ 2h 座学</span>
+              <span class="curri-badge cb-advance">ADVANCE ｜ 3h 座学・実技</span>
+            </div>
+          </div>
+          <div class="curri-toggle">▶ 詳細</div>
+        </div>
+        <div class="curri-body">
+          <div class="curri-section">
+            <div class="curri-section-label cls-basic">Basic — 2時間 座学</div>
+            <ul class="curri-points">
+              <li>グラインダーの仕組みと種類</li>
+              <li>粒度分布と味の関係</li>
+              <li>豆・粉の保存管理</li>
+            </ul>
+          </div>
+          <div class="curri-section">
+            <div class="curri-section-label cls-advance">Advance — 3時間 座学・実技</div>
+            <ul class="curri-points">
+              <li>ミクロン単位での調整</li>
+              <li>グラインダーの構造とメンテナンス</li>
+              <li>刃の摩耗と味の劣化</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ⑥ -->
+      <div class="curri-item">
+        <div class="curri-header" onclick="toggleCurri(this)">
+          <div class="curri-num">06</div>
+          <div class="curri-meta">
+            <div class="curri-title">抽出と再現性</div>
+            <div class="curri-hours">
+              <span class="curri-badge cb-basic">BASIC ｜ 2h</span>
+              <span class="curri-badge cb-advance">ADVANCE ｜ 2h</span>
+            </div>
+          </div>
+          <div class="curri-toggle">▶ 詳細</div>
+        </div>
+        <div class="curri-body">
+          <div class="curri-section">
+            <div class="curri-section-label cls-basic">Basic — 2時間</div>
+            <ul class="curri-points">
+              <li>コーヒー抽出器具の歴史と基礎</li>
+              <li>透過式／浸漬式／加圧式／メタル式での飲み比べ</li>
+              <li>抽出レシピによる味の違い</li>
+            </ul>
+          </div>
+          <div class="curri-section">
+            <div class="curri-section-label cls-advance">Advance — 2時間</div>
+            <ul class="curri-points">
+              <li>TDS・pH・SALT値の考え方</li>
+              <li>水による味の変化（硬度・ミネラル）</li>
+              <li>ブレないレシピ作り</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ⑦ -->
+      <div class="curri-item">
+        <div class="curri-header" onclick="toggleCurri(this)">
+          <div class="curri-num">07</div>
+          <div class="curri-meta">
+            <div class="curri-title">エスプレッソと店舗運営視点</div>
+            <div class="curri-hours">
+              <span class="curri-badge cb-basic">BASIC ｜ 2h</span>
+              <span class="curri-badge cb-advance">ADVANCE ｜ 3h 実機操作</span>
+            </div>
+          </div>
+          <div class="curri-toggle">▶ 詳細</div>
+        </div>
+        <div class="curri-body">
+          <div class="curri-section">
+            <div class="curri-section-label cls-basic">Basic — 2時間</div>
+            <ul class="curri-points">
+              <li>エスプレッソマシンの構造</li>
+              <li>マシン・グラインダー選定</li>
+              <li>設定・メンテナンス</li>
+            </ul>
+          </div>
+          <div class="curri-section">
+            <div class="curri-section-label cls-advance">Advance — 3時間 実機操作</div>
+            <ul class="curri-points">
+              <li>抽出の安定化</li>
+              <li>実機操作（エスプレッソ抽出・シングル・ダブル）</li>
+              <li>ラテアートの仕組みと基礎</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ⑧ -->
+      <div class="curri-item">
+        <div class="curri-header" onclick="toggleCurri(this)">
+          <div class="curri-num">08</div>
+          <div class="curri-meta">
+            <div class="curri-title">コーヒー屋として続けるために</div>
+            <div class="curri-hours">
+              <span class="curri-badge cb-basic">BASIC ｜ 2h</span>
+              <span class="curri-badge cb-advance">ADVANCE ｜ 10h 提供演習あり</span>
+            </div>
+          </div>
+          <div class="curri-toggle">▶ 詳細</div>
+        </div>
+        <div class="curri-body">
+          <div class="curri-section">
+            <div class="curri-section-label cls-basic">Basic — 2時間</div>
+            <ul class="curri-points">
+              <li>原価と価格設定</li>
+              <li>一杯の値段の決め方</li>
+              <li>農園ストーリーの伝え方</li>
+            </ul>
+          </div>
+          <div class="curri-section">
+            <div class="curri-section-label cls-advance">Advance — 10時間 / Coffee Roasters HUB</div>
+            <ul class="curri-points">
+              <li>小さな店の現実と続け方</li>
+              <li>中小企業・大手企業へのアプローチ方法</li>
+              <li>接客・提供の基本、トラブル回避</li>
+              <li>提供演習（Coffee Roasters HUB）</li>
+              <li>ファンを増やす方法</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 04 MASTERオプション -->
+  <section class="section-block reveal" id="sec-master">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-info">
+        <div class="sec-en">Master — Optional</div>
+        <div class="sec-ja">MASTER｜オプション講座</div>
+      </div>
+    </div>
+    <div class="option-grid">
+      <div class="option-category" style="padding:14px 20px;background:var(--s1)">🌍 農園研修</div>
+      <div class="option-row">
+        <div class="option-name">
+          国内農園研修
+          <small>日本の農園・輸入商社（1DAY）</small>
+        </div>
+        <div class="option-price">¥30,000〜</div>
+      </div>
+      <div class="option-row">
+        <div class="option-name">
+          海外農園研修（エチオピア／インドネシア等）
+          <small>6〜15日 ／ 農園・精製所・カッピング・ロースター訪問含む</small>
+        </div>
+        <div class="option-price">¥250,000〜<br><span style="font-size:.9rem">¥1,200,000</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 実務・運営サポート -->
+  <section class="section-block reveal" id="sec-support">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-info">
+        <div class="sec-en">Business Support</div>
+        <div class="sec-ja">実務・運営サポート</div>
+      </div>
+    </div>
+    <div class="option-grid">
+      <div class="option-category" style="padding:14px 20px;background:var(--s1)">🌐 Web・オンライン</div>
+      <div class="option-row">
+        <div class="option-name">ショップHP構築・運用<small>PCスキル・クラウド・基礎講習含む</small></div>
+        <div class="option-price">¥250,000</div>
+      </div>
+      <div class="option-row">
+        <div class="option-name">オンラインショップ構築・運用<small>PCスキル・クラウド・基礎講習含む</small></div>
+        <div class="option-price">¥200,000</div>
+      </div>
+      <div class="option-category" style="padding:14px 20px;background:var(--s1)">📱 SNS・集客</div>
+      <div class="option-row">
+        <div class="option-name">SNS運用<small>Instagram 他</small></div>
+        <div class="option-price">¥10,000〜</div>
+      </div>
+      <div class="option-row">
+        <div class="option-name">Googleマップ等スポット運用</div>
+        <div class="option-price">¥5,000〜</div>
+      </div>
+      <div class="option-row">
+        <div class="option-name">問い合わせ・チャット運用<small>公式LINE 他</small></div>
+        <div class="option-price">¥5,000〜</div>
+      </div>
+      <div class="option-category" style="padding:14px 20px;background:var(--s1)">🎨 デザイン・資材</div>
+      <div class="option-row">
+        <div class="option-name">各種デザイン<small>パンフレット・カード・ロゴ</small></div>
+        <div class="option-price">¥30,000〜</div>
+      </div>
+      <div class="option-row">
+        <div class="option-name">資材調達・オリジナルグッズ制作</div>
+        <div class="option-price">¥70,000〜</div>
+      </div>
+      <div class="option-category" style="padding:14px 20px;background:var(--s1)">☕ 店舗・出店</div>
+      <div class="option-row">
+        <div class="option-name">露店出店サポート</div>
+        <div class="option-price">¥5,000</div>
+      </div>
+      <div class="option-row">
+        <div class="option-name">ふるさと納税対応</div>
+        <div class="option-price">¥5,000</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 こんな方におすすめ -->
+  <section class="section-block reveal" id="sec-recommend">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-info">
+        <div class="sec-en">Who Is This For</div>
+        <div class="sec-ja">こんな方におすすめ</div>
+      </div>
+    </div>
+    <div class="recommend-grid">
+      <div class="rec-card">
+        <div class="rec-icon">☕</div>
+        <div class="rec-text">これから<strong style="color:var(--cream)">コーヒー屋を始めたい</strong>方</div>
+      </div>
+      <div class="rec-card">
+        <div class="rec-icon">🏪</div>
+        <div class="rec-text">将来、<strong style="color:var(--cream)">自分の店を持ちたい</strong>と考えている方</div>
+      </div>
+      <div class="rec-card">
+        <div class="rec-icon">🔍</div>
+        <div class="rec-text">表面的な知識ではなく、<strong style="color:var(--cream)">現場の考え方を学びたい</strong>方</div>
+      </div>
+      <div class="rec-card">
+        <div class="rec-icon">💼</div>
+        <div class="rec-text">コーヒーを<strong style="color:var(--cream)">「仕事」にしたい</strong>と思っている方</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 お問い合わせ -->
+  <section class="section-block reveal" id="sec-contact">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-info">
+        <div class="sec-en">Contact</div>
+        <div class="sec-ja">お問い合わせ</div>
+      </div>
+    </div>
+    <div class="contact-box">
+      <div class="contact-title">Get In Touch</div>
+      <p class="contact-lead">
+        公式LINE・Instagram・メールにて<br>
+        お気軽にお問い合わせください。
+      </p>
+      <div class="contact-email">kotobuki.roasting@gmail.com</div>
+      <div class="contact-sns">
+        <div class="sns-btn">📱 公式LINE</div>
+        <div class="sns-btn">📷 Instagram</div>
+        <div class="sns-btn">✉ Email</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLOSING -->
+  <div class="closing-box reveal">
+    <div class="closing-rule"></div>
+    <p class="closing-main">
+      <strong>コーヒーが好き、だけでは続かない。</strong><br>
+      けれど、想いと技術があれば、続けていける。<br><br>
+      一杯のコーヒーの背景を正しく語れる<strong>担い手として、</strong><br>
+      ともに歩んでくださる方の参加を、心よりお待ちしています。
+    </p>
+    <div class="closing-rule" style="margin-bottom:20px"></div>
+    <div class="closing-brand">KOTOBUKI 焙煎</div>
+    <p class="closing-tagline">Coffee Shop Training Program — Kakogawa, Hyogo</p>
+  </div>
+
+</main>
+
+<footer>
+  <div class="f-logo">KOTOBUKI ROASTERS</div>
+  <p class="f-text">© KOTOBUKI 焙煎 — KOTOBUKIDIET.COM — KAKOGAWA HYOGO</p>
+</footer>
+
+<script>
+function toggleCurri(header) {
+  const item = header.parentElement;
+  const body = item.querySelector('.curri-body');
+  const toggle = header.querySelector('.curri-toggle');
+  const isOpen = body.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.curri-body.open').forEach(b => {
+    b.classList.remove('open');
+    b.previousElementSibling && (b.previousElementSibling.querySelector('.curri-toggle').textContent = '▶ 詳細');
+  });
+  if (!isOpen) {
+    body.classList.add('open');
+    toggle.textContent = '▼ 閉じる';
+  }
+}
+
+// Reveal
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); io.unobserve(e.target); }
+  });
+}, { threshold: .05 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// Wix height
+function notifyHeight() {
+  const h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+  window.parent.postMessage({ type: 'height', value: h }, '*');
+}
+window.addEventListener('load', () => setTimeout(notifyHeight, 300));
+window.addEventListener('resize', notifyHeight);
+new MutationObserver(notifyHeight).observe(document.body, { subtree:true, childList:true, attributes:true });
+</script>
+</body>
+</html>
