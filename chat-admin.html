@@ -427,7 +427,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp }
+  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, setDoc, doc }
     from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -903,12 +903,12 @@
       spMembers = spMembers2;
       localStorage.setItem("spMembers", JSON.stringify(spMembers2));
 
-      addDoc(collection(db, "settings"), {
+      setDoc(doc(db, "settings", "allMembers"), {
         type: "allMembers",
         data: JSON.stringify(members),
         timestamp: serverTimestamp()
       });
-      addDoc(collection(db, "settings"), {
+      setDoc(doc(db, "settings", "spMembers"), {
         type: "spMembers",
         data: JSON.stringify(spMembers2),
         timestamp: serverTimestamp()

@@ -403,7 +403,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp }
+  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, getDoc, doc }
     from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -455,22 +455,24 @@
   }
 
   // ===== Firestoreから最新SP会員データ取得 =====
-  // Firestoreからデータ取得後にログイン処理
+  // Firestoreから固定IDで直接取得
   let spDataLoaded = false;
 
-  const spQuery = query(collection(db, "settings"), orderBy("timestamp", "desc"));
-  onSnapshot(spQuery, (snap) => {
-    snap.forEach(doc => {
-      const d = doc.data();
-      if (d.type === "spMembers" && d.data) {
-        spMembers = JSON.parse(d.data);
-        localStorage.setItem("spMembers", d.data);
+  async function loadSpMembers() {
+    try {
+      const snap = await getDoc(doc(db, "settings", "spMembers"));
+      if (snap.exists() && snap.data().data) {
+        spMembers = JSON.parse(snap.data().data);
+        localStorage.setItem("spMembers", snap.data().data);
       }
-    });
+    } catch(e) {
+      console.log("SP取得エラー", e);
+    }
     spDataLoaded = true;
-    // データ取得後に再チェック
     if (userName) checkSpMember(userName);
-  });
+  }
+
+  loadSpMembers();
 
   // ===== ログイン =====
   function startChat(name) {
@@ -480,8 +482,6 @@
     // Firestoreデータ取得済みならすぐチェック、未取得なら少し待つ
     if (spDataLoaded) {
       checkSpMember(userName);
-    } else {
-      setTimeout(() => checkSpMember(userName), 2000);
     }
     startListening();
   }
