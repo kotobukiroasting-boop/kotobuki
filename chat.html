@@ -355,7 +355,10 @@
 
   <!-- お知らせバナー -->
   <div class="notice-bar" style="display:flex;align-items:center;justify-content:space-between">
-    <span>☕ Kotobuki焙煎の担当者がお返事します</span>
+    <div style="display:flex;flex-direction:column;gap:2px">
+      <span>☕ Kotobuki焙煎の担当者がお返事します</span>
+      <span id="currentUserName" style="font-size:11px;color:rgba(245,230,200,0.7)"></span>
+    </div>
     <button id="changeNameBtn" style="background:none;border:1px solid rgba(245,230,200,0.3);color:rgba(245,230,200,0.6);border-radius:12px;padding:3px 10px;font-size:11px;cursor:pointer;white-space:nowrap">名前を変更</button>
   </div>
 
@@ -467,6 +470,7 @@
   function startChat(name) {
     userName = name;
     document.getElementById("nameModal").style.display = "none";
+    document.getElementById("currentUserName").textContent = name + " さん";
     checkSpMember(userName);
     startListening();
   }
