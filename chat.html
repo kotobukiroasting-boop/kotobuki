@@ -454,6 +454,9 @@
   }
 
   // ===== Firestoreから最新SP会員データ取得 =====
+  // Firestoreからデータ取得後にログイン処理
+  let spDataLoaded = false;
+
   const spQuery = query(collection(db, "settings"), orderBy("timestamp", "desc"));
   onSnapshot(spQuery, (snap) => {
     snap.forEach(doc => {
@@ -461,9 +464,11 @@
       if (d.type === "spMembers" && d.data) {
         spMembers = JSON.parse(d.data);
         localStorage.setItem("spMembers", d.data);
-        if (userName) checkSpMember(userName);
       }
     });
+    spDataLoaded = true;
+    // データ取得後に再チェック
+    if (userName) checkSpMember(userName);
   });
 
   // ===== ログイン =====
@@ -471,7 +476,12 @@
     userName = name;
     document.getElementById("nameModal").style.display = "none";
     document.getElementById("currentUserName").textContent = name + " さん";
-    checkSpMember(userName);
+    // Firestoreデータ取得済みならすぐチェック、未取得なら少し待つ
+    if (spDataLoaded) {
+      checkSpMember(userName);
+    } else {
+      setTimeout(() => checkSpMember(userName), 2000);
+    }
     startListening();
   }
 
