@@ -1,0 +1,1611 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kotobuki Roasters — Brewing Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+JP:wght@200;300;400&family=Bebas+Neue&family=Noto+Sans+JP:wght@200;300;400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:    #02060d;
+  --s1:    #06101c;
+  --s2:    #0a1828;
+  --s3:    #102030;
+  --border:#16304a;
+  --gold:  #4ba8d8;
+  --gold2: #80ccf0;
+  --gold3: #bce4fc;
+  --cream: #ddf0fc;
+  --muted: #4e88aa;
+  --dim:   #244460;
+  --method-drip:    #5cb8e0;
+  --method-french:  #e09050;
+  --method-aero:    #50c090;
+  --method-espresso:#e06878;
+  --method-cold:    #7090e0;
+  --method-moka:    #e0b040;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--cream);font-family:"Noto Sans JP",sans-serif;font-weight:300;overflow-x:hidden}
+::selection{background:var(--gold);color:#000}
+
+/* ── HERO ── */
+.hero{height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 60%,rgba(74,168,216,.06) 0%,transparent 70%);pointer-events:none}
+.hero-lines{position:absolute;inset:0;pointer-events:none}
+.hero-lines::before,.hero-lines::after{content:"";position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.12}
+.hero-lines::before{top:72px}.hero-lines::after{bottom:72px}
+.hero-inner{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:0}
+.hero-eyebrow{font-family:"Cinzel",serif;font-size:.58rem;letter-spacing:.55em;color:var(--gold);opacity:.7;margin-bottom:32px;animation:fadeUp .9s ease both}
+.hero-title{animation:fadeUp .9s .1s ease both}
+.hero-title-main{font-family:"Bebas Neue",sans-serif;font-size:clamp(5rem,16vw,13rem);letter-spacing:.06em;line-height:.88;color:var(--cream);display:block}
+.hero-title-sub{font-family:"Bebas Neue",sans-serif;font-size:clamp(1.6rem,5vw,4.2rem);letter-spacing:.35em;color:var(--gold);display:block;margin-top:6px;text-shadow:0 0 60px rgba(74,168,216,.3)}
+.hero-desc{font-family:"Noto Serif JP",serif;font-weight:200;font-size:clamp(.62rem,1.2vw,.75rem);letter-spacing:.35em;color:var(--muted);margin-top:28px;line-height:2;animation:fadeUp .9s .22s ease both}
+.hero-scroll{position:absolute;bottom:48px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;font-family:"Cinzel",serif;font-size:.46rem;letter-spacing:.45em;color:var(--muted);opacity:.45;animation:fadeUp .9s .5s ease both}
+.scroll-line{width:1px;height:48px;background:linear-gradient(to bottom,var(--gold),transparent);animation:pulse 2.5s ease-in-out infinite}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes pulse{0%,100%{opacity:.15;transform:scaleY(.5);transform-origin:top}50%{opacity:.7;transform:scaleY(1);transform-origin:top}}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:99;background:rgba(2,6,13,.93);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;overflow-x:auto;scrollbar-width:none;padding:0 24px}
+nav::-webkit-scrollbar{display:none}
+.n-logo{font-family:"Cinzel",serif;font-size:.62rem;letter-spacing:.22em;color:var(--gold);white-space:nowrap;padding:13px 18px 13px 0;border-right:1px solid var(--border);margin-right:18px;flex-shrink:0;display:flex;align-items:center;gap:9px}
+.n-mark{width:20px;height:20px;border:1px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.52rem;flex-shrink:0}
+.n-link{font-family:"Cinzel",serif;font-size:.52rem;letter-spacing:.14em;color:var(--muted);white-space:nowrap;padding:15px 13px;cursor:pointer;transition:color .2s;flex-shrink:0;text-decoration:none;text-transform:uppercase}
+.n-link:hover{color:var(--gold)}
+
+/* ── MAIN ── */
+main{max-width:1440px;margin:0 auto;padding:0 32px 140px}
+
+/* ── SECTION LABEL ── */
+.section-label{padding-top:100px;margin-bottom:52px;display:grid;grid-template-columns:auto 1fr;gap:0 28px;align-items:end;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.sl-num{font-family:"Bebas Neue",sans-serif;font-size:clamp(3.5rem,7vw,6.5rem);line-height:1;color:var(--border);letter-spacing:-.02em;user-select:none}
+.sl-info{padding-bottom:4px}
+.sl-en{font-family:"Cinzel",serif;font-size:.52rem;letter-spacing:.48em;text-transform:uppercase;margin-bottom:6px;opacity:.75}
+.sl-ja{font-family:"Noto Serif JP",serif;font-weight:300;font-size:clamp(1.3rem,2.6vw,2rem);letter-spacing:.14em}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+.reveal.vis{opacity:1;transform:none}
+
+/* ── HOW TO SELECT ── */
+.selector-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1px;background:var(--border)}
+.sel-card{background:var(--s1);padding:24px 20px;cursor:pointer;position:relative;overflow:hidden;transition:background .2s;text-decoration:none;color:inherit;display:block}
+.sel-card::after{content:"";position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--sel-color,var(--gold));transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.16,1,.3,1)}
+.sel-card:hover{background:var(--s2)}
+.sel-card:hover::after{transform:scaleX(1)}
+.sel-icon{font-size:2rem;margin-bottom:12px;line-height:1}
+.sel-name{font-family:"Cinzel",serif;font-size:.65rem;letter-spacing:.2em;margin-bottom:6px;color:var(--sel-color,var(--cream))}
+.sel-desc{font-size:.62rem;color:var(--muted);line-height:1.8;margin-bottom:10px}
+.sel-tag{display:inline-block;font-family:"Cinzel",serif;font-size:.48rem;letter-spacing:.15em;padding:2px 8px;border:1px solid;border-color:var(--sel-color,var(--border));color:var(--sel-color,var(--muted));text-transform:uppercase}
+
+/* ── BEAN SELECTOR ── */
+.bean-filter-wrap{margin-bottom:36px}
+.bean-filter-label{font-family:"Cinzel",serif;font-size:.55rem;letter-spacing:.3em;color:var(--muted);margin-bottom:14px;text-transform:uppercase}
+.bean-filter-row{display:flex;flex-wrap:wrap;gap:6px}
+.bfbtn{font-family:"Cinzel",serif;font-size:.55rem;letter-spacing:.12em;padding:5px 12px;border:1px solid var(--border);color:var(--muted);background:var(--s1);cursor:pointer;transition:all .2s;text-transform:uppercase}
+.bfbtn:hover,.bfbtn.active{border-color:var(--gold);color:var(--gold);background:var(--s2)}
+
+/* ── RECIPE CARDS ── */
+.recipe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:1px;background:var(--border)}
+.rcard{background:var(--s1);padding:28px 24px;position:relative;overflow:hidden;transition:background .2s}
+.rcard:hover{background:var(--s2)}
+.rcard-accent{position:absolute;left:0;top:0;bottom:0;width:3px}
+.rcard-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px}
+.rcard-bean{flex:1}
+.rcard-bean-name{font-family:"Noto Serif JP",serif;font-weight:300;font-size:.88rem;letter-spacing:.05em;line-height:1.6;color:var(--cream);margin-bottom:4px}
+.rcard-bean-origin{font-size:.58rem;color:var(--muted);letter-spacing:.06em}
+.rcard-method-badge{font-family:"Cinzel",serif;font-size:.5rem;letter-spacing:.15em;padding:4px 10px;border:1px solid;text-transform:uppercase;white-space:nowrap;flex-shrink:0;margin-left:10px;margin-top:2px}
+.rcard-divider{height:1px;background:var(--border);margin:16px 0}
+/* Flavor tags */
+.rcard-flavors{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:14px}
+.rftag{font-size:.58rem;letter-spacing:.04em;padding:2px 8px}
+
+/* Recipe Steps */
+.recipe-steps-title{font-family:"Cinzel",serif;font-size:.52rem;letter-spacing:.3em;color:var(--muted);text-transform:uppercase;margin-bottom:12px}
+.recipe-step{display:flex;gap:12px;margin-bottom:10px;align-items:flex-start}
+.step-num{font-family:"Bebas Neue",sans-serif;font-size:1.4rem;line-height:1;color:var(--dim);flex-shrink:0;width:22px;text-align:right}
+.step-content{flex:1}
+.step-title{font-family:"Cinzel",serif;font-size:.58rem;letter-spacing:.12em;color:var(--cream);margin-bottom:3px}
+.step-detail{font-size:.62rem;color:var(--muted);line-height:1.7}
+.step-param{display:inline-block;font-family:"DM Mono",monospace;font-size:.6rem;color:var(--gold);background:#061018;border:1px solid #0a1e2e;padding:1px 6px;border-radius:2px;margin:1px 2px}
+
+/* Params Row */
+.params-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);margin-bottom:14px}
+.param-cell{background:var(--s2);padding:10px 10px;text-align:center}
+.param-val{font-family:"Bebas Neue",sans-serif;font-size:1.3rem;line-height:1;margin-bottom:2px}
+.param-key{font-family:"Cinzel",serif;font-size:.44rem;letter-spacing:.18em;color:var(--dim);text-transform:uppercase}
+
+/* Tips */
+.rcard-tip{margin-top:14px;padding:10px 14px;background:#04101e;border-left:2px solid var(--gold);font-size:.62rem;color:var(--muted);line-height:1.8}
+.rcard-tip strong{color:var(--gold2);font-weight:400}
+
+/* ── GEAR SECTION ── */
+.gear-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1px;background:var(--border)}
+.gear-card{background:var(--s1);padding:22px 18px;position:relative;overflow:hidden;transition:background .2s}
+.gear-card:hover{background:var(--s2)}
+.gear-icon{font-size:2.4rem;margin-bottom:12px;line-height:1}
+.gear-name{font-family:"Cinzel",serif;font-size:.65rem;letter-spacing:.18em;color:var(--cream);margin-bottom:4px}
+.gear-name-ja{font-family:"Noto Serif JP",serif;font-weight:300;font-size:.7rem;color:var(--muted);margin-bottom:10px}
+.gear-desc{font-size:.62rem;color:var(--muted);line-height:1.8;margin-bottom:12px}
+.gear-beans{font-family:"Cinzel",serif;font-size:.48rem;letter-spacing:.12em;color:var(--dim);text-transform:uppercase;margin-bottom:6px}
+.gear-bean-tags{display:flex;flex-wrap:wrap;gap:4px}
+.gbtag{font-size:.58rem;letter-spacing:.04em;padding:2px 8px;background:var(--s3);color:var(--muted);border:1px solid var(--border)}
+.gear-bar{height:1px;margin:14px 0;background:var(--border)}
+.gear-rating{display:flex;align-items:center;gap:8px}
+.gear-rating-label{font-family:"Cinzel",serif;font-size:.48rem;letter-spacing:.15em;color:var(--dim);text-transform:uppercase;width:52px;flex-shrink:0}
+.gear-dots{display:flex;gap:3px}
+.gdot{width:7px;height:7px;border-radius:50%;background:var(--border)}
+.gdot.on{background:var(--gold)}
+
+/* ── TEMP / GRIND GUIDE ── */
+.guide-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1px;background:var(--border)}
+.guide-card{background:var(--s1);padding:24px 20px}
+.guide-title{font-family:"Cinzel",serif;font-size:.6rem;letter-spacing:.25em;color:var(--gold);text-transform:uppercase;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.guide-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #1c1a0e}
+.guide-row:last-child{border-bottom:none}
+.guide-key{font-size:.62rem;color:var(--muted);letter-spacing:.05em}
+.guide-val{font-family:"DM Mono",monospace;font-size:.65rem;color:var(--cream);letter-spacing:.04em}
+.guide-bar-wrap{width:80px;height:3px;background:var(--border);margin-left:10px;flex-shrink:0}
+.guide-bar{height:100%;transition:width 1.2s cubic-bezier(.16,1,.3,1);width:0}
+
+/* ── PAIRING TABLE ── */
+.pairing-table-wrap{overflow-x:auto}
+.pairing-table{width:100%;border-collapse:collapse;font-size:.62rem}
+.pairing-table th{font-family:"Cinzel",serif;font-size:.5rem;letter-spacing:.25em;color:var(--muted);text-transform:uppercase;padding:12px 16px;border-bottom:1px solid var(--border);text-align:left;background:var(--s1);white-space:nowrap}
+.pairing-table td{padding:10px 16px;border-bottom:1px solid var(--border);color:var(--muted);vertical-align:middle;background:var(--s1);transition:background .15s}
+.pairing-table tr:hover td{background:var(--s2)}
+.pairing-table td:first-child{color:var(--cream);font-family:"Noto Serif JP",serif;font-size:.68rem;font-weight:300}
+.match-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:middle}
+
+/* ── WATER GUIDE ── */
+.water-section{background:var(--s1);border:1px solid var(--border);padding:32px}
+.water-title{font-family:"Cinzel",serif;font-size:.6rem;letter-spacing:.3em;color:var(--gold);text-transform:uppercase;margin-bottom:20px}
+.water-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px}
+.water-item-title{font-family:"Cinzel",serif;font-size:.58rem;letter-spacing:.15em;color:var(--cream);margin-bottom:6px}
+.water-item-val{font-family:"Bebas Neue",sans-serif;font-size:1.8rem;color:var(--gold);line-height:1;margin-bottom:4px}
+.water-item-unit{font-size:.55rem;color:var(--dim);letter-spacing:.15em}
+.water-item-desc{font-size:.6rem;color:var(--muted);line-height:1.7;margin-top:8px}
+
+/* ── HIDDEN FILTER ── */
+.rcard.hidden{display:none}
+
+footer{text-align:center;padding:80px 20px;border-top:1px solid var(--border);position:relative}
+footer::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:200px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.4}
+.f-logo{font-family:"Bebas Neue",sans-serif;font-size:3.2rem;letter-spacing:.25em;background:linear-gradient(135deg,var(--dim) 0%,var(--muted) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.f-text{font-size:.52rem;letter-spacing:.28em;color:var(--dim);margin-top:14px}
+
+@media(max-width:680px){
+  main{padding:0 12px 80px}
+  .recipe-grid{grid-template-columns:1fr;background:none;gap:2px}
+  .gear-grid{grid-template-columns:repeat(2,1fr)}
+  .selector-grid{grid-template-columns:repeat(2,1fr)}
+  .section-label{grid-template-columns:1fr}
+  .sl-num{display:none}
+  .params-row{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-lines"></div>
+  <div class="hero-inner">
+    <p class="hero-eyebrow">Kotobuki Roasters — Kakogawa, Hyogo</p>
+    <div class="hero-title">
+      <span class="hero-title-main">BREWING</span>
+      <span class="hero-title-sub">RECIPE GUIDE</span>
+    </div>
+    <p class="hero-desc">
+      豆の個性を最大限に引き出す<br>
+      抽出レシピ &amp; 器具ガイド
+    </p>
+  </div>
+  <div class="hero-scroll"><span>SCROLL</span><div class="scroll-line"></div></div>
+</section>
+
+<nav id="nav">
+  <span class="n-logo"><span class="n-mark">K</span>KOTOBUKI ROASTERS</span>
+  <a class="n-link" href="#sec-select">器具を選ぶ</a>
+  <a class="n-link" href="#sec-recipes">レシピ一覧</a>
+  <a class="n-link" href="#sec-gear">器具ガイド</a>
+  <a class="n-link" href="#sec-grind">挽き目・温度</a>
+  <a class="n-link" href="#sec-water">水について</a>
+  <a class="n-link" href="#sec-pairing">フードペアリング</a>
+  <a class="n-link" href="kotobuki-dripper-guide.html" style="color:var(--method-drip);border-left:1px solid var(--border);margin-left:6px;padding-left:18px">📐 器具別レシピ →</a>
+</nav>
+
+<main>
+
+  <!-- 01 器具を選ぶ -->
+  <section class="section-label reveal" id="sec-select">
+    <div class="sl-num">01</div>
+    <div class="sl-info">
+      <div class="sl-en" style="color:var(--gold)">CHOOSE YOUR METHOD</div>
+      <div class="sl-ja">あなたの器具・スタイルで選ぶ</div>
+    </div>
+  </section>
+  <div class="selector-grid reveal" id="method-selector">
+    <div class="sel-card" style="--sel-color:var(--method-drip)" data-method="drip" onclick="filterMethod('drip')">
+      <div class="sel-icon">☕</div>
+      <div class="sel-name">Drip / Pour Over</div>
+      <div class="sel-desc">ハンドドリップ・ドリッパー系。クリアで繊細なフレーバーを楽しむ王道スタイル。</div>
+      <div class="sel-tag">V60 / Chemex / Origami</div>
+    </div>
+    <div class="sel-card" style="--sel-color:var(--method-french)" data-method="french" onclick="filterMethod('french')">
+      <div class="sel-icon">🫖</div>
+      <div class="sel-name">French Press</div>
+      <div class="sel-desc">浸漬式。豆の油分ごと楽しめる、リッチでボディのある抽出。</div>
+      <div class="sel-tag">Full Body</div>
+    </div>
+    <div class="sel-card" style="--sel-color:var(--method-aero)" data-method="aero" onclick="filterMethod('aero')">
+      <div class="sel-icon">🔩</div>
+      <div class="sel-name">AeroPress</div>
+      <div class="sel-desc">圧力+浸漬のハイブリッド。濃縮から薄め割りまで自由自在な万能器具。</div>
+      <div class="sel-tag">Versatile</div>
+    </div>
+    <div class="sel-card" style="--sel-color:var(--method-espresso)" data-method="espresso" onclick="filterMethod('espresso')">
+      <div class="sel-icon">⚡</div>
+      <div class="sel-name">Espresso</div>
+      <div class="sel-desc">高圧抽出でコーヒーの旨味を凝縮。濃厚な一杯を求めるならこれ。</div>
+      <div class="sel-tag">Concentrated</div>
+    </div>
+    <div class="sel-card" style="--sel-color:var(--method-cold)" data-method="cold" onclick="filterMethod('cold')">
+      <div class="sel-icon">🧊</div>
+      <div class="sel-name">Cold Brew</div>
+      <div class="sel-desc">低温長時間抽出。まろやかで甘みのある夏の定番スタイル。</div>
+      <div class="sel-tag">Smooth &amp; Sweet</div>
+    </div>
+    <div class="sel-card" style="--sel-color:var(--method-moka)" data-method="moka" onclick="filterMethod('moka')">
+      <div class="sel-icon">🏺</div>
+      <div class="sel-name">Moka Pot</div>
+      <div class="sel-desc">直火式エスプレッソ。イタリアの家庭の味。力強い抽出で深みのある一杯。</div>
+      <div class="sel-tag">Stovetop Espresso</div>
+    </div>
+    <div class="sel-card" style="--sel-color:var(--gold)" onclick="filterMethod('all')">
+      <div class="sel-icon">✦</div>
+      <div class="sel-name">すべて表示</div>
+      <div class="sel-desc">全ての豆・全ての器具のレシピをまとめて確認。</div>
+      <div class="sel-tag">All Recipes</div>
+    </div>
+  </div>
+
+  <!-- 02 レシピ一覧 -->
+  <section class="section-label reveal" id="sec-recipes">
+    <div class="sl-num">02</div>
+    <div class="sl-info">
+      <div class="sl-en" style="color:var(--gold)">BREWING RECIPES</div>
+      <div class="sl-ja">豆別 推奨レシピ</div>
+    </div>
+  </section>
+
+  <!-- Bean Category Filter -->
+  <div class="bean-filter-wrap reveal">
+    <div class="bean-filter-label">産地・カテゴリーで絞り込む</div>
+    <div class="bean-filter-row">
+      <button class="bfbtn active" onclick="filterBean('all',this)">All</button>
+      <button class="bfbtn" onclick="filterBean('ethiopia',this)">🇪🇹 エチオピア</button>
+      <button class="bfbtn" onclick="filterBean('colombia',this)">🇨🇴 コロンビア</button>
+      <button class="bfbtn" onclick="filterBean('brazil',this)">🇧🇷 ブラジル</button>
+      <button class="bfbtn" onclick="filterBean('world',this)">🌍 世界各地</button>
+      <button class="bfbtn" onclick="filterBean('blend',this)">☕ ブレンド</button>
+      <button class="bfbtn" onclick="filterBean('decaf',this)">🌙 デカフェ</button>
+      <button class="bfbtn" onclick="filterBean('light',this)">浅煎り</button>
+      <button class="bfbtn" onclick="filterBean('medium',this)">中煎り</button>
+      <button class="bfbtn" onclick="filterBean('dark',this)">深煎り</button>
+    </div>
+  </div>
+
+  <div class="recipe-grid reveal" id="recipe-grid"></div>
+
+  <!-- 03 器具ガイド -->
+  <section class="section-label reveal" id="sec-gear">
+    <div class="sl-num">03</div>
+    <div class="sl-info">
+      <div class="sl-en" style="color:var(--gold)">GEAR GUIDE</div>
+      <div class="sl-ja">器具の選び方ガイド</div>
+    </div>
+  </section>
+  <div class="gear-grid reveal">
+    <div class="gear-card">
+      <div class="gear-icon">☕</div>
+      <div class="gear-name">Hario V60</div>
+      <div class="gear-name-ja">円錐形ドリッパー</div>
+      <div class="gear-desc">螺旋状のリブと大きな穴で、透明感のある抽出が得意。繊細なフレーバーを最大限に引き出す。</div>
+      <div class="gear-beans">おすすめの豆</div>
+      <div class="gear-bean-tags">
+        <span class="gbtag">浅煎り全般</span><span class="gbtag">ウォッシュド</span><span class="gbtag">エチオピア</span><span class="gbtag">コロンビア</span>
+      </div>
+      <div class="gear-bar"></div>
+      <div class="gear-rating"><span class="gear-rating-label">難易度</span><div class="gear-dots"><span class="gdot on"></span><span class="gdot on"></span><span class="gdot on"></span><span class="gdot"></span><span class="gdot"></span></div></div>
+      <div class="gear-rating"><span class="gear-rating-label">クリア感</span><div class="gear-dots"><span class="gdot on"></span><span class="gdot on"></span><span class="gdot on"></span><span class="gdot on"></span><span class="gdot on"></span></div></div>
+      <div class="gear-rating"><span class="gear-rating-label">ボディ感</span><div class="gear-dots"><span class="gdot on"></span><span class="gdot on"></span><span class="gdot"></span><span class="gdot"></span><span class="gdot"></span></div></div>
+    </div>
+    <div class="gear-card">
+      <div class="gear-icon">🫖</div>
+      <div class="gear-name">French Press</div>
+      <div class="gear-name-ja">フレンチプレス</div>
+      <div class="gear-desc">金属フィルターで油分ごと抽出。リッチなボディとコクが楽しめる浸漬式。洗い物はやや多め。</div>
+      <div class="gear-beans">おすすめの豆</div>
+      <div class="gear-bean-tags">
+        <span class="gbtag">中煎り</span><span class="gbtag">深煎り</span><span class="gbtag">ナチュラル</span><span class="gbtag">ブラジル</span>
+      </div>
+      <div class="gear-bar"></div>
+      <div class="gear-rating"><span class="gear-rating-label">難易度</span><div class="gear-dots"><span class="gdot on"></span><span class="gdot"></span><span class="gdot"></span><span class="gdot"></span><span class="gdot"></span></div></div>
+      <div class="gear-rating"><span class="gear-rating-label">クリア感</span><div class="gear-dots"><span class="gdot on"></span><span class="gdot on"></span><span class="gdot"></span><span class="gdot"></span><span class="gdot"></span></div></div>
+      <div class="gear-rating"><span class="gear-rating-label">ボディ感</span><div class="gear-dots"><span class="gdot on"></span><span class="gdot on"></span><span class="gdot on"></span><span class="gdot on"></span><span class="gdot on"></span></div></div>
+    </div>
+    <div class="gear-card">
+      <div class="gear-icon">🔩</div>
+      <div class="gear-name">AeroPress</div>
+      <div class="gear-name-ja">エアロプレス</div>
+      <div class="gear-desc">圧力と浸漬を組み合わせたハイブリッド器具。レシピの幅が広く、旅行にも携帯しやすい。</div>
+      <div class="gear-beans">おすすめの豆</div>
+      <div class="gear-bean-tags">
+        <span class="gbtag">全焙煎</span><span class="gbtag">シングルオリジン</span><span class="gbtag">ゲイシャ</span>
+      </div>
+      <div class="gear-bar"></div>
+      <div class="gear-rating"><span class="gear-rating-label">難易度</span><div class="gear-dots"><span class="gdot on"></span><span class="gdot on"></span><span class="gdot"></span><span class="gdot"></span><span class="gdot"></span></div></div>
+      <div class="gear-rating"><span class="gear-rating-label">クリア感</span><div class="gear-dots"><span class="gdot on"></span><span class="gdot on"></span><span class="gdot on"></span><span class="gdot on"></span><span class="gdot"></span></div></div>
+      <div class="gear-rating"><span class="gear-rating-label">ボディ感</span><div class="gear-dots"><span class="gdot on"></span><span class="gdot on"></span><span class="gdot on"></span><span class="gdot"></span><span class="gdot"></span></div></div>
+    </div>
+    <div class="gear-card">
+      <div class="gear-icon">⚡</div>
+      <div class="gear-name">Espresso Machine</div>
+      <div class="gear-name-ja">エスプレッソマシン</div>
+      <div class="gear-desc">9気圧の高圧で短時間抽出。コーヒーの旨味を凝縮したショットが作れる。ミルクと合わせてもGood。</div>
+      <div class="gear-beans">おすすめの豆</div>
+      <div class="gear-bean-tags">
+        <span class="gbtag">深煎り</span><span class="gbtag">ブレンド</span><span class="gbtag">ロブスタ</span>
+      </div>
+      <div class="gear-bar"></div>
+      <div class="gear-rating"><span class="gear-rating-label">難易度</span><div class="gear-dots"><span class="gdot on"></span><span class="gdot on"></span><span class="gdot on"></span><span class="gdot on"></span><span class="gdot on"></span></div></div>
+      <div class="gear-rating"><span class="gear-rating-label">クリア感</span><div class="gear-dots"><span class="gdot on"></span><span class="gdot on"></span><span class="gdot"></span><span class="gdot"></span><span class="gdot"></span></div></div>
+      <div class="gear-rating"><span class="gear-rating-label">ボディ感</span><div class="gear-dots"><span class="gdot on"></span><span class="gdot on"></span><span class="gdot on"></span><span class="gdot on"></span><span class="gdot on"></span></div></div>
+    </div>
+    <div class="gear-card">
+      <div class="gear-icon">🧊</div>
+      <div class="gear-name">Cold Brew Bottle</div>
+      <div class="gear-name-ja">水出しポット</div>
+      <div class="gear-desc">冷水で12〜18時間かけてじっくり抽出。カフェインや酸味が少なく、甘くまろやかな味わいに。</div>
+      <div class="gear-beans">おすすめの豆</div>
+      <div class="gear-bean-tags">
+        <span class="gbtag">アイスブレンド</span><span class="gbtag">深煎り</span><span class="gbtag">コールドブリュー豆</span>
+      </div>
+      <div class="gear-bar"></div>
+      <div class="gear-rating"><span class="gear-rating-label">難易度</span><div class="gear-dots"><span class="gdot on"></span><span class="gdot"></span><span class="gdot"></span><span class="gdot"></span><span class="gdot"></span></div></div>
+      <div class="gear-rating"><span class="gear-rating-label">クリア感</span><div class="gear-dots"><span class="gdot on"></span><span class="gdot on"></span><span class="gdot on"></span><span class="gdot"></span><span class="gdot"></span></div></div>
+      <div class="gear-rating"><span class="gear-rating-label">ボディ感</span><div class="gear-dots"><span class="gdot on"></span><span class="gdot on"></span><span class="gdot on"></span><span class="gdot on"></span><span class="gdot"></span></div></div>
+    </div>
+    <div class="gear-card">
+      <div class="gear-icon">🏺</div>
+      <div class="gear-name">Moka Pot</div>
+      <div class="gear-name-ja">モカポット（直火式）</div>
+      <div class="gear-desc">蒸気圧でコーヒーを押し上げる直火式。エスプレッソに近い濃さで、インドネシアや深煎りと相性◎。</div>
+      <div class="gear-beans">おすすめの豆</div>
+      <div class="gear-bean-tags">
+        <span class="gbtag">深煎り</span><span class="gbtag">マンデリン</span><span class="gbtag">ロブスタ</span>
+      </div>
+      <div class="gear-bar"></div>
+      <div class="gear-rating"><span class="gear-rating-label">難易度</span><div class="gear-dots"><span class="gdot on"></span><span class="gdot on"></span><span class="gdot"></span><span class="gdot"></span><span class="gdot"></span></div></div>
+      <div class="gear-rating"><span class="gear-rating-label">クリア感</span><div class="gear-dots"><span class="gdot on"></span><span class="gdot on"></span><span class="gdot"></span><span class="gdot"></span><span class="gdot"></span></div></div>
+      <div class="gear-rating"><span class="gear-rating-label">ボディ感</span><div class="gear-dots"><span class="gdot on"></span><span class="gdot on"></span><span class="gdot on"></span><span class="gdot on"></span><span class="gdot"></span></div></div>
+    </div>
+    <div class="gear-card">
+      <div class="gear-icon">🌙</div>
+      <div class="gear-name">Chemex</div>
+      <div class="gear-name-ja">ケメックス</div>
+      <div class="gear-desc">厚いフィルターが微粉をしっかりキャッチ。クリーンでピュアな抽出が得意。フローラル系の豆に最適。</div>
+      <div class="gear-beans">おすすめの豆</div>
+      <div class="gear-bean-tags">
+        <span class="gbtag">浅煎り</span><span class="gbtag">ウォッシュド</span><span class="gbtag">フローラル系</span>
+      </div>
+      <div class="gear-bar"></div>
+      <div class="gear-rating"><span class="gear-rating-label">難易度</span><div class="gear-dots"><span class="gdot on"></span><span class="gdot on"></span><span class="gdot on"></span><span class="gdot"></span><span class="gdot"></span></div></div>
+      <div class="gear-rating"><span class="gear-rating-label">クリア感</span><div class="gear-dots"><span class="gdot on"></span><span class="gdot on"></span><span class="gdot on"></span><span class="gdot on"></span><span class="gdot on"></span></div></div>
+      <div class="gear-rating"><span class="gear-rating-label">ボディ感</span><div class="gear-dots"><span class="gdot on"></span><span class="gdot"></span><span class="gdot"></span><span class="gdot"></span><span class="gdot"></span></div></div>
+    </div>
+    <div class="gear-card">
+      <div class="gear-icon">⚗️</div>
+      <div class="gear-name">Siphon</div>
+      <div class="gear-name-ja">サイフォン</div>
+      <div class="gear-desc">蒸気圧を利用した浸漬式。理科の実験のような見た目が魅力。クリーンさとコクを両立。</div>
+      <div class="gear-beans">おすすめの豆</div>
+      <div class="gear-bean-tags">
+        <span class="gbtag">中煎り</span><span class="gbtag">ブレンド</span><span class="gbtag">ハワイコナ</span>
+      </div>
+      <div class="gear-bar"></div>
+      <div class="gear-rating"><span class="gear-rating-label">難易度</span><div class="gear-dots"><span class="gdot on"></span><span class="gdot on"></span><span class="gdot on"></span><span class="gdot on"></span><span class="gdot"></span></div></div>
+      <div class="gear-rating"><span class="gear-rating-label">クリア感</span><div class="gear-dots"><span class="gdot on"></span><span class="gdot on"></span><span class="gdot on"></span><span class="gdot on"></span><span class="gdot"></span></div></div>
+      <div class="gear-rating"><span class="gear-rating-label">ボディ感</span><div class="gear-dots"><span class="gdot on"></span><span class="gdot on"></span><span class="gdot on"></span><span class="gdot"></span><span class="gdot"></span></div></div>
+    </div>
+  </div>
+
+  <!-- 04 挽き目・温度 -->
+  <section class="section-label reveal" id="sec-grind">
+    <div class="sl-num">04</div>
+    <div class="sl-info">
+      <div class="sl-en" style="color:var(--gold)">GRIND & TEMPERATURE</div>
+      <div class="sl-ja">挽き目と湯温の基準</div>
+    </div>
+  </section>
+  <div class="guide-grid reveal">
+    <div class="guide-card">
+      <div class="guide-title">☕ 挽き目ガイド</div>
+      <div class="guide-row"><span class="guide-key">エスプレッソ</span><div style="display:flex;align-items:center;gap:8px"><div class="guide-bar-wrap"><div class="guide-bar" data-pct="10" style="background:var(--method-espresso)"></div></div><span class="guide-val">極細挽き</span></div></div>
+      <div class="guide-row"><span class="guide-key">モカポット</span><div style="display:flex;align-items:center;gap:8px"><div class="guide-bar-wrap"><div class="guide-bar" data-pct="22" style="background:var(--method-moka)"></div></div><span class="guide-val">細挽き</span></div></div>
+      <div class="guide-row"><span class="guide-key">エアロプレス</span><div style="display:flex;align-items:center;gap:8px"><div class="guide-bar-wrap"><div class="guide-bar" data-pct="38" style="background:var(--method-aero)"></div></div><span class="guide-val">中細挽き</span></div></div>
+      <div class="guide-row"><span class="guide-key">V60 / ドリップ</span><div style="display:flex;align-items:center;gap:8px"><div class="guide-bar-wrap"><div class="guide-bar" data-pct="55" style="background:var(--method-drip)"></div></div><span class="guide-val">中挽き</span></div></div>
+      <div class="guide-row"><span class="guide-key">ケメックス</span><div style="display:flex;align-items:center;gap:8px"><div class="guide-bar-wrap"><div class="guide-bar" data-pct="70" style="background:var(--method-drip)"></div></div><span class="guide-val">中粗挽き</span></div></div>
+      <div class="guide-row"><span class="guide-key">フレンチプレス</span><div style="display:flex;align-items:center;gap:8px"><div class="guide-bar-wrap"><div class="guide-bar" data-pct="85" style="background:var(--method-french)"></div></div><span class="guide-val">粗挽き</span></div></div>
+      <div class="guide-row"><span class="guide-key">コールドブリュー</span><div style="display:flex;align-items:center;gap:8px"><div class="guide-bar-wrap"><div class="guide-bar" data-pct="95" style="background:var(--method-cold)"></div></div><span class="guide-val">極粗挽き</span></div></div>
+    </div>
+    <div class="guide-card">
+      <div class="guide-title">🌡️ 湯温ガイド</div>
+      <div class="guide-row"><span class="guide-key">浅煎り（スペシャルティ）</span><div style="display:flex;align-items:center;gap:8px"><div class="guide-bar-wrap"><div class="guide-bar" data-pct="95" style="background:#a0c870"></div></div><span class="guide-val">93–96℃</span></div></div>
+      <div class="guide-row"><span class="guide-key">浅煎り（ゲイシャ等）</span><div style="display:flex;align-items:center;gap:8px"><div class="guide-bar-wrap"><div class="guide-bar" data-pct="90" style="background:#a0c870"></div></div><span class="guide-val">92–94℃</span></div></div>
+      <div class="guide-row"><span class="guide-key">中煎り</span><div style="display:flex;align-items:center;gap:8px"><div class="guide-bar-wrap"><div class="guide-bar" data-pct="82" style="background:var(--gold)"></div></div><span class="guide-val">88–92℃</span></div></div>
+      <div class="guide-row"><span class="guide-key">中深煎り</span><div style="display:flex;align-items:center;gap:8px"><div class="guide-bar-wrap"><div class="guide-bar" data-pct="72" style="background:var(--gold)"></div></div><span class="guide-val">85–90℃</span></div></div>
+      <div class="guide-row"><span class="guide-key">深煎り</span><div style="display:flex;align-items:center;gap:8px"><div class="guide-bar-wrap"><div class="guide-bar" data-pct="62" style="background:#d07050"></div></div><span class="guide-val">82–88℃</span></div></div>
+      <div class="guide-row"><span class="guide-key">エスプレッソ</span><div style="display:flex;align-items:center;gap:8px"><div class="guide-bar-wrap"><div class="guide-bar" data-pct="90" style="background:var(--method-espresso)"></div></div><span class="guide-val">90–93℃</span></div></div>
+      <div class="guide-row"><span class="guide-key">コールドブリュー</span><div style="display:flex;align-items:center;gap:8px"><div class="guide-bar-wrap"><div class="guide-bar" data-pct="5" style="background:var(--method-cold)"></div></div><span class="guide-val">冷水（常温〜4℃）</span></div></div>
+    </div>
+    <div class="guide-card">
+      <div class="guide-title">⏱️ 抽出時間の目安</div>
+      <div class="guide-row"><span class="guide-key">エスプレッソ</span><span class="guide-val">25–30秒</span></div>
+      <div class="guide-row"><span class="guide-key">モカポット</span><span class="guide-val">3–5分</span></div>
+      <div class="guide-row"><span class="guide-key">エアロプレス（通常）</span><span class="guide-val">1–2分</span></div>
+      <div class="guide-row"><span class="guide-key">V60 ハンドドリップ</span><span class="guide-val">2.5–3.5分</span></div>
+      <div class="guide-row"><span class="guide-key">ケメックス</span><span class="guide-val">4–5分</span></div>
+      <div class="guide-row"><span class="guide-key">フレンチプレス</span><span class="guide-val">4分</span></div>
+      <div class="guide-row"><span class="guide-key">コールドブリュー</span><span class="guide-val">12–18時間</span></div>
+    </div>
+    <div class="guide-card">
+      <div class="guide-title">⚖️ 基本の豆と水の比率</div>
+      <div class="guide-row"><span class="guide-key">ドリップ（標準）</span><span class="guide-val">1:15（豆1g:水15ml）</span></div>
+      <div class="guide-row"><span class="guide-key">ドリップ（濃いめ）</span><span class="guide-val">1:13</span></div>
+      <div class="guide-row"><span class="guide-key">ドリップ（薄め）</span><span class="guide-val">1:17</span></div>
+      <div class="guide-row"><span class="guide-key">フレンチプレス</span><span class="guide-val">1:14〜1:16</span></div>
+      <div class="guide-row"><span class="guide-key">エアロプレス</span><span class="guide-val">1:10〜1:16</span></div>
+      <div class="guide-row"><span class="guide-key">エスプレッソ</span><span class="guide-val">1:2（豆18g:出液36ml）</span></div>
+      <div class="guide-row"><span class="guide-key">コールドブリュー</span><span class="guide-val">1:8〜1:10</span></div>
+    </div>
+  </div>
+
+  <!-- 05 水について -->
+  <section class="section-label reveal" id="sec-water">
+    <div class="sl-num">05</div>
+    <div class="sl-info">
+      <div class="sl-en" style="color:var(--gold)">WATER GUIDE</div>
+      <div class="sl-ja">水の選び方と管理</div>
+    </div>
+  </section>
+  <div class="water-section reveal">
+    <div class="water-title">💧 コーヒーに適した水の条件</div>
+    <div class="water-grid">
+      <div>
+        <div class="water-item-title">硬度（TDS）</div>
+        <div class="water-item-val">50–150</div>
+        <div class="water-item-unit">mg/L</div>
+        <div class="water-item-desc">軟水が日本では一般的。硬度が高すぎると苦味が強くなり、低すぎると平坦な味になる。</div>
+      </div>
+      <div>
+        <div class="water-item-title">pH値</div>
+        <div class="water-item-val">7.0</div>
+        <div class="water-item-unit">中性付近</div>
+        <div class="water-item-desc">中性に近い水が理想。酸性に傾くと酸味が強調され、アルカリ性では風味がぼやける。</div>
+      </div>
+      <div>
+        <div class="water-item-title">温度（保管）</div>
+        <div class="water-item-val">4–15</div>
+        <div class="water-item-unit">℃（冷暗所）</div>
+        <div class="water-item-desc">冷蔵庫で冷やした水を使うと抽出温度が安定しやすい。汲み置きは香りが飛ぶので注意。</div>
+      </div>
+      <div>
+        <div class="water-item-title">おすすめ水の種類</div>
+        <div class="water-item-val" style="font-size:1.2rem;margin-top:4px">軟水</div>
+        <div class="water-item-unit">ミネラルウォーター / 浄水</div>
+        <div class="water-item-desc">日本の水道水（浄水器使用）や市販の軟水（硬度30〜50mg/L）が使いやすい。塩素臭が気になるときは浄水器を。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 06 フードペアリング -->
+  <section class="section-label reveal" id="sec-pairing">
+    <div class="sl-num">06</div>
+    <div class="sl-info">
+      <div class="sl-en" style="color:var(--gold)">FOOD PAIRING</div>
+      <div class="sl-ja">豆別フードペアリング</div>
+    </div>
+  </section>
+  <div class="pairing-table-wrap reveal">
+    <table class="pairing-table">
+      <thead>
+        <tr>
+          <th>コーヒー</th>
+          <th>フレーバー</th>
+          <th>ベストペアリング</th>
+          <th>おすすめ度</th>
+        </tr>
+      </thead>
+      <tbody id="pairing-tbody"></tbody>
+    </table>
+  </div>
+
+</main>
+
+<footer>
+  <div class="f-logo">KOTOBUKI ROASTERS</div>
+  <p class="f-text">© KOTOBUKI ROASTERS — KOTOBUKIDIET.COM — SPECIALTY COFFEE — KAKOGAWA HYOGO</p>
+</footer>
+
+<script>
+/* ══════════════════════════════════════
+   RECIPE DATA
+══════════════════════════════════════ */
+const FLAVOR_COLORS = {
+  citrus:    {bg:'#071422',color:'#b8d040',icon:'🍋'},
+  floral:    {bg:'#0a0e22',color:'#d080c0',icon:'🌸'},
+  berry:     {bg:'#0a0812',color:'#e06060',icon:'🫐'},
+  tropical:  {bg:'#071222',color:'#e0b030',icon:'🥭'},
+  chocolate: {bg:'#060e1a',color:'#c07840',icon:'🍫'},
+  spice:     {bg:'#060e18',color:'#d09030',icon:'🌿'},
+  wine:      {bg:'#040818',color:'#c060a0',icon:'🍷'},
+  caramel:   {bg:'#060c18',color:'#d08830',icon:'🍮'},
+  tea:       {bg:'#040e18',color:'#70b880',icon:'🍵'},
+  nutty:     {bg:'#040c16',color:'#a88040',icon:'🌰'},
+  stone:     {bg:'#040e18',color:'#7090b8',icon:'🍑'},
+  default:   {bg:'#04100e',color:'#886655',icon:'✦'},
+};
+function flavorStyle(f){
+  const fl = f.toLowerCase();
+  if(/lemon|citrus|orange|bergamot|mandarin|yuzu|lime/.test(fl)) return FLAVOR_COLORS.citrus;
+  if(/jasmine|floral|blossom|flower|rose/.test(fl)) return FLAVOR_COLORS.floral;
+  if(/berry|raspberry|strawberry|blueberry|cherry|grape|fig|currant|redwine/.test(fl)) return FLAVOR_COLORS.berry;
+  if(/mango|tropical|lychee|passion|pineapple|coconut|apricot/.test(fl)) return FLAVOR_COLORS.tropical;
+  if(/chocolate|cacao|cocoa/.test(fl)) return FLAVOR_COLORS.chocolate;
+  if(/spice|herb|cedar|earthy|smoky|wood/.test(fl)) return FLAVOR_COLORS.spice;
+  if(/wine|winey/.test(fl)) return FLAVOR_COLORS.wine;
+  if(/caramel|honey|syrup|brown sugar|toffee|smooth/.test(fl)) return FLAVOR_COLORS.caramel;
+  if(/tea|blacktea|green/.test(fl)) return FLAVOR_COLORS.tea;
+  if(/nut|almond|walnut|hazelnut/.test(fl)) return FLAVOR_COLORS.nutty;
+  if(/peach|stone|nectarine/.test(fl)) return FLAVOR_COLORS.stone;
+  return FLAVOR_COLORS.default;
+}
+
+const METHOD_COLORS = {
+  drip:     { color:'var(--method-drip)',  label:'ドリップ' },
+  french:   { color:'var(--method-french)',label:'フレンチプレス' },
+  aero:     { color:'var(--method-aero)',  label:'エアロプレス' },
+  espresso: { color:'var(--method-espresso)',label:'エスプレッソ' },
+  cold:     { color:'var(--method-cold)', label:'コールドブリュー' },
+  moka:     { color:'var(--method-moka)', label:'モカポット' },
+};
+
+const RECIPES = [
+  /* ── ETHIOPIA ── */
+  {
+    id:'wush-wush', category:'ethiopia', roast:'light',
+    name:'WUSH WUSH カッファG1 ウォッシュド',
+    origin:'エチオピア カッファ',
+    flavors:['Citrus','Raspberry','Blacktea'],
+    methods:['drip','aero'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:15, water:225, temp:94, time:'3:00',
+      steps:[
+        {title:'蒸らし',detail:'30gのお湯でゆっくり蒸らす。30秒待つ。'},
+        {title:'1投目',detail:'中心から外側へ円を描くように60gを注ぐ。'},
+        {title:'2投目',detail:'1分30秒頃から残り135gを2回に分けて注ぐ。'},
+        {title:'完了',detail:'トータル3分を目安に抽出完了。'},
+      ],
+      tip:'<strong>Point:</strong> 高温（94℃）で抽出することで紅茶のようなアロマが際立ちます。蒸らしをしっかりと。'
+    }
+  },
+  {
+    id:'anacora', category:'ethiopia', roast:'light',
+    name:'エチオピア アナソラ アナエロビック',
+    origin:'エチオピア グジ',
+    flavors:['Red Wine','Blueberry','Fig'],
+    methods:['drip','french'],
+    primaryMethod:'french',
+    recipe:{
+      beans:15, water:240, temp:93, time:'4:00',
+      steps:[
+        {title:'粗挽きに',detail:'粗挽き（フレンチプレス用）に挽く。'},
+        {title:'注湯',detail:'240mlのお湯を一気に注ぎ、スプーンで軽くかき混ぜる。'},
+        {title:'待機',detail:'4分待つ。蓋をしてもOK。'},
+        {title:'プレス',detail:'ゆっくりとプランジャーを押し下げる。'},
+      ],
+      tip:'<strong>Tip:</strong> フレンチプレスで抽出するとワインのような複雑さが全面に出ます。冷めてからの変化もお楽しみください。'
+    }
+  },
+  {
+    id:'moka-herefu-w', category:'ethiopia', roast:'light',
+    name:'モカ・ヘレフG１ ウォッシュド',
+    origin:'エチオピア シダマ',
+    flavors:['Citrus','Raspberry','Peach'],
+    methods:['drip','aero'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:14, water:210, temp:93, time:'2:45',
+      steps:[
+        {title:'蒸らし',detail:'28gで30秒蒸らし。ガスをしっかり抜く。'},
+        {title:'注湯',detail:'残り182gを3回に分けてゆっくり注ぐ。'},
+        {title:'完了',detail:'2分45秒で落ちきるのが理想。'},
+      ],
+      tip:'<strong>Point:</strong> クリーンカップが魅力なので、ペーパーフィルターをしっかり湯通ししてから使用すること。'
+    }
+  },
+  {
+    id:'moka-herefu-n', category:'ethiopia', roast:'light',
+    name:'モカ・ヘレフG１ ナチュラル',
+    origin:'エチオピア シダマ',
+    flavors:['Berry','Tropical Fruit','Honey'],
+    methods:['drip','french'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:15, water:225, temp:92, time:'3:15',
+      steps:[
+        {title:'蒸らし',detail:'30gで40秒蒸らし。ナチュラルはガスが多いので長め。'},
+        {title:'注湯',detail:'残り195gを2〜3回に分けて注ぐ。'},
+        {title:'完了',detail:'3〜3分15秒で落ちきるのが理想。'},
+      ],
+      tip:'<strong>Tip:</strong> 同農園のウォッシュドと飲み比べることで、精製方法の違いが体感できます。ナチュラルはやや粗めに挽くと甘みが出やすい。'
+    }
+  },
+  /* ── COLOMBIA ── */
+  {
+    id:'geisha-thermal', category:'colombia', roast:'light',
+    name:'コロンビア ゲイシャ サーマルショック',
+    origin:'コロンビア リサラルダ',
+    flavors:['Jasmine','Orange Blossom','White Peach'],
+    methods:['drip','aero'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:14, water:210, temp:94, time:'3:00',
+      steps:[
+        {title:'蒸らし',detail:'28gで30秒。ゲイシャは膨らみが少ない場合あり。'},
+        {title:'1投目',detail:'70gを細く静かに注ぐ（1:00〜）。'},
+        {title:'2投目',detail:'110gを追加注湯（1:45〜）。'},
+        {title:'完了',detail:'3:00落ちきり目標。'},
+      ],
+      tip:'<strong>Point:</strong> ゲイシャのフローラルを殺さないよう、細口ケトルで静かに注ぐこと。温度は高め（94℃）でアロマを引き出す。'
+    }
+  },
+  {
+    id:'apricot-punch', category:'colombia', roast:'light',
+    name:'コロンビア アプリコットパンチ',
+    origin:'コロンビア',
+    flavors:['Apricot','Tropical Fruit','Citrus'],
+    methods:['drip','cold'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:15, water:225, temp:92, time:'3:00',
+      steps:[
+        {title:'蒸らし',detail:'30gで35秒蒸らし。'},
+        {title:'注湯',detail:'残り195gを2回に分けて注ぐ。'},
+        {title:'完了',detail:'アイスにしても美味しい。グラスに氷を入れてサーバーから直接注いでもOK。'},
+      ],
+      tip:'<strong>Tip:</strong> アイスドリップにするとアプリコットのフルーティさがさらに際立つ。豆を少し増量（17g）して氷出しするのもおすすめ。'
+    }
+  },
+  {
+    id:'colombia-uba', category:'colombia', roast:'light',
+    name:'COLOMBIA Uba NITRO-WASH',
+    origin:'コロンビア',
+    flavors:['Tropical Fruit','Floral','Citrus'],
+    methods:['drip','aero'],
+    primaryMethod:'aero',
+    recipe:{
+      beans:17, water:250, temp:93, time:'2:00',
+      steps:[
+        {title:'セット',detail:'エアロプレスを逆さ向きにセット。中細挽きで17g。'},
+        {title:'注湯',detail:'93℃のお湯を250ml注ぎ、スプーンで4回撹拌。'},
+        {title:'浸漬',detail:'1分30秒待機。'},
+        {title:'プレス',detail:'ゆっくり20〜30秒かけてプレス。'},
+      ],
+      tip:'<strong>Point:</strong> NITRO-WASHプロセスのクリーンさを活かすためエアロプレスがベスト。1:1でお湯を足してアメリカーノ風にしても。'
+    }
+  },
+  {
+    id:'juicy-grape', category:'colombia', roast:'light',
+    name:'コロンビア ジューシーグレープ',
+    origin:'コロンビア',
+    flavors:['Grape','Berry','Juicy'],
+    methods:['drip','french','cold'],
+    primaryMethod:'cold',
+    recipe:{
+      beans:80, water:640, temp:0, time:'12–14h',
+      steps:[
+        {title:'粗挽き',detail:'コールドブリュー用の極粗挽き（フレンチプレスより粗め）にする。'},
+        {title:'仕込み',detail:'80gの豆と640mlの冷水を容器に入れ、軽く混ぜる。'},
+        {title:'冷蔵',detail:'冷蔵庫で12〜14時間待機。'},
+        {title:'濾過',detail:'フィルター（紙またはフレンチプレス）で濾して完成。'},
+      ],
+      tip:'<strong>Tip:</strong> グレープのフレーバーはコールドブリューで最も引き出される。ソーダ割り（1:1）にするとフルーティさが際立ちます。'
+    }
+  },
+  {
+    id:'sweet-berry', category:'colombia', roast:'light',
+    name:'コロンビア スイートベリー',
+    origin:'コロンビア',
+    flavors:['Berry','Honey','Caramel'],
+    methods:['drip','french'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:15, water:225, temp:91, time:'3:00',
+      steps:[
+        {title:'蒸らし',detail:'30gで35秒。ナチュラルなのでしっかり蒸らす。'},
+        {title:'注湯',detail:'残り195gを2回に分けて注ぐ。'},
+        {title:'完了',detail:'甘みを感じたいときは少し細めに挽くと良い。'},
+      ],
+      tip:'<strong>Point:</strong> ミルクと相性抜群。カフェオレにするとベリーとミルクが絶妙なハーモニーを作る。'
+    }
+  },
+  {
+    id:'cinnamon-la-piragua', category:'colombia', roast:'light',
+    name:'シナモン ラ・ピラグア',
+    origin:'コロンビア',
+    flavors:['Cinnamon','Spice','Caramel'],
+    methods:['drip','french','moka'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:15, water:225, temp:90, time:'3:15',
+      steps:[
+        {title:'蒸らし',detail:'30gで40秒。インフューズド豆はやや長め。'},
+        {title:'注湯',detail:'残り195gをゆっくり2回に分けて注ぐ。'},
+        {title:'完了',detail:'シナモンの香りが立ちやすいので蒸らしの段階でよく香りを確認して。'},
+      ],
+      tip:'<strong>Point:</strong> 温度が高すぎるとシナモンが強くなりすぎる。90℃でバランスよく。砂糖なしでも十分な甘みがある。'
+    }
+  },
+  /* ── BRAZIL ── */
+  {
+    id:'brazil-geisha-cm', category:'brazil', roast:'light',
+    name:'ブラジル ゲイシャ カーボニックマセレーション',
+    origin:'ブラジル ミナスジェライス',
+    flavors:['Strawberry','Mango','Lychee','Honey'],
+    methods:['drip','aero'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:15, water:225, temp:92, time:'3:00',
+      steps:[
+        {title:'蒸らし',detail:'30gで35秒蒸らし。'},
+        {title:'注湯',detail:'残り195gを2〜3回に分けて注ぐ。'},
+        {title:'完了',detail:'3分を目安。低めの温度でフルーティさを引き出す。'},
+      ],
+      tip:'<strong>Tip:</strong> 通常のブラジルとは全く異なるフレーバー。初めての方は驚くかも。冷めてくると甘みが増す。'
+    }
+  },
+  {
+    id:'brazil-sehado-bone', category:'brazil', roast:'medium',
+    name:'ブラジル セーハ・ド・ボネ',
+    origin:'ブラジル ミナスジェライス',
+    flavors:['Chocolate','Caramel','Nutty','Berry'],
+    methods:['drip','french','espresso'],
+    primaryMethod:'french',
+    recipe:{
+      beans:15, water:240, temp:88, time:'4:00',
+      steps:[
+        {title:'粗挽き',detail:'フレンチプレス用の粗挽きに。'},
+        {title:'注湯',detail:'88℃のお湯を240ml注ぎ、軽くかき混ぜる。'},
+        {title:'待機',detail:'4分待つ。蓋をしてOK。'},
+        {title:'プレス',detail:'ゆっくりプレスして完成。'},
+      ],
+      tip:'<strong>Point:</strong> チョコレートとキャラメルの甘みはフレンチプレスのリッチなボディで最大限に。ミルクを加えてもGood。'
+    }
+  },
+  {
+    id:'brazil-robusta', category:'brazil', roast:'dark',
+    name:'ブラジル ロブスタ コニロン',
+    origin:'ブラジル',
+    flavors:['Chocolate','Spice','Nutty'],
+    methods:['espresso','moka'],
+    primaryMethod:'espresso',
+    recipe:{
+      beans:18, water:36, temp:90, time:'0:28',
+      steps:[
+        {title:'極細挽き',detail:'エスプレッソ用の極細挽きに調整。'},
+        {title:'タンピング',detail:'約15〜20kgの力で均一にタンプ。'},
+        {title:'抽出',detail:'9気圧で25〜30秒かけて抽出。38ml前後を目標。'},
+        {title:'完成',detail:'クレマが褐色になれば成功。ミルク系ドリンクのベースに最適。'},
+      ],
+      tip:'<strong>Point:</strong> ロブスタはエスプレッソブレンドの素材として優秀。クレマが多く出る。アラビカとブレンドするのもおすすめ。'
+    }
+  },
+  {
+    id:'brazil-carmo', category:'brazil', roast:'medium',
+    name:'ブラジル カルモエステート',
+    origin:'ブラジル ミナスジェライス',
+    flavors:['Chocolate','Caramel','Almond','Honey'],
+    methods:['drip','french','espresso'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:15, water:225, temp:88, time:'3:00',
+      steps:[
+        {title:'蒸らし',detail:'30gで35秒蒸らし。'},
+        {title:'注湯',detail:'残り195gを2回に分けてゆっくり注ぐ。'},
+        {title:'完了',detail:'安定した抽出で毎回同じ美味しさを。'},
+      ],
+      tip:'<strong>Tip:</strong> 毎日飲みたくなるブラジルの定番。豆と水の量を毎回同じにすることで安定した味が楽しめます。'
+    }
+  },
+  {
+    id:'brazil-coe23', category:'brazil', roast:'light',
+    name:'Brazil コヘゴ・ダ・リベルダージ COE2023 #5',
+    origin:'ブラジル',
+    flavors:['Berry','Caramel','Floral','Honey'],
+    methods:['drip','aero'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:14, water:210, temp:93, time:'2:50',
+      steps:[
+        {title:'蒸らし',detail:'28gで30秒蒸らし。'},
+        {title:'注湯',detail:'残り182gを2〜3回に分けて注ぐ。'},
+        {title:'完了',detail:'国際審査員が認めた品質をシンプルなドリップで。'},
+      ],
+      tip:'<strong>Point:</strong> COEロットはそのままの味を楽しむのが一番。添加物なしで飲んでから評価を。'
+    }
+  },
+  /* ── WORLD ── */
+  {
+    id:'rwanda-red-bourbon', category:'world', roast:'light',
+    name:'ルワンダ ニャマシェケ レッドブルボン',
+    origin:'ルワンダ',
+    flavors:['Berry','Citrus','Floral','Honey'],
+    methods:['drip','aero'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:15, water:225, temp:93, time:'3:00',
+      steps:[
+        {title:'蒸らし',detail:'30gで30秒。'},
+        {title:'注湯',detail:'残り195gを円を描くように2〜3回に分けて注ぐ。'},
+        {title:'完了',detail:'スッキリとした後味を楽しんで。'},
+      ],
+      tip:'<strong>Tip:</strong> アフリカ系の浅煎りによくある明るい酸。ケメックスで抽出するとさらにクリーンに楽しめる。'
+    }
+  },
+  {
+    id:'panama-gran', category:'world', roast:'light',
+    name:'パナマ グラン・デル・バル',
+    origin:'パナマ',
+    flavors:['Floral','Citrus','Stone Fruit','Tea'],
+    methods:['drip','aero'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:14, water:210, temp:94, time:'2:50',
+      steps:[
+        {title:'蒸らし',detail:'28gで30秒。'},
+        {title:'注湯',detail:'残り182gを静かにゆっくり注ぐ。'},
+        {title:'完了',detail:'透明感のある液体が落ちてくるのを楽しみながら。'},
+      ],
+      tip:'<strong>Point:</strong> ゲイシャ発祥の地パナマ。透明感を出すためにケメックスも試してみて。'
+    }
+  },
+  {
+    id:'uganda-anaerobic', category:'world', roast:'light',
+    name:'ウガンダ ニャビロンゴ アナエロビック',
+    origin:'ウガンダ',
+    flavors:['Tropical Fruit','Berry','Red Wine'],
+    methods:['drip','french'],
+    primaryMethod:'french',
+    recipe:{
+      beans:15, water:240, temp:92, time:'4:00',
+      steps:[
+        {title:'粗挽き',detail:'フレンチプレス用の粗挽き。'},
+        {title:'注湯',detail:'240ml注いでスプーンでかき混ぜる。'},
+        {title:'待機',detail:'4分待機。'},
+        {title:'プレス',detail:'ゆっくりプレスして完成。'},
+      ],
+      tip:'<strong>Tip:</strong> ワイルドなフルーティさはフレンチプレスで引き立つ。冷めてからが本番の味わいも。'
+    }
+  },
+  {
+    id:'thai-omko', category:'world', roast:'dark',
+    name:'タイ OMKOI オムコイ オーガニック',
+    origin:'タイ オムコイ',
+    flavors:['Tropical Fruit','Honey','Caramel','Tea'],
+    methods:['drip','french','moka'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:15, water:225, temp:87, time:'3:15',
+      steps:[
+        {title:'蒸らし',detail:'30gで40秒。深煎りはやや長め。'},
+        {title:'注湯',detail:'残り195gを2回に分けてゆっくり注ぐ。'},
+        {title:'完了',detail:'87℃と低めの温度で苦味を抑えながら甘みを引き出す。'},
+      ],
+      tip:'<strong>Point:</strong> 珍しいタイ産オーガニック。深煎りなのにトロピカルな甘みが残る不思議な豆。熱湯を避けることが重要。'
+    }
+  },
+  {
+    id:'yunnan-lemon', category:'world', roast:'light',
+    name:'雲南 レモン＆ベルガモット',
+    origin:'中国 雲南省',
+    flavors:['Lemon','Bergamot','Honey','Floral'],
+    methods:['drip','aero'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:15, water:225, temp:93, time:'2:50',
+      steps:[
+        {title:'蒸らし',detail:'30gで30秒。'},
+        {title:'注湯',detail:'残り195gを静かに2回に分けて注ぐ。'},
+        {title:'完了',detail:'レモンとベルガモットの香りが広がります。'},
+      ],
+      tip:'<strong>Tip:</strong> 紅茶のアールグレイに似た香り。一緒に販売しているアールグレイ茶葉と飲み比べも楽しい。'
+    }
+  },
+  {
+    id:'indonesia-mandelin', category:'world', roast:'dark',
+    name:'インドネシア マンデリン',
+    origin:'インドネシア スマトラ',
+    flavors:['Dark Chocolate','Spice','Cedar','Earthy'],
+    methods:['drip','french','moka','espresso'],
+    primaryMethod:'moka',
+    recipe:{
+      beans:20, water:160, temp:0, time:'4:00',
+      steps:[
+        {title:'細挽き',detail:'モカポット用の細挽き（エスプレッソよりやや粗め）。'},
+        {title:'水を入れる',detail:'バルブより下まで水を入れる（160ml目安）。'},
+        {title:'直火',detail:'中火で加熱。蓋を開けて抽出を確認。'},
+        {title:'完了',detail:'音が変わったらすぐ火を止める。'},
+      ],
+      tip:'<strong>Point:</strong> マンデリンの重厚なボディはモカポットが最も引き立てる。牛乳を加えてカフェラテにするのも定番。'
+    }
+  },
+  {
+    id:'hawaii-kona', category:'world', roast:'medium',
+    name:'ハワイ コナ',
+    origin:'ハワイ コナ',
+    flavors:['Caramel','Honey','Nutty','Chocolate'],
+    methods:['drip','aero'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:14, water:210, temp:90, time:'3:00',
+      steps:[
+        {title:'蒸らし',detail:'28gで30秒。'},
+        {title:'注湯',detail:'残り182gを2回に分けてゆっくり注ぐ。'},
+        {title:'完了',detail:'キャラメルの甘みを引き出すために低めの温度で。'},
+      ],
+      tip:'<strong>Tip:</strong> 世界三大コーヒーの一つ。シンプルなドリップで真価を感じて。余計な操作は不要。'
+    }
+  },
+  {
+    id:'blue-mountain', category:'world', roast:'medium',
+    name:'ブルーマウンテン',
+    origin:'ジャマイカ',
+    flavors:['Floral','Caramel','Chocolate','Citrus'],
+    methods:['drip','aero'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:14, water:210, temp:90, time:'3:00',
+      steps:[
+        {title:'蒸らし',detail:'28gで30秒。'},
+        {title:'注湯',detail:'残り182gを優しく2回に分けて。'},
+        {title:'完了',detail:'完璧なバランスはシンプルに楽しむのが一番。'},
+      ],
+      tip:'<strong>Point:</strong> 世界の王様。余計なことをせず、V60でシンプルに。フィルターの湯通しをしっかり行うこと。'
+    }
+  },
+  {
+    id:'kopi-luwak', category:'world', roast:'medium',
+    name:'稀少天然 コピルアク',
+    origin:'インドネシア',
+    flavors:['Caramel','Chocolate','Earthy','Honey'],
+    methods:['drip','aero'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:12, water:180, temp:88, time:'3:00',
+      steps:[
+        {title:'少量で楽しむ',detail:'高価な豆なので1杯12gから始める。'},
+        {title:'蒸らし',detail:'24gで30秒。丁寧に蒸らす。'},
+        {title:'注湯',detail:'残り156gをゆっくりと注ぐ。'},
+        {title:'完了',detail:'この豆にしかない独特のスムースさを堪能。'},
+      ],
+      tip:'<strong>Point:</strong> 世界最高級のコーヒー。豆の量を節約しながら丁寧に。体内発酵による独特のなめらかさを邪魔しない88℃で。'
+    }
+  },
+  /* ── BLEND ── */
+  {
+    id:'blend-hana', category:'blend', roast:'light',
+    name:'寿ブレンド 華',
+    origin:'オリジナルブレンド',
+    flavors:['Floral','Berry','Honey','Citrus'],
+    methods:['drip','aero'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:15, water:225, temp:92, time:'3:00',
+      steps:[
+        {title:'蒸らし',detail:'30gで30秒。'},
+        {title:'注湯',detail:'残り195gを2〜3回に分けてゆっくり注ぐ。'},
+        {title:'完了',detail:'華やかなフローラルを存分に。'},
+      ],
+      tip:'<strong>Tip:</strong> 特別な日の一杯に。アイスにしてもフローラルさが際立つ。白いカップで飲むと色も楽しめます。'
+    }
+  },
+  {
+    id:'blend-tono', category:'blend', roast:'dark',
+    name:'寿ブレンド 殿',
+    origin:'オリジナルブレンド',
+    flavors:['Chocolate','Caramel','Nutty'],
+    methods:['drip','french','espresso','moka'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:15, water:225, temp:87, time:'3:15',
+      steps:[
+        {title:'蒸らし',detail:'30gで40秒。深煎りなのでしっかり蒸らす。'},
+        {title:'注湯',detail:'残り195gをゆっくり2回に分けて注ぐ。'},
+        {title:'完了',detail:'チョコレートとキャラメルが広がる安定の一杯。'},
+      ],
+      tip:'<strong>Point:</strong> 毎朝の定番に。電動グラインダーで均一に挽くと安定した品質が保てる。ミルク系ドリンクのベースにも◎。'
+    }
+  },
+  {
+    id:'blend-hime', category:'blend', roast:'light',
+    name:'寿ブレンド 姫',
+    origin:'オリジナルブレンド',
+    flavors:['Floral','Citrus','Honey','Tea'],
+    methods:['drip','aero'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:13, water:195, temp:93, time:'2:50',
+      steps:[
+        {title:'蒸らし',detail:'26gで30秒。'},
+        {title:'注湯',detail:'残り169gをゆっくり2回に分けて注ぐ。'},
+        {title:'完了',detail:'繊細なフローラルを壊さないよう優しく注ぐ。'},
+      ],
+      tip:'<strong>Tip:</strong> 日本茶が好きな方におすすめ。少し薄めに淹れると緑茶のような清涼感が出る。'
+    }
+  },
+  {
+    id:'blend-daily', category:'blend', roast:'medium',
+    name:'デイリーブレンド',
+    origin:'オリジナルブレンド',
+    flavors:['Chocolate','Caramel','Citrus'],
+    methods:['drip','french','espresso'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:15, water:225, temp:89, time:'3:00',
+      steps:[
+        {title:'蒸らし',detail:'30gで30秒。'},
+        {title:'注湯',detail:'残り195gを2回に分けて注ぐ。'},
+        {title:'完了',detail:'シンプルに、毎日飽きない一杯を。'},
+      ],
+      tip:'<strong>Point:</strong> 日常使いの豆こそ、計量をしっかり。毎回同じ条件で淹れることで安定した美味しさが続く。'
+    }
+  },
+  {
+    id:'blend-ice', category:'blend', roast:'dark',
+    name:'アイスブレンド',
+    origin:'オリジナルブレンド',
+    flavors:['Dark Chocolate','Caramel','Smoky'],
+    methods:['drip','cold'],
+    primaryMethod:'cold',
+    recipe:{
+      beans:80, water:640, temp:0, time:'12–18h',
+      steps:[
+        {title:'粗挽き',detail:'コールドブリュー用の極粗挽き。'},
+        {title:'仕込み',detail:'80gの豆と640mlの冷水を容器に入れる。'},
+        {title:'冷蔵',detail:'冷蔵庫で12〜18時間待機。'},
+        {title:'濾過',detail:'ペーパーフィルターで濾して完成。3〜4日以内に飲み切る。'},
+      ],
+      tip:'<strong>Tip:</strong> アイスコーヒーに特化した設計のブレンド。氷で薄まっても美味しいのが特長。ガムシロップ不要の甘みが出る。'
+    }
+  },
+  {
+    id:'coldbrew-pack', category:'blend', roast:'dark',
+    name:'水出しコーヒー「コールドブリュー」',
+    origin:'オリジナルブレンド',
+    flavors:['Chocolate','Caramel','Smooth'],
+    methods:['cold'],
+    primaryMethod:'cold',
+    recipe:{
+      beans:100, water:2000, temp:0, time:'12–16h',
+      steps:[
+        {title:'セット',detail:'2Lボトルに100gの豆と2Lの冷水をセット。'},
+        {title:'冷蔵',detail:'冷蔵庫で12〜16時間。8時間以上は必須。'},
+        {title:'濾過',detail:'付属のフィルター（またはペーパー）で濾す。'},
+        {title:'保存',detail:'冷蔵庫で3〜5日以内に飲み切ること。'},
+      ],
+      tip:'<strong>Point:</strong> 2L用に設計された豆の量。薄いと感じたら少し量を増やして調整可能。お湯で少し薄めてホットにするのもOK。'
+    }
+  },
+  /* ── DECAF ── */
+  {
+    id:'decaf-frutta', category:'decaf', roast:'dark',
+    name:'フルッタメルカドン デカフェ',
+    origin:'ブラジル（デカフェ）',
+    flavors:['Caramel','Chocolate','Berry','Honey'],
+    methods:['drip','french','cold'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:15, water:225, temp:88, time:'3:15',
+      steps:[
+        {title:'蒸らし',detail:'30gで35秒。デカフェは蒸らし長めで。'},
+        {title:'注湯',detail:'残り195gをゆっくり2回に分けて注ぐ。'},
+        {title:'完了',detail:'カフェインを気にせず、夜もゆっくり楽しめる。'},
+      ],
+      tip:'<strong>Tip:</strong> 妊娠中・授乳中・夜の一杯に。砂糖きびのデカフェ処理なので風味の損失が少ない。通常の豆と同じ感覚で淹れてOK。'
+    }
+  },
+  {
+    id:'decaf-don-rafa', category:'decaf', roast:'dark',
+    name:'ドン・ラファ デカフェ',
+    origin:'コロンビア（デカフェ）',
+    flavors:['Caramel','Citrus','Berry','Honey'],
+    methods:['drip','french'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:15, water:225, temp:89, time:'3:00',
+      steps:[
+        {title:'蒸らし',detail:'30gで35秒。'},
+        {title:'注湯',detail:'残り195gを2回に分けて注ぐ。'},
+        {title:'完了',detail:'コロンビアらしい明るいフレーバーを楽しんで。'},
+      ],
+      tip:'<strong>Point:</strong> カフェインなしでもコロンビアの爽やかな酸と甘みが健在。デカフェとは思えないクオリティ。'
+    }
+  },
+  /* ── COLOMBIA 追加分 ── */
+  {
+    id:'las-aguilas-sidra', category:'colombia', roast:'light',
+    name:'ラス・アギラス SIDRA WASHED',
+    origin:'コロンビア',
+    flavors:['Berry','Floral','Citrus','Tea'],
+    methods:['drip','aero'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:14, water:210, temp:94, time:'3:00',
+      steps:[
+        {title:'蒸らし',detail:'28gで30秒。Sidra種はガスが少ない場合あり。'},
+        {title:'1投目',detail:'細口ケトルで70gを静かに中心から円を描くように注ぐ。'},
+        {title:'2投目',detail:'1:30頃から残り140gをゆっくり2回に分けて注ぐ。'},
+        {title:'完了',detail:'3:00落ちきりを目標に。'},
+      ],
+      tip:'<strong>Point:</strong> 希少なSidra品種のウォッシュド。高温（94℃）でフローラルとベリーの香りを最大限に引き出す。ケメックスでも美味しい。'
+    }
+  },
+  {
+    id:'acacia-hills-pacamara', category:'colombia', roast:'light',
+    name:'アカシアヒルズ パカマラ',
+    origin:'タンザニア',
+    flavors:['Floral','Citrus','Honey','Tropical Fruit'],
+    methods:['drip','french'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:15, water:225, temp:93, time:'3:10',
+      steps:[
+        {title:'蒸らし',detail:'30gで35秒。大粒のパカマラはガスが多め。'},
+        {title:'注湯',detail:'残り195gを2〜3回に分けて注ぐ。'},
+        {title:'完了',detail:'豊かなボディとフローラルをゆっくり味わって。'},
+      ],
+      tip:'<strong>Tip:</strong> パカマラ種の大粒は均一に挽きにくいので、グラインダーのカリブレーションを確認してから。フレンチプレスでもボディ感がより出る。'
+    }
+  },
+  {
+    id:'winey-flower', category:'colombia', roast:'light',
+    name:'日本初登場 ワイニーフラワー',
+    origin:'コロンビア',
+    flavors:['Red Wine','Floral','Berry','Rose'],
+    methods:['drip','french'],
+    primaryMethod:'french',
+    recipe:{
+      beans:14, water:224, temp:92, time:'4:00',
+      steps:[
+        {title:'粗挽き',detail:'フレンチプレス用の粗挽きに。ワインのような複雑さを引き出す。'},
+        {title:'注湯',detail:'224mlを一気に注ぎ、スプーンで優しく混ぜる。'},
+        {title:'待機',detail:'4分間待機。蓋をして香りを閉じ込める。'},
+        {title:'プレス',detail:'ゆっくり30秒かけてプレス。'},
+      ],
+      tip:'<strong>Point:</strong> 日本初登場のロット。ワインのような複雑さはフレンチプレスで最大限に。冷めるにつれてローズのフローラルが開いてくる。'
+    }
+  },
+  {
+    id:'perla-sudan-rumme', category:'colombia', roast:'light',
+    name:'ペルラ・デ・オトゥン SUDAN RUMME',
+    origin:'コロンビア',
+    flavors:['Tropical Fruit','Berry','Floral','Honey'],
+    methods:['drip','aero'],
+    primaryMethod:'aero',
+    recipe:{
+      beans:16, water:240, temp:93, time:'2:00',
+      steps:[
+        {title:'セット',detail:'エアロプレス逆さセット。中細挽きで16g。'},
+        {title:'注湯',detail:'93℃のお湯を240ml注ぎ、4回撹拌。'},
+        {title:'浸漬',detail:'1分30秒待機。'},
+        {title:'プレス',detail:'ゆっくり20〜30秒かけてプレス。お湯で1:1希釈してアメリカーノ風に。'},
+      ],
+      tip:'<strong>Point:</strong> 超希少品種Sudan Rumme。少量（50g）のため、1杯ずつ丁寧に。エアロプレスで果実感とフローラルを凝縮して楽しんで。'
+    }
+  },
+  {
+    id:'geisha-peach', category:'colombia', roast:'light',
+    name:'コロンビア ゲイシャ ピーチ',
+    origin:'コロンビア',
+    flavors:['Peach','Floral','Bergamot','Honey'],
+    methods:['drip','aero'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:14, water:210, temp:93, time:'3:00',
+      steps:[
+        {title:'蒸らし',detail:'28gで30秒。ゲイシャのフローラルが最初から香る。'},
+        {title:'1投目',detail:'70gを細く静かに注ぐ（1:00〜）。'},
+        {title:'2投目',detail:'110gを追加注湯（1:45〜）。'},
+        {title:'完了',detail:'3:00落ちきり目標。'},
+      ],
+      tip:'<strong>Tip:</strong> ゲイシャ×ピーチインフューズドの贅沢な組み合わせ。温度が高すぎるとピーチが飛ぶので93℃で丁寧に。アイスドリップも絶品。'
+    }
+  },
+  /* ── WORLD 追加分 ── */
+  {
+    id:'rahyang-indonesia', category:'world', roast:'dark',
+    name:'日本初輸入 ラヒャン インドネシア',
+    origin:'インドネシア',
+    flavors:['Tropical Fruit','Spice','Earthy','Chocolate'],
+    methods:['drip','moka','french'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:15, water:225, temp:87, time:'3:30',
+      steps:[
+        {title:'蒸らし',detail:'30gで40秒。深煎りはガスが多いのでしっかり蒸らす。'},
+        {title:'注湯',detail:'87℃のお湯を残り195g、2回に分けてゆっくり注ぐ。'},
+        {title:'完了',detail:'スマトラとは異なるインドネシアの個性をゆっくり堪能。'},
+      ],
+      tip:'<strong>Point:</strong> 日本初輸入の希少ロット。スマトラ式とは異なるナチュラル精製のインドネシア。低温（87℃）で甘みとスパイスのバランスを引き出す。'
+    }
+  },
+  {
+    id:'guatemala-coe24', category:'world', roast:'light',
+    name:'グアテマラ COE2024 ロス・コネホス #5',
+    origin:'グアテマラ',
+    flavors:['Floral','Caramel','Berry','Citrus'],
+    methods:['drip','aero'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:14, water:210, temp:93, time:'2:50',
+      steps:[
+        {title:'蒸らし',detail:'28gで30秒。'},
+        {title:'1投目',detail:'70gを中心から円を描くように注ぐ。'},
+        {title:'2投目',detail:'残り140gを2回に分けてゆっくり注ぐ。'},
+        {title:'完了',detail:'2分50秒落ちきりを目標に。'},
+      ],
+      tip:'<strong>Point:</strong> COE2024 ONE OF A KIND #5。国際審査員が認めたクリーンさを活かすためペーパーフィルターをしっかり湯通しすること。'
+    }
+  },
+  {
+    id:'bolivia-geisha', category:'world', roast:'light',
+    name:'ゲイシャ ナチュラル エドウィンファンカ ボリビア',
+    origin:'ボリビア',
+    flavors:['Floral','Tropical Fruit','Berry','Honey'],
+    methods:['drip','aero'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:14, water:210, temp:92, time:'3:00',
+      steps:[
+        {title:'蒸らし',detail:'28gで35秒。ナチュラルのゲイシャはガス多め。'},
+        {title:'注湯',detail:'残り182gを静かに2〜3回に分けて注ぐ。'},
+        {title:'完了',detail:'3分を目安に。冷めてからのフルーティさも楽しんで。'},
+      ],
+      tip:'<strong>Tip:</strong> 希少なボリビア産ゲイシャのナチュラル。ゲイシャのフローラルとナチュラルの果実感が重なる独特の体験。少し粗めに挽くと甘みが増す。'
+    }
+  },
+  {
+    id:'peru-machu', category:'world', roast:'dark',
+    name:'ペルー マチュピチュ',
+    origin:'ペルー',
+    flavors:['Chocolate','Caramel','Nutty','Citrus'],
+    methods:['drip','french','moka'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:15, water:225, temp:87, time:'3:15',
+      steps:[
+        {title:'蒸らし',detail:'30gで35秒。'},
+        {title:'注湯',detail:'残り195gを2回に分けてゆっくり注ぐ。'},
+        {title:'完了',detail:'マイルドで飲みやすい毎日の一杯に。'},
+      ],
+      tip:'<strong>Point:</strong> 深煎りながらマイルドでバランス良好。毎日飲みたい安定感がある。ミルクとの相性も◎。87℃低温でチョコレートの甘みを引き出す。'
+    }
+  },
+  {
+    id:'tanzania-ngorongoro', category:'world', roast:'dark',
+    name:'タンザニア ンゴロンゴロ',
+    origin:'タンザニア',
+    flavors:['Berry','Citrus','Chocolate','Tea'],
+    methods:['drip','french'],
+    primaryMethod:'french',
+    recipe:{
+      beans:15, water:240, temp:88, time:'4:00',
+      steps:[
+        {title:'粗挽き',detail:'フレンチプレス用の粗挽きに。'},
+        {title:'注湯',detail:'88℃のお湯を240ml注ぎ、軽くかき混ぜる。'},
+        {title:'待機',detail:'4分間待機。'},
+        {title:'プレス',detail:'ゆっくりプレスして完成。'},
+      ],
+      tip:'<strong>Tip:</strong> アフリカらしいワイルドなベリー感はフレンチプレスで最大限に。深煎りの甘みが油分と合わさってリッチな口当たりに。'
+    }
+  },
+  {
+    id:'india-fine-robusta', category:'world', roast:'dark',
+    name:'インド ファインロブスタ パパクチ',
+    origin:'インド',
+    flavors:['Chocolate','Spice','Earthy','Caramel'],
+    methods:['espresso','moka','drip'],
+    primaryMethod:'espresso',
+    recipe:{
+      beans:18, water:36, temp:91, time:'0:28',
+      steps:[
+        {title:'極細挽き',detail:'エスプレッソ用の極細挽き。ロブスタは詰まりやすいので均一に。'},
+        {title:'タンピング',detail:'15〜20kgの力でしっかりタンプ。'},
+        {title:'抽出',detail:'9気圧で25〜30秒。38ml前後を目標。'},
+        {title:'完成',detail:'豊かなクレマと力強い香りを確認。'},
+      ],
+      tip:'<strong>Point:</strong> インド産ファインロブスタはエスプレッソに最適。クレマが豊富で、ミルクと合わせたラテやカプチーノに最高のベースになる。アラビカとブレンドしてもGood。'
+    }
+  },
+  /* ── BRAZIL 追加分 ── */
+  {
+    id:'ouro-verde-coe22', category:'brazil', roast:'light',
+    name:'オーロヴェルデ ナチュラル COE2022 第3位',
+    origin:'ブラジル',
+    flavors:['Berry','Floral','Caramel','Chocolate'],
+    methods:['drip','aero'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:14, water:210, temp:93, time:'2:50',
+      steps:[
+        {title:'蒸らし',detail:'28gで30秒。'},
+        {title:'注湯',detail:'残り182gを2〜3回に分けて注ぐ。'},
+        {title:'完了',detail:'2022年COE第3位のポテンシャルをシンプルに引き出す。'},
+      ],
+      tip:'<strong>Point:</strong> COEアワードロットはシンプルなドリップが一番。余計な操作を加えず、豆の品質をそのまま感じて。冷めてからの変化も楽しみの一つ。'
+    }
+  },
+  /* ── 2025追加分 ── */
+  {
+    id:'guatemala-huehuetenango', category:'world', roast:'light',
+    name:'グアテマラ ウエウエテナンゴ',
+    origin:'グアテマラ ウエウエテナンゴ',
+    flavors:['Orange','Apple','Brown Sugar','Tea Like'],
+    methods:['drip','aero'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:15, water:225, temp:93, time:'3:00',
+      steps:[
+        {title:'蒸らし',detail:'30gで30秒。オレンジとアップルの香りが立ち上がる。'},
+        {title:'1投目',detail:'70gを中心から円を描くようにゆっくり注ぐ（1:00〜）。'},
+        {title:'2投目',detail:'残り155gを2回に分けて注ぐ（1:30〜・2:10〜）。'},
+        {title:'完了',detail:'3:00落ちきりを目標に。'},
+      ],
+      tip:'<strong>Point:</strong> 標高2,000mの高地産らしい明るい酸が特徴。93℃でオレンジ・アップルの爽やかさを引き出す。紅茶のような後味を楽しむためにも、ペーパーフィルターの湯通しを忘れずに。'
+    }
+  },
+  {
+    id:'guatemala-antigua', category:'world', roast:'dark',
+    name:'グアテマラ アンティグア',
+    origin:'グアテマラ アンティグア',
+    flavors:['Dark Chocolate','Cacao','Roasted Nuts','Caramel'],
+    methods:['drip','french','moka','espresso'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:15, water:225, temp:87, time:'3:20',
+      steps:[
+        {title:'蒸らし',detail:'30gで40秒。深煎りはガスが多くしっかり蒸らす。'},
+        {title:'注湯',detail:'87℃のお湯で残り195gを2回に分けてゆっくり注ぐ。'},
+        {title:'完了',detail:'ダークチョコレートとカラメルの深みある甘みを堪能。'},
+      ],
+      tip:'<strong>Point:</strong> 低温（87℃）で抽出することで苦味を抑えつつカカオとキャラメルの甘みが際立つ。モカポットやエスプレッソにも向いており、ミルクと合わせてカフェラテにしても絶品。'
+    }
+  },
+  {
+    id:'kenya-nyeri', category:'world', roast:'dark',
+    name:'ケニア ニエリ ファクトリー ウォッシュド',
+    origin:'ケニア ニエリ',
+    flavors:['Cassis','Dark Berry','Bitter Chocolate','Winey'],
+    methods:['drip','french'],
+    primaryMethod:'french',
+    recipe:{
+      beans:15, water:240, temp:88, time:'4:00',
+      steps:[
+        {title:'粗挽き',detail:'フレンチプレス用の粗挽き。ケニアのワイニー感を油分ごと楽しむ。'},
+        {title:'注湯',detail:'88℃のお湯を240ml注ぎ、スプーンで軽くかき混ぜる。'},
+        {title:'待機',detail:'4分間待機。蓋をして香りを閉じ込める。'},
+        {title:'プレス',detail:'ゆっくり30秒かけてプレスして完成。'},
+      ],
+      tip:'<strong>Point:</strong> SL28・SL34品種ならではのカシスとダークベリーのインパクトはフレンチプレスで最大限に。冷めると赤ワインのようなワイニー感がさらに強まる。ドリップの場合は88℃・中挽きで。'
+    }
+  },
+  /* ── BLEND 追加分 ── */
+  {
+    id:'forest-mountain', category:'blend', roast:'medium',
+    name:'フォレストマウンテン',
+    origin:'ブレンド',
+    flavors:['Chocolate','Berry','Earthy','Caramel'],
+    methods:['drip','french'],
+    primaryMethod:'drip',
+    recipe:{
+      beans:15, water:225, temp:89, time:'3:10',
+      steps:[
+        {title:'蒸らし',detail:'30gで35秒。大地感のある豆はしっかり蒸らす。'},
+        {title:'注湯',detail:'残り195gを2回に分けてゆっくり注ぐ。'},
+        {title:'完了',detail:'落ち着いたアーシーなフレーバーを堪能。'},
+      ],
+      tip:'<strong>Tip:</strong> 森の山をイメージした落ち着いたブレンド。フレンチプレスにするとアーシーなボディ感がさらに増す。読書のお供にも最適。'
+    }
+  },
+];
+
+const PAIRING_DATA = [
+  { name:'WUSH WUSH カッファG1', flavors:'シトラス・ラズベリー・紅茶', pairing:'レモンタルト / フルーツケーキ / 和菓子（練切）', score:5 },
+  { name:'エチオピア アナソラ アナエロビック', flavors:'レッドワイン・ブルーベリー・イチジク', pairing:'チョコレートケーキ / チーズ（ブルー系） / ドライフルーツ', score:5 },
+  { name:'モカ・ヘレフ ウォッシュド', flavors:'シトラス・ピーチ・グレープ', pairing:'ヨーグルトケーキ / スコーン / クロワッサン', score:4 },
+  { name:'コロンビア ゲイシャ サーマルショック', flavors:'ジャスミン・オレンジブロッサム・白桃', pairing:'上生菓子 / マカロン（ジャスミン） / チーズケーキ', score:5 },
+  { name:'ブラジル セーハ・ド・ボネ', flavors:'チョコレート・キャラメル・ナッツ', pairing:'ブラウニー / チョコレートトリュフ / バナナブレッド', score:5 },
+  { name:'インドネシア マンデリン', flavors:'ダークチョコレート・スパイス・アーシー', pairing:'ダークチョコレート / カレー系おつまみ / 木の実', score:4 },
+  { name:'ハワイ コナ', flavors:'キャラメル・ハニー・ナッティ', pairing:'マカダミアナッツクッキー / バタースコーン / パンケーキ', score:5 },
+  { name:'ブルーマウンテン', flavors:'フローラル・キャラメル・チョコレート', pairing:'プレーンスコーン / 軽いシフォンケーキ / クッキー', score:5 },
+  { name:'寿ブレンド 殿', flavors:'チョコレート・キャラメル・ナッツ', pairing:'ティラミス / モンブラン / チョコクロワッサン', score:4 },
+  { name:'デカフェ全般', flavors:'キャラメル・チョコレート・ハニー', pairing:'夜のデザート全般 / ホットミルク割り', score:4 },
+  { name:'コールドブリュー系', flavors:'スムース・チョコレート・キャラメル', pairing:'アイスクリーム / フローズンヨーグルト / 夏の和菓子', score:5 },
+  { name:'コロンビア ジューシーグレープ', flavors:'グレープ・ベリー・ジューシー', pairing:'ソーダ割り / グレープゼリー / フルーツタルト', score:5 },
+];
+
+/* ── RENDER RECIPE CARDS ── */
+function renderParams(r) {
+  const isIce = r.temp === 0;
+  return `
+  <div class="params-row">
+    <div class="param-cell">
+      <div class="param-val" style="color:var(--gold)">${r.beans}g</div>
+      <div class="param-key">豆の量</div>
+    </div>
+    <div class="param-cell">
+      <div class="param-val" style="color:var(--method-drip)">${isIce ? '冷水' : r.water + 'ml'}</div>
+      <div class="param-key">水の量</div>
+    </div>
+    <div class="param-cell">
+      <div class="param-val" style="color:var(--method-espresso)">${isIce ? '—' : r.temp + '℃'}</div>
+      <div class="param-key">湯温</div>
+    </div>
+    <div class="param-cell">
+      <div class="param-val" style="color:var(--method-aero)">${r.time}</div>
+      <div class="param-key">抽出時間</div>
+    </div>
+  </div>`;
+}
+
+function renderCard(item) {
+  const mc = METHOD_COLORS[item.primaryMethod];
+  const flavorTags = item.flavors.map(f => {
+    const st = flavorStyle(f);
+    return `<span class="rftag" style="background:${st.bg};color:${st.color};border:1px solid ${st.color}28">${st.icon} ${f}</span>`;
+  }).join('');
+  const methodBadges = item.methods.map(m => {
+    const mc2 = METHOD_COLORS[m];
+    return `<span style="font-family:'Cinzel',serif;font-size:.46rem;letter-spacing:.1em;padding:2px 7px;border:1px solid ${mc2.color}44;color:${mc2.color};text-transform:uppercase;">${mc2.label}</span>`;
+  }).join(' ');
+  const stepsHTML = item.recipe.steps.map((s,i) => `
+    <div class="recipe-step">
+      <div class="step-num">${i+1}</div>
+      <div class="step-content">
+        <div class="step-title">${s.title}</div>
+        <div class="step-detail">${s.detail}</div>
+      </div>
+    </div>`).join('');
+
+  const div = document.createElement('div');
+  div.className = 'rcard';
+  div.dataset.category = item.category;
+  div.dataset.roast = item.roast;
+  div.dataset.methods = item.methods.join(',');
+  div.innerHTML = `
+    <div class="rcard-accent" style="background:${mc.color}"></div>
+    <div class="rcard-top">
+      <div class="rcard-bean">
+        <div class="rcard-bean-name">${item.name}</div>
+        <div class="rcard-bean-origin">${item.origin}</div>
+      </div>
+      <div class="rcard-method-badge" style="color:${mc.color};border-color:${mc.color}44">${mc.label}</div>
+    </div>
+    <div class="rcard-flavors">${flavorTags}</div>
+    <div style="margin-bottom:10px;display:flex;flex-wrap:wrap;gap:5px">${methodBadges}</div>
+    <div class="rcard-divider"></div>
+    ${renderParams(item.recipe)}
+    <div class="recipe-steps-title">抽出ステップ</div>
+    ${stepsHTML}
+    <div class="rcard-tip">${item.recipe.tip}</div>
+  `;
+  return div;
+}
+
+const grid = document.getElementById('recipe-grid');
+RECIPES.forEach(r => grid.appendChild(renderCard(r)));
+
+/* ── PAIRING TABLE ── */
+const tbody = document.getElementById('pairing-tbody');
+PAIRING_DATA.forEach(p => {
+  const dots = Array.from({length:5},(_,i) =>
+    `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${i<p.score?'var(--gold)':'var(--border)'};margin-right:2px"></span>`
+  ).join('');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td>${p.name}</td>
+    <td><span style="font-size:.58rem;color:var(--dim)">${p.flavors}</span></td>
+    <td>${p.pairing}</td>
+    <td>${dots}</td>
+  `;
+  tbody.appendChild(tr);
+});
+
+/* ── FILTER: BEAN CATEGORY ── */
+function filterBean(cat, btn) {
+  document.querySelectorAll('.bfbtn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.rcard').forEach(c => {
+    const roast = c.dataset.roast;
+    let show = false;
+    if(cat === 'all') show = true;
+    else if(cat === 'light') show = roast === 'light';
+    else if(cat === 'medium') show = roast === 'medium';
+    else if(cat === 'dark') show = roast === 'dark';
+    else show = c.dataset.category === cat;
+    c.classList.toggle('hidden', !show);
+  });
+}
+
+/* ── FILTER: METHOD ── */
+function filterMethod(method) {
+  if(method === 'all') {
+    document.querySelectorAll('.rcard').forEach(c => c.classList.remove('hidden'));
+    document.querySelectorAll('.sel-card').forEach(s => s.style.outline = '');
+    return;
+  }
+  document.querySelectorAll('.rcard').forEach(c => {
+    const methods = c.dataset.methods.split(',');
+    c.classList.toggle('hidden', !methods.includes(method));
+  });
+  // Highlight selected
+  document.querySelectorAll('.sel-card[data-method]').forEach(s => {
+    s.style.outline = s.dataset.method === method ? `1px solid ${getComputedStyle(s).getPropertyValue('--sel-color')}` : '';
+  });
+  // Smooth scroll to recipes
+  document.getElementById('sec-recipes').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ── REVEAL ── */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      e.target.classList.add('vis');
+      e.target.querySelectorAll('[data-pct]').forEach(b => {
+        setTimeout(() => b.style.width = b.dataset.pct + '%', 100);
+      });
+      io.unobserve(e.target);
+    }
+  });
+},{threshold:.05});
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// Animate guide bars on scroll too
+const io2 = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      e.target.querySelectorAll('.guide-bar[data-pct]').forEach(b => {
+        setTimeout(() => b.style.width = b.dataset.pct + '%', 150);
+      });
+      io2.unobserve(e.target);
+    }
+  });
+},{threshold:.1});
+document.querySelectorAll('.guide-card').forEach(el => io2.observe(el));
+
+// Wix height notify
+function notifyHeight(){
+  const h = Math.max(document.body.scrollHeight,document.documentElement.scrollHeight);
+  window.parent.postMessage({type:'height',value:h},'*');
+}
+window.addEventListener('load',()=>setTimeout(notifyHeight,300));
+window.addEventListener('resize',notifyHeight);
+new MutationObserver(notifyHeight).observe(document.body,{subtree:true,childList:true,attributes:true});
+</script>
+</body>
+</html>

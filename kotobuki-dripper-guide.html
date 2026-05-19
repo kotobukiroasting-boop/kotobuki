@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kotobuki Roasters — ドリッパー別 抽出レシピガイド</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+JP:wght@200;300;400;500&family=Bebas+Neue&family=Noto+Sans+JP:wght@200;300;400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#02060d; --s1:#06101c; --s2:#0a1828; --s3:#102030; --border:#16304a;
+  --blue:#4ba8d8; --blue2:#80ccf0; --cream:#ddf0fc; --muted:#4e88aa; --dim:#244460;
+  /* Dripper accent colors */
+  --switch:#60d0a0;   /* green — hybrid */
+  --deep27:#e0a040;   /* amber — deep */
+  --origami-w:#9070e0;/* purple — wave */
+  --origami-c:#e06878;/* pink — cone */
+  --april:#50c0e8;    /* sky — flat */
+  --v60:#f0b840;      /* gold — classic */
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--cream);font-family:"Noto Sans JP",sans-serif;font-weight:300;overflow-x:hidden}
+::selection{background:var(--blue);color:#000}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;padding:80px 24px}
+.hero-glow{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 70% 55% at 50% 55%,rgba(74,168,216,.06) 0%,transparent 70%)}
+.hero-rule{position:absolute;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--blue),transparent);opacity:.18}
+.hero-rule.top{top:60px}.hero-rule.bottom{bottom:60px}
+.hero-inner{position:relative;z-index:2;max-width:800px}
+.hero-eyebrow{font-family:"Cinzel",serif;font-size:.58rem;letter-spacing:.55em;color:var(--blue);opacity:.75;margin-bottom:32px;animation:fadeUp .9s ease both}
+.hero-brand{font-family:"Bebas Neue",sans-serif;font-size:clamp(3.5rem,14vw,11rem);letter-spacing:.06em;line-height:.88;color:var(--cream);display:block;animation:fadeUp .9s .08s ease both}
+.hero-brand-sub{font-family:"Bebas Neue",sans-serif;font-size:clamp(1.1rem,4vw,3rem);letter-spacing:.28em;color:var(--blue);display:block;margin-top:8px;text-shadow:0 0 60px rgba(74,168,216,.35);animation:fadeUp .9s .15s ease both}
+.hero-divider{display:flex;align-items:center;gap:14px;justify-content:center;margin:28px 0;animation:fadeUp .9s .22s ease both}
+.hero-divider::before,.hero-divider::after{content:"";display:block;width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--blue));opacity:.3}
+.hero-divider::after{transform:scaleX(-1)}
+.hero-divider-text{font-family:"Cinzel",serif;font-size:.52rem;letter-spacing:.4em;color:var(--dim)}
+.hero-copy{font-family:"Noto Serif JP",serif;font-weight:200;font-size:clamp(.68rem,1.4vw,.82rem);letter-spacing:.3em;color:var(--muted);line-height:2.4;animation:fadeUp .9s .28s ease both}
+.hero-scroll{position:absolute;bottom:44px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;font-family:"Cinzel",serif;font-size:.46rem;letter-spacing:.45em;color:var(--muted);opacity:.4;animation:fadeUp .9s .5s ease both}
+.scroll-line{width:1px;height:44px;background:linear-gradient(to bottom,var(--blue),transparent);animation:scrollPulse 2.5s ease-in-out infinite}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes scrollPulse{0%,100%{opacity:.15;transform:scaleY(.5);transform-origin:top}50%{opacity:.7;transform:scaleY(1);transform-origin:top}}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:99;background:rgba(2,6,13,.93);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;overflow-x:auto;scrollbar-width:none;padding:0 24px}
+nav::-webkit-scrollbar{display:none}
+.n-logo{font-family:"Cinzel",serif;font-size:.62rem;letter-spacing:.22em;color:var(--blue);white-space:nowrap;padding:13px 18px 13px 0;border-right:1px solid var(--border);margin-right:18px;flex-shrink:0;display:flex;align-items:center;gap:9px}
+.n-mark{width:20px;height:20px;border:1px solid var(--blue);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.52rem;flex-shrink:0}
+.n-link{font-family:"Cinzel",serif;font-size:.5rem;letter-spacing:.12em;color:var(--muted);white-space:nowrap;padding:15px 12px;text-decoration:none;text-transform:uppercase;transition:color .2s;flex-shrink:0;display:flex;align-items:center;gap:5px}
+.n-link:hover{color:var(--blue)}
+.n-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+
+/* ── MAIN ── */
+main{max-width:1200px;margin:0 auto;padding:0 28px 140px}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.reveal.vis{opacity:1;transform:none}
+
+/* ── QUICK NAV (DRIPPER SELECTOR) ── */
+.dripper-selector{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:1px;background:var(--border);margin-bottom:60px}
+.ds-card{background:var(--s1);padding:20px 16px;cursor:pointer;position:relative;overflow:hidden;transition:background .2s;text-decoration:none;color:inherit;display:block}
+.ds-card::after{content:"";position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--ds-color,var(--blue));transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.16,1,.3,1)}
+.ds-card:hover{background:var(--s2)}
+.ds-card:hover::after{transform:scaleX(1)}
+.ds-icon{font-size:1.8rem;margin-bottom:10px;line-height:1}
+.ds-name{font-family:"Cinzel",serif;font-size:.58rem;letter-spacing:.15em;color:var(--ds-color,var(--cream));margin-bottom:4px}
+.ds-tag{font-size:.52rem;color:var(--muted);letter-spacing:.05em;margin-bottom:8px;line-height:1.6}
+.ds-style{display:inline-block;font-family:"Cinzel",serif;font-size:.44rem;letter-spacing:.15em;padding:2px 7px;border:1px solid;color:var(--ds-color,var(--muted));border-color:var(--ds-color,var(--border));text-transform:uppercase;opacity:.7}
+
+/* ── SECTION HEADER ── */
+.dripper-section{padding-top:96px}
+.dripper-section+.dripper-section{border-top:1px solid var(--border)}
+.ds-head{display:flex;align-items:flex-start;gap:24px;margin-bottom:40px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+.ds-head-icon{font-size:3rem;flex-shrink:0;line-height:1;margin-top:4px}
+.ds-head-info{flex:1}
+.ds-head-en{font-family:"Cinzel",serif;font-size:.52rem;letter-spacing:.45em;text-transform:uppercase;margin-bottom:6px;opacity:.8}
+.ds-head-ja{font-family:"Noto Serif JP",serif;font-weight:300;font-size:clamp(1.2rem,2.4vw,1.8rem);letter-spacing:.12em}
+.ds-head-desc{font-size:.7rem;color:var(--muted);line-height:2;margin-top:8px}
+.ds-head-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.ds-badge{font-family:"Cinzel",serif;font-size:.46rem;letter-spacing:.15em;padding:3px 9px;border:1px solid;text-transform:uppercase}
+
+/* ── RECIPE TABS ── */
+.recipe-tabs{display:flex;gap:1px;background:var(--border);margin-bottom:1px}
+.r-tab{font-family:"Cinzel",serif;font-size:.52rem;letter-spacing:.18em;padding:10px 16px;background:var(--s1);cursor:pointer;color:var(--muted);transition:all .2s;text-transform:uppercase;white-space:nowrap;border:none;outline:none}
+.r-tab:hover{background:var(--s2);color:var(--cream)}
+.r-tab.active{color:var(--tab-color,var(--blue));background:var(--s2);position:relative}
+.r-tab.active::after{content:"";position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--tab-color,var(--blue))}
+
+/* ── RECIPE PANEL ── */
+.recipe-panel{display:none}
+.recipe-panel.active{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
+.recipe-panel.single.active{grid-template-columns:1fr}
+
+/* ── RECIPE CARD ── */
+.rc{background:var(--s1);padding:28px 24px;position:relative;overflow:hidden}
+.rc-accent{position:absolute;left:0;top:0;bottom:0;width:3px}
+.rc-title{font-family:"Cinzel",serif;font-size:.56rem;letter-spacing:.25em;text-transform:uppercase;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+/* Params */
+.params-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);margin-bottom:20px}
+.p-cell{background:var(--s2);padding:10px 8px;text-align:center}
+.p-val{font-family:"Bebas Neue",sans-serif;font-size:1.3rem;line-height:1;margin-bottom:3px}
+.p-key{font-family:"Cinzel",serif;font-size:.42rem;letter-spacing:.18em;color:var(--dim);text-transform:uppercase}
+/* Steps */
+.steps-title{font-family:"Cinzel",serif;font-size:.5rem;letter-spacing:.28em;color:var(--muted);text-transform:uppercase;margin-bottom:12px}
+.step{display:flex;gap:12px;margin-bottom:10px;align-items:flex-start}
+.step-num{font-family:"Bebas Neue",sans-serif;font-size:1.3rem;line-height:1;color:var(--dim);flex-shrink:0;width:20px;text-align:right}
+.step-body{flex:1}
+.step-title{font-family:"Cinzel",serif;font-size:.56rem;letter-spacing:.1em;color:var(--cream);margin-bottom:3px}
+.step-detail{font-size:.62rem;color:var(--muted);line-height:1.8}
+.step-time{font-family:"DM Mono",monospace;font-size:.58rem;color:var(--blue);background:#041020;border:1px solid var(--border);padding:1px 6px;border-radius:2px;margin-right:4px}
+/* Tip */
+.rc-tip{margin-top:16px;padding:12px 14px;background:#040e1e;border-left:2px solid var(--blue);font-size:.62rem;color:var(--muted);line-height:1.9}
+.rc-tip strong{color:var(--blue2);font-weight:400}
+/* Note */
+.rc-note{margin-top:12px;padding:10px 14px;background:var(--s2);border:1px solid var(--border);font-size:.6rem;color:var(--muted);line-height:1.8;font-family:"Noto Serif JP",serif;font-weight:300}
+.rc-note strong{color:var(--cream);font-weight:400}
+
+/* ── COMPARISON BOX ── */
+.compare-box{background:var(--s1);border:1px solid var(--border);padding:24px;margin-top:1px}
+.compare-title{font-family:"Cinzel",serif;font-size:.52rem;letter-spacing:.28em;color:var(--blue);text-transform:uppercase;margin-bottom:16px}
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
+.compare-col{background:var(--s2);padding:16px}
+.compare-col-title{font-family:"Cinzel",serif;font-size:.5rem;letter-spacing:.2em;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.compare-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)}
+.compare-row:last-child{border-bottom:none}
+.compare-key{font-size:.6rem;color:var(--muted)}
+.compare-val{font-family:"DM Mono",monospace;font-size:.6rem;color:var(--cream)}
+
+/* ── FLAVOR MATCH ── */
+.flavor-match{display:flex;flex-wrap:wrap;gap:5px;margin-top:14px}
+.fm-tag{font-size:.58rem;padding:3px 8px;border-radius:2px}
+
+footer{text-align:center;padding:60px 20px;border-top:1px solid var(--border);position:relative}
+footer::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:160px;height:1px;background:linear-gradient(90deg,transparent,var(--blue),transparent);opacity:.3}
+.f-logo{font-family:"Bebas Neue",sans-serif;font-size:2.8rem;letter-spacing:.25em;background:linear-gradient(135deg,var(--dim) 0%,var(--muted) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.f-text{font-size:.52rem;letter-spacing:.25em;color:var(--dim);margin-top:12px;font-family:"Cinzel",serif}
+
+@media(max-width:720px){
+  main{padding:0 12px 80px}
+  .recipe-panel.active{grid-template-columns:1fr}
+  .dripper-selector{grid-template-columns:repeat(3,1fr)}
+  .params-row{grid-template-columns:repeat(2,1fr)}
+  .compare-grid{grid-template-columns:1fr}
+  .ds-head{flex-wrap:wrap}
+}
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-rule top"></div>
+  <div class="hero-rule bottom"></div>
+  <div class="hero-inner">
+    <p class="hero-eyebrow">Kotobuki Roasters — Dripper Recipe Guide</p>
+    <span class="hero-brand">DRIPPER</span>
+    <span class="hero-brand-sub">BREW GUIDE</span>
+    <div class="hero-divider"><span class="hero-divider-text">器具別 抽出レシピ</span></div>
+    <p class="hero-copy">
+      器具が変われば、味わいが変わる。<br>
+      同じ豆でも、ドリッパーの設計に合わせたレシピで最大限に引き出す。
+    </p>
+  </div>
+  <div class="hero-scroll"><span>SCROLL</span><div class="scroll-line"></div></div>
+</section>
+
+<nav>
+  <span class="n-logo"><span class="n-mark">K</span>KOTOBUKI</span>
+  <a class="n-link" href="#sec-switch"><span class="n-dot" style="background:var(--switch)"></span>Switch</a>
+  <a class="n-link" href="#sec-deep27"><span class="n-dot" style="background:var(--deep27)"></span>Deep27</a>
+  <a class="n-link" href="#sec-origami"><span class="n-dot" style="background:var(--origami-w)"></span>Origami</a>
+  <a class="n-link" href="#sec-april"><span class="n-dot" style="background:var(--april)"></span>April</a>
+  <a class="n-link" href="#sec-v60"><span class="n-dot" style="background:var(--v60)"></span>V60</a>
+  <a class="n-link" href="kotobuki-recipe-guide.html" style="color:var(--blue);border-left:1px solid var(--border);margin-left:6px;padding-left:18px">☕ 豆別レシピ →</a>
+</nav>
+
+<main>
+
+  <!-- QUICK SELECT -->
+  <div style="padding-top:64px;margin-bottom:8px">
+    <div style="font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.35em;color:var(--muted);margin-bottom:16px;text-transform:uppercase">▸ ドリッパーを選ぶ</div>
+  </div>
+  <div class="dripper-selector reveal">
+    <a class="ds-card" href="#sec-switch" style="--ds-color:var(--switch)">
+      <div class="ds-icon">🔄</div>
+      <div class="ds-name">Hario Switch</div>
+      <div class="ds-tag">浸漬式 ／ 透過式 ／ ハイブリッド</div>
+      <div class="ds-style">Hybrid</div>
+    </a>
+    <a class="ds-card" href="#sec-deep27" style="--ds-color:var(--deep27)">
+      <div class="ds-icon">🌸</div>
+      <div class="ds-name">CAFEC Deep 27</div>
+      <div class="ds-tag">27°超深型 ／ 浸透流圧式</div>
+      <div class="ds-style">Osmotic Flow</div>
+    </a>
+    <a class="ds-card" href="#sec-origami" style="--ds-color:var(--origami-w)">
+      <div class="ds-icon">📐</div>
+      <div class="ds-name">Origami</div>
+      <div class="ds-tag">ウェーブ ／ 円錐 ２フィルター対応</div>
+      <div class="ds-style">Wave + Cone</div>
+    </a>
+    <a class="ds-card" href="#sec-april" style="--ds-color:var(--april)">
+      <div class="ds-icon">🇩🇰</div>
+      <div class="ds-name">April Brewer</div>
+      <div class="ds-tag">フラットボトム ／ 世界大会仕様</div>
+      <div class="ds-style">Flat Bottom</div>
+    </a>
+    <a class="ds-card" href="#sec-v60" style="--ds-color:var(--v60)">
+      <div class="ds-icon">☕</div>
+      <div class="ds-name">Hario V60</div>
+      <div class="ds-tag">円錐形 ／ スタンダード</div>
+      <div class="ds-style">Pour Over Classic</div>
+    </a>
+  </div>
+
+  <!-- ════════════════════════════════
+       01  HARIO SWITCH
+  ════════════════════════════════ -->
+  <section class="dripper-section reveal" id="sec-switch">
+    <div class="ds-head">
+      <div class="ds-head-icon">🔄</div>
+      <div class="ds-head-info">
+        <div class="ds-head-en" style="color:var(--switch)">Hario V60 Immersion Dripper Switch</div>
+        <div class="ds-head-ja">ハリオ スイッチ</div>
+        <div class="ds-head-desc">
+          スイッチひとつで浸漬式・透過式・ハイブリッドの3スタイルを使い分けられる万能器具。世界のバリスタが競技でも愛用。スイッチを閉じることで甘みと複雑さが増し、開けることでクリーンさが出る。
+        </div>
+        <div class="ds-head-badges">
+          <span class="ds-badge" style="color:var(--switch);border-color:var(--switch)44">🔒 浸漬式（フルイマージョン）</span>
+          <span class="ds-badge" style="color:var(--blue);border-color:var(--blue)44">💧 透過式（パーコレーション）</span>
+          <span class="ds-badge" style="color:var(--origami-w);border-color:var(--origami-w)44">⚡ ハイブリッド（Tetsu Kasuya式）</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="recipe-tabs">
+      <button class="r-tab active" style="--tab-color:var(--switch)" onclick="switchTab(this,'switch','immersion')">浸漬式（Full Immersion）</button>
+      <button class="r-tab" style="--tab-color:var(--blue)" onclick="switchTab(this,'switch','percolation')">透過式（Pour Over）</button>
+      <button class="r-tab" style="--tab-color:var(--origami-w)" onclick="switchTab(this,'switch','hybrid')">ハイブリッド（Kasuya式）</button>
+      <button class="r-tab" style="--tab-color:var(--april)" onclick="switchTab(this,'switch','wibawa')">Ryan Wibawa 世界大会式</button>
+    </div>
+
+    <!-- 浸漬式 -->
+    <div class="recipe-panel single active" id="switch-immersion">
+      <div class="rc">
+        <div class="rc-accent" style="background:var(--switch)"></div>
+        <div class="rc-title" style="color:var(--switch)">フルイマージョン ／ Full Immersion</div>
+        <div class="params-row">
+          <div class="p-cell"><div class="p-val" style="color:var(--switch)">15g</div><div class="p-key">豆の量</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--blue)">250ml</div><div class="p-key">水の量</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--cream)">93℃</div><div class="p-key">湯温</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--muted)">3:30</div><div class="p-key">抽出時間</div></div>
+        </div>
+        <div class="steps-title">抽出ステップ — スイッチ「閉」でスタート</div>
+        <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">準備</div><div class="step-detail">フィルターを湯通し。<strong>スイッチを閉じた状態</strong>でセット。中挽きで15gをセット。</div></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">ブルーム</div><div class="step-detail"><span class="step-time">0:00</span>100mlを全体に均一に注ぐ。軽くスプーンでかき混ぜる。</div></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">追加注湯</div><div class="step-detail"><span class="step-time">0:30</span>残り150mlを円を描くように注ぐ。スイッチは閉じたまま。</div></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">浸漬</div><div class="step-detail"><span class="step-time">3:00</span>まで待機。豆がしっかり浸漬される。</div></div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">リリース</div><div class="step-detail"><span class="step-time">3:00</span>スイッチを開く。15〜30秒で落ちきる。</div></div></div>
+        <div class="rc-tip"><strong>Point:</strong> リッチでボディのある一杯。ナチュラル精製やブラジル系の豆と相性◎。甘みと複雑さを最大限に引き出す。</div>
+      </div>
+    </div>
+
+    <!-- 透過式 -->
+    <div class="recipe-panel single" id="switch-percolation">
+      <div class="rc">
+        <div class="rc-accent" style="background:var(--blue)"></div>
+        <div class="rc-title" style="color:var(--blue)">透過式（V60スタイル）</div>
+        <div class="params-row">
+          <div class="p-cell"><div class="p-val" style="color:var(--blue)">15g</div><div class="p-key">豆の量</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--blue)">240ml</div><div class="p-key">水の量</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--cream)">93℃</div><div class="p-key">湯温</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--muted)">3:00</div><div class="p-key">抽出時間</div></div>
+        </div>
+        <div class="steps-title">抽出ステップ — スイッチ「開」でスタート</div>
+        <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">準備</div><div class="step-detail"><strong>スイッチを開いた状態</strong>でセット。中細挽き。</div></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">蒸らし</div><div class="step-detail"><span class="step-time">0:00</span>30gを全体に注いで30秒蒸らす。</div></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">1投目</div><div class="step-detail"><span class="step-time">0:30</span>60gを円を描くように注ぐ。</div></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">2投目</div><div class="step-detail"><span class="step-time">1:15</span>残り150gを2回に分けてゆっくり注ぐ。</div></div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">完了</div><div class="step-detail"><span class="step-time">3:00</span>落ちきりで完成。V60と同じクリアな味わいに。</div></div></div>
+        <div class="rc-tip"><strong>Point:</strong> クリーンで明るい酸が出やすい。ウォッシュドのエチオピア・コロンビア系に最適。</div>
+      </div>
+    </div>
+
+    <!-- ハイブリッド Kasuya式 -->
+    <div class="recipe-panel single" id="switch-hybrid">
+      <div class="rc">
+        <div class="rc-accent" style="background:var(--origami-w)"></div>
+        <div class="rc-title" style="color:var(--origami-w)">Tetsu Kasuya 式 ハイブリッド（2温度法）</div>
+        <div class="params-row">
+          <div class="p-cell"><div class="p-val" style="color:var(--origami-w)">20g</div><div class="p-key">豆の量</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--blue)">280ml</div><div class="p-key">水の量</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--cream)">90℃+70℃</div><div class="p-key">湯温（2段階）</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--muted)">2:45</div><div class="p-key">抽出時間</div></div>
+        </div>
+        <div class="steps-title">抽出ステップ（2温度・ハイブリッド）</div>
+        <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">準備</div><div class="step-detail">お湯2種を用意：90℃と70℃（湯冷ましまたは別のケトル）。スイッチ「開」でスタート。中挽き。</div></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">1投目（透過）</div><div class="step-detail"><span class="step-time">0:00</span>90℃のお湯で60mlを注ぐ。スイッチ開のまま。</div></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">2投目（透過）</div><div class="step-detail"><span class="step-time">0:30</span>90℃のお湯で120mlを追加。合計180ml。</div></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">スイッチ閉 → 冷水投入（浸漬へ）</div><div class="step-detail"><span class="step-time">1:15</span>スイッチを閉じる。70℃のお湯で残り100mlを注ぐ。低温で甘みを引き出す。</div></div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">リリース</div><div class="step-detail"><span class="step-time">1:45</span>スイッチを開いて落とす。2:45前後で完成。</div></div></div>
+        <div class="rc-tip"><strong>Kasuya式の核心:</strong> 前半は高温透過で酸と明るさを、後半は低温浸漬で甘みとスムースさを引き出す。2温度の組み合わせが独特の甘みと複雑さを生む。</div>
+      </div>
+    </div>
+
+    <!-- Ryan Wibawa 世界大会式 -->
+    <div class="recipe-panel single" id="switch-wibawa">
+      <div class="rc">
+        <div class="rc-accent" style="background:var(--april)"></div>
+        <div class="rc-title" style="color:var(--april)">Ryan Wibawa — 2024 World Brewers Cup 3位 使用レシピ</div>
+        <div class="params-row">
+          <div class="p-cell"><div class="p-val" style="color:var(--april)">15g</div><div class="p-key">豆の量</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--blue)">220ml</div><div class="p-key">水の量</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--cream)">86℃</div><div class="p-key">湯温</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--muted)">〜3:00</div><div class="p-key">抽出時間</div></div>
+        </div>
+        <div class="steps-title">抽出ステップ</div>
+        <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">準備</div><div class="step-detail">中挽き。<strong>スイッチを閉じた状態</strong>でスタート。86℃は繊細なフローラルを守るため。</div></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">ブルーム（スイッチ閉）</div><div class="step-detail"><span class="step-time">0:00</span>100gを全体に注ぐ。スイッチ閉のまま40秒待機。</div></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">スイッチ開（透過フェーズへ）</div><div class="step-detail"><span class="step-time">0:40</span>スイッチを開いて落とし始める。</div></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">追加注湯</div><div class="step-detail"><span class="step-time">1:00</span>残り120gをゆっくり円を描いて注ぐ。</div></div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">完了</div><div class="step-detail"><span class="step-time">〜3:00</span>落ちきりで完成。</div></div></div>
+        <div class="rc-tip"><strong>Point:</strong> 世界大会で実証された低温・短時間浸漬ハイブリッド。ゲイシャや繊細なフローラル系の豆に特に有効。86℃の低温がフレーバーを繊細に保つ。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════
+       02  DEEP 27
+  ════════════════════════════════ -->
+  <section class="dripper-section reveal" id="sec-deep27">
+    <div class="ds-head">
+      <div class="ds-head-icon">🌸</div>
+      <div class="ds-head-info">
+        <div class="ds-head-en" style="color:var(--deep27)">CAFEC Flower Dripper Deep 27</div>
+        <div class="ds-head-ja">ディープ 27</div>
+        <div class="ds-head-desc">
+          底面角度27°の超深型コーン。深い濾過層が形成され、中心への連続注湯（浸透流圧式）だけで誰でも甘みとコクのある一杯が抽出できる。CAFECオリジナルAbaca+フィルター専用。
+        </div>
+        <div class="ds-head-badges">
+          <span class="ds-badge" style="color:var(--deep27);border-color:var(--deep27)44">🌸 Abaca+フィルター専用</span>
+          <span class="ds-badge" style="color:var(--switch);border-color:var(--switch)44">💧 浸透流圧式（中心注湯）</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="recipe-tabs">
+      <button class="r-tab active" style="--tab-color:var(--deep27)" onclick="switchTab(this,'deep27','standard')">スタンダード（浸透流圧式）</button>
+      <button class="r-tab" style="--tab-color:var(--switch)" onclick="switchTab(this,'deep27','rich')">リッチ（2投式）</button>
+    </div>
+
+    <div class="recipe-panel single active" id="deep27-standard">
+      <div class="rc">
+        <div class="rc-accent" style="background:var(--deep27)"></div>
+        <div class="rc-title" style="color:var(--deep27)">浸透流圧式 ／ Osmotic Flow — CAFEC推奨</div>
+        <div class="params-row">
+          <div class="p-cell"><div class="p-val" style="color:var(--deep27)">12g</div><div class="p-key">豆の量</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--blue)">200ml</div><div class="p-key">水の量</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--cream)">93℃</div><div class="p-key">湯温</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--muted)">2:30</div><div class="p-key">抽出時間</div></div>
+        </div>
+        <div class="steps-title">抽出ステップ</div>
+        <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">フィルター湯通し</div><div class="step-detail">Abaca+フィルターを専用フィルターで湯通し。ディープ27はフィルターとのマッチングが重要。</div></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">ブルーム</div><div class="step-detail"><span class="step-time">0:00</span>30gを全体に均一に注ぐ。30秒待機。</div></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">中心への連続注湯</div><div class="step-detail"><span class="step-time">0:30〜</span>残り170gを<strong>ドリッパーの中心だけに</strong>細く・ゆっくり・途切れなく注ぎ続ける。縁には注がない。</div></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">完了</div><div class="step-detail"><span class="step-time">2:30</span>落ちきりで完成。甘みとジューシーなボディが特徴。</div></div></div>
+        <div class="rc-tip"><strong>Deep 27の核心 — 浸透流圧（Osmotic Flow）:</strong> 中心に注いだ水が外側へ浸透し、均一に粉全体を通過する。縁への注湯は不要・禁物。これだけで雑味なく甘みを引き出す。</div>
+        <div class="rc-note"><strong>推奨する豆：</strong>浅煎り〜中煎りのシングルオリジン全般。特にフルーティな浅煎り（エチオピア・コロンビア・ルワンダ等）の甘みとジューシーさが際立つ。</div>
+      </div>
+    </div>
+
+    <div class="recipe-panel single" id="deep27-rich">
+      <div class="rc">
+        <div class="rc-accent" style="background:var(--switch)"></div>
+        <div class="rc-title" style="color:var(--switch)">リッチ 2投式 ／ Full Body</div>
+        <div class="params-row">
+          <div class="p-cell"><div class="p-val" style="color:var(--switch)">12g</div><div class="p-key">豆の量</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--blue)">170ml</div><div class="p-key">水の量</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--cream)">91℃</div><div class="p-key">湯温</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--muted)">2:05</div><div class="p-key">抽出時間</div></div>
+        </div>
+        <div class="steps-title">抽出ステップ</div>
+        <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">ブルーム</div><div class="step-detail"><span class="step-time">0:00</span>30gを中心へ注ぐ。30秒待機。</div></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">1投目</div><div class="step-detail"><span class="step-time">0:30</span>70gを中心へゆっくり注ぐ。落ちきるのを待つ。</div></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">2投目</div><div class="step-detail"><span class="step-time">1:00〜</span>残り70gを中心へゆっくり注ぐ。</div></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">完了</div><div class="step-detail"><span class="step-time">2:05</span>落ちきりで完成。ジューシーでフルボディ。</div></div></div>
+        <div class="rc-tip"><strong>Point:</strong> 2投式にすることで抽出時間が短くなり、よりジューシーでフルボディな仕上がりに。深煎りやナチュラル系の豆にもよく合う。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════
+       03  ORIGAMI
+  ════════════════════════════════ -->
+  <section class="dripper-section reveal" id="sec-origami">
+    <div class="ds-head">
+      <div class="ds-head-icon">📐</div>
+      <div class="ds-head-info">
+        <div class="ds-head-en" style="color:var(--origami-w)">Origami Dripper — Wave &amp; Cone Filter</div>
+        <div class="ds-head-ja">オリガミ ドリッパー</div>
+        <div class="ds-head-desc">
+          20本のリブが美しい折り紙型ドリッパー。ウェーブフィルター（フラットボトム）と円錐フィルターの両方が使えるユニークな設計。フィルターが変わると味わいが大きく変わる。2019年世界大会でJia Ning Duが優勝した際に使用し一躍有名に。
+        </div>
+        <div class="ds-head-badges">
+          <span class="ds-badge" style="color:var(--origami-w);border-color:var(--origami-w)44">🌊 ウェーブフィルター → フラットボトム的</span>
+          <span class="ds-badge" style="color:var(--origami-c);border-color:var(--origami-c)44">🔺 円錐フィルター → V60的</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="recipe-tabs">
+      <button class="r-tab active" style="--tab-color:var(--origami-w)" onclick="switchTab(this,'origami','wave')">ウェーブフィルター（Kalita Wave）</button>
+      <button class="r-tab" style="--tab-color:var(--origami-c)" onclick="switchTab(this,'origami','cone')">円錐フィルター（V60 / Origami）</button>
+    </div>
+
+    <div class="recipe-panel active" id="origami-wave">
+      <div class="rc">
+        <div class="rc-accent" style="background:var(--origami-w)"></div>
+        <div class="rc-title" style="color:var(--origami-w)">ウェーブフィルター ／ Wave Filter</div>
+        <div class="params-row">
+          <div class="p-cell"><div class="p-val" style="color:var(--origami-w)">15g</div><div class="p-key">豆の量</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--blue)">225ml</div><div class="p-key">水の量</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--cream)">91℃</div><div class="p-key">湯温</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--muted)">2:30</div><div class="p-key">抽出時間</div></div>
+        </div>
+        <div class="steps-title">抽出ステップ</div>
+        <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">挽き目</div><div class="step-detail">中粗挽き（V60より粗め）。ウェーブはバイパスが少なくなるため粗めで調整。</div></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">ブルーム</div><div class="step-detail"><span class="step-time">0:00</span>60gを全体に均一に注ぐ。45秒待機。</div></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">1投目</div><div class="step-detail"><span class="step-time">0:45</span>90gを円を描きながらゆっくり注ぐ。</div></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">2投目</div><div class="step-detail"><span class="step-time">1:30</span>残り75gを注ぐ。最後に軽くスピン（1回転）。</div></div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">完了</div><div class="step-detail"><span class="step-time">2:30</span>落ちきりで完成。</div></div></div>
+        <div class="rc-tip"><strong>ウェーブフィルターの特徴:</strong> フィルターがドリッパーの溝に落ち込み、バイパスが少なくなる。Kalita Waveより流速が速くなるため、粗めに挽くのがポイント。チョコレート・キャラメル系の甘みが出やすい。</div>
+      </div>
+      <div class="rc">
+        <div class="rc-accent" style="background:var(--origami-w)"></div>
+        <div class="rc-title" style="color:var(--origami-w)">ウェーブ vs 円錐 比較</div>
+        <div class="compare-grid">
+          <div class="compare-col">
+            <div class="compare-col-title" style="color:var(--origami-w)">🌊 ウェーブフィルター</div>
+            <div class="compare-row"><span class="compare-key">挽き目</span><span class="compare-val">中粗挽き</span></div>
+            <div class="compare-row"><span class="compare-key">ボディ</span><span class="compare-val">リッチ・丸み</span></div>
+            <div class="compare-row"><span class="compare-key">クリア感</span><span class="compare-val">やや低い</span></div>
+            <div class="compare-row"><span class="compare-key">甘み</span><span class="compare-val">チョコ・キャラメル</span></div>
+            <div class="compare-row"><span class="compare-key">向く豆</span><span class="compare-val">中〜深煎り</span></div>
+          </div>
+          <div class="compare-col">
+            <div class="compare-col-title" style="color:var(--origami-c)">🔺 円錐フィルター</div>
+            <div class="compare-row"><span class="compare-key">挽き目</span><span class="compare-val">中細〜中挽き</span></div>
+            <div class="compare-row"><span class="compare-key">ボディ</span><span class="compare-val">ライト・クリア</span></div>
+            <div class="compare-row"><span class="compare-key">クリア感</span><span class="compare-val">高い</span></div>
+            <div class="compare-row"><span class="compare-key">甘み</span><span class="compare-val">フローラル・フルーティ</span></div>
+            <div class="compare-row"><span class="compare-key">向く豆</span><span class="compare-val">浅煎りシングル</span></div>
+          </div>
+        </div>
+        <div class="rc-note" style="margin-top:1px"><strong>同じ豆で飲み比べると面白い。</strong> ウェーブは甘みとボディ、円錐は明るさとクリア感。どちらが正解ではなく、豆と気分で使い分けるのがオリガミの醍醐味。</div>
+      </div>
+    </div>
+
+    <div class="recipe-panel" id="origami-cone">
+      <div class="rc">
+        <div class="rc-accent" style="background:var(--origami-c)"></div>
+        <div class="rc-title" style="color:var(--origami-c)">円錐フィルター ／ Cone Filter（V60 / Origami）</div>
+        <div class="params-row">
+          <div class="p-cell"><div class="p-val" style="color:var(--origami-c)">15g</div><div class="p-key">豆の量</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--blue)">225ml</div><div class="p-key">水の量</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--cream)">93℃</div><div class="p-key">湯温</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--muted)">2:45</div><div class="p-key">抽出時間</div></div>
+        </div>
+        <div class="steps-title">抽出ステップ（Jia Ning Du 2019世界大会ベース）</div>
+        <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">挽き目</div><div class="step-detail">中細挽き（V60より少し細め）。WDTツールで粉を均一に広げる。</div></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">ブルーム</div><div class="step-detail"><span class="step-time">0:00</span>50gをゆっくり円を描いて注ぐ。全ての粉に均一に当てる。落ちきるまで待つ。</div></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">1投目</div><div class="step-detail"><span class="step-time">0:45</span>50gを同じように注ぐ。落ちきるまで待つ。</div></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">2投目以降</div><div class="step-detail"><span class="step-time">1:15〜</span>50gを1投ずつ、毎回落ちきるのを確認しながら2〜3回繰り返す。</div></div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">完了</div><div class="step-detail"><span class="step-time">2:45</span>落ちきりで完成。</div></div></div>
+        <div class="rc-tip"><strong>Point:</strong> 「毎回落ちきるのを確認してから注ぐ」がオリガミ円錐の基本。急がないことで均一な抽出が得られる。フローラル系・浅煎りのクリアな酸を最大限に引き出す。</div>
+      </div>
+      <div class="rc" style="background:var(--s2)">
+        <div class="rc-accent" style="background:var(--origami-c)"></div>
+        <div class="rc-title" style="color:var(--origami-c)">推奨フィルター</div>
+        <div class="rc-note">
+          <strong>円錐フィルターの選択肢：</strong><br><br>
+          🔹 <strong>Origami純正フィルター</strong> — 最も相性が良い。ドリッパーの溝にフィット。<br>
+          🔹 <strong>Hario V60 フィルター</strong> — 入手しやすく代用可。やや速い流速に。<br>
+          🔹 <strong>CAFEC Abaca フィルター</strong> — 厚めで甘みが出やすい。<br><br>
+          <strong>セラミック版 vs プラスチック(Air)版：</strong> セラミックはウェーブフィルターが詰まりやすい。ウェーブを使いたい場合はAir版が安定。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════
+       04  APRIL BREWER
+  ════════════════════════════════ -->
+  <section class="dripper-section reveal" id="sec-april">
+    <div class="ds-head">
+      <div class="ds-head-icon">🇩🇰</div>
+      <div class="ds-head-info">
+        <div class="ds-head-en" style="color:var(--april)">April Brewer — Copenhagen</div>
+        <div class="ds-head-ja">エイプリル ブリュワー</div>
+        <div class="ds-head-desc">
+          デンマーク・コペンハーゲンのApril Coffeeが設計したフラットボトムドリッパー。2019年世界大会でPatrik RolfがシルバーメダルかつHighest Scoreを記録。Makrolon®ポリカーボネート製で温度安定性が高い。粗挽き＋高温が基本。
+        </div>
+        <div class="ds-head-badges">
+          <span class="ds-badge" style="color:var(--april);border-color:var(--april)44">🇩🇰 Copenhagen Style</span>
+          <span class="ds-badge" style="color:var(--v60);border-color:var(--v60)44">🌡️ 96〜99℃ 高温推奨</span>
+          <span class="ds-badge" style="color:var(--switch);border-color:var(--switch)44">📐 Kalita Waveフィルター対応</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="recipe-tabs">
+      <button class="r-tab active" style="--tab-color:var(--april)" onclick="switchTab(this,'april','standard')">April公式レシピ（1:17）</button>
+      <button class="r-tab" style="--tab-color:var(--v60)" onclick="switchTab(this,'april','rich')">リッチ仕立て（1:15）</button>
+    </div>
+
+    <div class="recipe-panel single active" id="april-standard">
+      <div class="rc">
+        <div class="rc-accent" style="background:var(--april)"></div>
+        <div class="rc-title" style="color:var(--april)">April公式レシピ ／ 1:17 Standard</div>
+        <div class="params-row">
+          <div class="p-cell"><div class="p-val" style="color:var(--april)">14g</div><div class="p-key">豆の量</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--blue)">238ml</div><div class="p-key">水の量</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--cream)">96〜99℃</div><div class="p-key">湯温</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--muted)">2:20〜3:00</div><div class="p-key">抽出時間</div></div>
+        </div>
+        <div class="steps-title">抽出ステップ</div>
+        <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">挽き目</div><div class="step-detail">粗挽き（フレンチプレスに近い粗さ）。Aprilは意図的に粗挽き推奨。</div></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">スターリングフェーズ（蒸らし）</div><div class="step-detail"><span class="step-time">0:00</span>豆の量の2倍（28g）のお湯を注ぎ、スプーンでかき混ぜて全体を均一に湿らせる。</div></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">注湯</div><div class="step-detail"><span class="step-time">0:30〜</span>残り210gを中心から円を描きながらゆっくり・一定の速度で注ぎ続ける。縁には注がない。</div></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">最後</div><div class="step-detail">落ちきり直前にスプーンで軽く1〜2回かき混ぜると均一な抽出に。</div></div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">完了</div><div class="step-detail"><span class="step-time">2:20〜3:00</span>落ちきりで完成。フラットなコーヒーベッドは均一抽出のサイン。</div></div></div>
+        <div class="rc-tip"><strong>April式の核心:</strong> 高温（96〜99℃）＋粗挽きで、透明感のあるクリーンなカップを実現。温度を下げると味がぼやける。TDS目標1.32〜1.35%。水のTDSは80〜120ppmが理想。</div>
+      </div>
+    </div>
+
+    <div class="recipe-panel single" id="april-rich">
+      <div class="rc">
+        <div class="rc-accent" style="background:var(--v60)"></div>
+        <div class="rc-title" style="color:var(--v60)">リッチ仕立て ／ 1:15 Full Body</div>
+        <div class="params-row">
+          <div class="p-cell"><div class="p-val" style="color:var(--v60)">20g</div><div class="p-key">豆の量</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--blue)">300ml</div><div class="p-key">水の量</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--cream)">95℃</div><div class="p-key">湯温</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--muted)">2:30〜2:45</div><div class="p-key">抽出時間</div></div>
+        </div>
+        <div class="steps-title">抽出ステップ</div>
+        <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">蒸らし</div><div class="step-detail"><span class="step-time">0:00</span>50mlを螺旋状に注いで全体を湿らせる。30秒待機。</div></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">1投目</div><div class="step-detail"><span class="step-time">0:30〜0:50</span>150mlまで外から内へ螺旋状に注ぐ。</div></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">2投目</div><div class="step-detail"><span class="step-time">1:30〜1:40</span>250mlまで螺旋→中心注湯に移行。</div></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">3投目</div><div class="step-detail"><span class="step-time">2:00〜2:10</span>300mlまで中心注湯で仕上げる。</div></div></div>
+        <div class="rc-tip"><strong>Point:</strong> 20gまでがAprilで扱いやすい最大量。ボディを出したいときはこのレシピ。ブレンドや中煎りにも合う。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════
+       05  V60
+  ════════════════════════════════ -->
+  <section class="dripper-section reveal" id="sec-v60">
+    <div class="ds-head">
+      <div class="ds-head-icon">☕</div>
+      <div class="ds-head-info">
+        <div class="ds-head-en" style="color:var(--v60)">Hario V60</div>
+        <div class="ds-head-ja">ハリオ V60</div>
+        <div class="ds-head-desc">
+          世界で最も使われているコーヒードリッパー。螺旋状のリブと大きな穴がクリアで繊細な抽出を実現。注ぎ方の技術が味に直結するため、技術の差が出やすい器具でもある。James Hoffmann式・April式の2レシピを収録。
+        </div>
+        <div class="ds-head-badges">
+          <span class="ds-badge" style="color:var(--v60);border-color:var(--v60)44">☕ World Standard</span>
+          <span class="ds-badge" style="color:var(--blue);border-color:var(--blue)44">💧 高いクリア感</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="recipe-tabs">
+      <button class="r-tab active" style="--tab-color:var(--v60)" onclick="switchTab(this,'v60','hoffman')">James Hoffmann式（再現性重視）</button>
+      <button class="r-tab" style="--tab-color:var(--april)" onclick="switchTab(this,'v60','april')">April式（シンプル 1:17）</button>
+      <button class="r-tab" style="--tab-color:var(--switch)" onclick="switchTab(this,'v60','kotobuki')">Kotobuki推奨（標準）</button>
+    </div>
+
+    <div class="recipe-panel single active" id="v60-hoffman">
+      <div class="rc">
+        <div class="rc-accent" style="background:var(--v60)"></div>
+        <div class="rc-title" style="color:var(--v60)">James Hoffmann式 ／ 再現性重視</div>
+        <div class="params-row">
+          <div class="p-cell"><div class="p-val" style="color:var(--v60)">15g</div><div class="p-key">豆の量</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--blue)">250ml</div><div class="p-key">水の量</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--cream)">92〜94℃</div><div class="p-key">湯温</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--muted)">3:30</div><div class="p-key">抽出時間</div></div>
+        </div>
+        <div class="steps-title">抽出ステップ</div>
+        <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">挽き目</div><div class="step-detail">中細挽き。スケールとタイマーを必ず使う。</div></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">蒸らし</div><div class="step-detail"><span class="step-time">0:00</span>50gを全体に素早く注ぐ。45秒待機（ガスをしっかり抜く）。</div></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">連続注湯</div><div class="step-detail"><span class="step-time">0:45〜2:30</span>残り200gを途切れなくゆっくり注ぎ続ける。速すぎず遅すぎず一定の速度で。</div></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">スピン</div><div class="step-detail"><span class="step-time">2:30</span>注ぎ終わったらサーバーを持って軽く1〜2回スピン（渦を作る）。均一なコーヒーベッドを促す。</div></div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">完了</div><div class="step-detail"><span class="step-time">3:30</span>落ちきりで完成。フラットなコーヒーベッドを確認。</div></div></div>
+        <div class="rc-tip"><strong>Hoffmann式の核心:</strong> 長い蒸らし（45秒）で均一なガス抜き → 連続注湯で安定した流速 → スピンで均一抽出。誰が淹れても再現性が高い。</div>
+      </div>
+    </div>
+
+    <div class="recipe-panel single" id="v60-april">
+      <div class="rc">
+        <div class="rc-accent" style="background:var(--april)"></div>
+        <div class="rc-title" style="color:var(--april)">April式 V60 ／ シンプル 1:17</div>
+        <div class="params-row">
+          <div class="p-cell"><div class="p-val" style="color:var(--april)">14g</div><div class="p-key">豆の量</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--blue)">238ml</div><div class="p-key">水の量</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--cream)">96〜99℃</div><div class="p-key">湯温</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--muted)">2:20〜3:00</div><div class="p-key">抽出時間</div></div>
+        </div>
+        <div class="steps-title">抽出ステップ（少量・シンプル）</div>
+        <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">スターリング</div><div class="step-detail"><span class="step-time">0:00</span>28g（豆の2倍量）を注いでスプーンでかき混ぜ、均一に湿らせる。</div></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">連続注湯</div><div class="step-detail"><span class="step-time">0:30〜</span>残り210gを中心から円を描きながら、端に注がずゆっくり注ぎ続ける。</div></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">最後</div><div class="step-detail">落ちきり直前に軽くかき混ぜてもOK。</div></div></div>
+        <div class="rc-tip"><strong>Point:</strong> 少量（14g）でも高温を使うことで十分な抽出が得られる。小さなV60（01サイズ）にも向く。コペンハーゲンのカフェで実際に使われているシンプルレシピ。</div>
+      </div>
+    </div>
+
+    <div class="recipe-panel single" id="v60-kotobuki">
+      <div class="rc">
+        <div class="rc-accent" style="background:var(--switch)"></div>
+        <div class="rc-title" style="color:var(--switch)">Kotobuki推奨 ／ スタンダード（1:15）</div>
+        <div class="params-row">
+          <div class="p-cell"><div class="p-val" style="color:var(--switch)">15g</div><div class="p-key">豆の量</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--blue)">225ml</div><div class="p-key">水の量</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--cream)">93℃</div><div class="p-key">湯温</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--muted)">3:00</div><div class="p-key">抽出時間</div></div>
+        </div>
+        <div class="steps-title">抽出ステップ</div>
+        <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">蒸らし</div><div class="step-detail"><span class="step-time">0:00</span>30gで30〜40秒蒸らす。膨らみを確認してから次へ。</div></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">1投目</div><div class="step-detail"><span class="step-time">0:40</span>60gを中心から円を描くように注ぐ。</div></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">2投目</div><div class="step-detail"><span class="step-time">1:20</span>85gを同じように注ぐ。</div></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">3投目</div><div class="step-detail"><span class="step-time">2:00</span>残り50gを注ぐ。</div></div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">完了</div><div class="step-detail"><span class="step-time">3:00</span>落ちきりで完成。</div></div></div>
+        <div class="rc-tip"><strong>Kotobukiおすすめのコツ：</strong> 毎回同じスケール・同じ温度・同じ挽き目を使うことで安定した美味しさが続く。まず1:15で味を確認し、薄ければ1:13、フレーバーをより楽しみたければ1:17に調整して。</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="f-logo">KOTOBUKI ROASTERS</div>
+  <p class="f-text">© KOTOBUKI ROASTERS — KOTOBUKIDIET.COM — KAKOGAWA HYOGO</p>
+</footer>
+
+<script>
+function switchTab(btn, dripper, panel) {
+  // Update tabs
+  btn.closest('.recipe-tabs').querySelectorAll('.r-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  // Update panels
+  const section = btn.closest('section') || btn.closest('main');
+  const allPanels = document.querySelectorAll(`[id^="${dripper}-"]`);
+  allPanels.forEach(p => p.classList.remove('active'));
+  const target = document.getElementById(`${dripper}-${panel}`);
+  if (target) target.classList.add('active');
+}
+
+// Reveal
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); io.unobserve(e.target); }
+  });
+}, { threshold: .05 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// Wix height
+function notifyHeight() {
+  const h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+  window.parent.postMessage({ type: 'height', value: h }, '*');
+}
+window.addEventListener('load', () => setTimeout(notifyHeight, 300));
+window.addEventListener('resize', notifyHeight);
+new MutationObserver(notifyHeight).observe(document.body, { subtree:true, childList:true, attributes:true });
+</script>
+</body>
+</html>
