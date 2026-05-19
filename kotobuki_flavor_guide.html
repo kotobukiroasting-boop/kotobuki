@@ -1,0 +1,1788 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kotobuki Roasters — Flavor Catalog</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Noto+Serif+JP:wght@200;300;400&family=Bebas+Neue&family=Noto+Sans+JP:wght@200;300;400&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:    #070604;
+  --s1:    #111009;
+  --s2:    #1c1a12;
+  --s3:    #272418;
+  --border:#2e2a1c;
+  --gold:  #c8922a;
+  --gold2: #f0b840;
+  --gold3: #ffe0a0;
+  --cream: #f2ead8;
+  --muted: #8a7758;
+  --dim:   #4a3e2c;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--cream);font-family:"Noto Sans JP",sans-serif;font-weight:300;overflow-x:hidden}
+::selection{background:var(--gold);color:#000}
+
+/* HERO */
+.hero{height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden}
+.hero-canvas{position:absolute;inset:0;z-index:0}
+.hero::before,.hero::after{content:"";position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 0%,var(--gold) 30%,var(--gold) 70%,transparent 100%);opacity:.15;z-index:1}
+.hero::before{top:60px}.hero::after{bottom:60px}
+.hero-inner{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center}
+.hero-eyebrow{display:flex;align-items:center;gap:16px;font-family:"Cinzel",serif;font-size:.6rem;letter-spacing:.6em;color:var(--gold);opacity:.8;margin-bottom:36px;text-transform:uppercase;animation:fadeUp 1s ease both}
+.hero-eyebrow::before,.hero-eyebrow::after{content:"";display:block;width:40px;height:1px;background:var(--gold);opacity:.5}
+.hero-brand{position:relative;animation:fadeUp 1s .12s ease both}
+.hero-brand-main{font-family:"Bebas Neue",sans-serif;font-size:clamp(5.5rem,18vw,15rem);letter-spacing:.04em;line-height:.85;color:var(--cream)}
+.hero-brand-sub{font-family:"Bebas Neue",sans-serif;font-size:clamp(2rem,6vw,5rem);letter-spacing:.28em;color:var(--gold);display:block;margin-top:4px;text-shadow:0 0 40px rgba(200,146,42,.35),0 0 80px rgba(200,146,42,.12)}
+.hero-tagline{font-family:"Noto Serif JP",serif;font-weight:200;font-size:clamp(.65rem,1.3vw,.8rem);letter-spacing:.42em;color:var(--muted);margin-top:32px;animation:fadeUp 1s .25s ease both}
+.hero-divider{display:flex;align-items:center;gap:12px;margin-top:36px;animation:fadeUp 1s .35s ease both}
+.hero-divider span{font-family:"Cinzel",serif;font-size:.5rem;letter-spacing:.4em;color:var(--gold);opacity:.5}
+.hero-divider::before,.hero-divider::after{content:"";display:block;width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold));opacity:.3}
+.hero-divider::after{transform:scaleX(-1)}
+.hero-scroll{position:absolute;bottom:48px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;font-family:"Cinzel",serif;font-size:.48rem;letter-spacing:.45em;color:var(--muted);opacity:.5;animation:fadeUp 1s .5s ease both}
+.scroll-line{width:1px;height:52px;background:linear-gradient(to bottom,var(--gold),transparent);animation:scrollPulse 2.5s ease-in-out infinite}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+@keyframes scrollPulse{0%,100%{opacity:.2;transform:scaleY(.6);transform-origin:top}50%{opacity:.8;transform:scaleY(1);transform-origin:top}}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:99;background:rgba(7,6,4,.93);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;overflow-x:auto;scrollbar-width:none;padding:0 28px}
+nav::-webkit-scrollbar{display:none}
+.n-logo{font-family:"Cinzel",serif;font-size:.65rem;letter-spacing:.25em;color:var(--gold);white-space:nowrap;padding:14px 20px 14px 0;border-right:1px solid var(--border);margin-right:20px;flex-shrink:0;display:flex;align-items:center;gap:10px}
+.n-logo-mark{width:22px;height:22px;border:1px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.55rem;color:var(--gold);flex-shrink:0}
+.n-link{font-family:"Cinzel",serif;font-size:.55rem;letter-spacing:.15em;color:var(--muted);white-space:nowrap;padding:16px 14px;cursor:pointer;transition:color .2s;flex-shrink:0;display:flex;align-items:center;gap:7px;text-decoration:none;text-transform:uppercase}
+.n-link:hover{color:var(--gold)}
+.n-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;opacity:.7}
+
+/* MAIN */
+main{max-width:1440px;margin:0 auto;padding:0 32px 140px}
+
+/* SECTION LABELS */
+.map-title{font-family:"Bebas Neue",sans-serif;font-size:clamp(2.2rem,5vw,4.5rem);letter-spacing:.1em;background:linear-gradient(135deg,var(--cream) 0%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+.map-sub{font-family:"Cinzel",serif;font-size:.58rem;letter-spacing:.3em;color:var(--muted);margin-bottom:40px}
+.map-section{padding-top:96px;margin-bottom:60px}
+.flavor-cloud-section{padding-top:96px;margin-bottom:60px}
+.roast-section{padding-top:96px;margin-bottom:60px}
+
+/* ORIGIN GRID */
+.origin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:1px;background:var(--border)}
+.og-card{background:var(--s1);padding:22px 18px;position:relative;overflow:hidden;transition:background .2s,transform .15s;cursor:pointer}
+.og-card::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(200,146,42,.05) 0%,transparent 60%);opacity:0;transition:opacity .3s}
+.og-card:hover{background:var(--s2);transform:scale(1.02);z-index:2}
+.og-card:hover::before{opacity:1}
+.og-flag{font-size:1.8rem;margin-bottom:10px;line-height:1}
+.og-code{font-family:"Bebas Neue",sans-serif;font-size:2rem;letter-spacing:.1em;color:var(--gold);line-height:1;margin-bottom:2px}
+.og-country{font-family:"Cinzel",serif;font-size:.58rem;letter-spacing:.15em;color:var(--muted);margin-bottom:8px}
+.og-count{font-family:"Bebas Neue",sans-serif;font-size:2.4rem;color:var(--cream);line-height:1}
+.og-label{font-size:.5rem;letter-spacing:.2em;color:var(--dim);margin-top:2px}
+.og-bar{height:1px;margin-top:14px;background:var(--border)}
+.og-bar-fill{height:100%;background:var(--gold);transition:width 1.4s cubic-bezier(.16,1,.3,1)}
+.og-goto{margin-top:10px;font-family:"Cinzel",serif;font-size:.5rem;letter-spacing:.2em;color:var(--gold);opacity:0;transition:opacity .2s}
+.og-card:hover .og-goto{opacity:.7}
+
+/* FLAVOR CLOUD */
+.fc-wrap{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;justify-content:center;padding:44px;background:var(--s1);border:1px solid var(--border);position:relative;overflow:hidden}
+.fc-wrap::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(200,146,42,.04) 0%,transparent 70%);pointer-events:none}
+.fc-item{font-family:"Noto Serif JP",serif;font-weight:300;letter-spacing:.06em;cursor:pointer;transition:opacity .2s,transform .2s;white-space:nowrap}
+.fc-item:hover{transform:scale(1.12)}
+
+/* ROAST */
+.roast-bar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);margin-top:32px}
+.roast-col{background:var(--s1);padding:28px 22px}
+.roast-col-title{font-family:"Cinzel",serif;font-size:.58rem;letter-spacing:.3em;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.roast-item{font-size:.7rem;letter-spacing:.04em;color:var(--muted);padding:7px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;transition:color .15s,padding-left .15s}
+.roast-item:last-child{border-bottom:none}
+.roast-item:hover{color:var(--cream);padding-left:4px}
+.roast-item-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+
+/* PROCESS FILTER */
+.process-filter-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:1px;background:var(--border)}
+.pf-card{background:var(--s1);padding:20px 16px;cursor:pointer;transition:background .2s,transform .15s;position:relative;overflow:hidden}
+.pf-card::after{content:"";position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--pf-color,var(--gold));transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.pf-card:hover{background:var(--s2)}
+.pf-card:hover::after,.pf-card.active::after{transform:scaleX(1)}
+.pf-card.active{background:var(--pf-bg,var(--s2)) !important}
+.pf-check{position:absolute;top:10px;right:12px;font-family:"Cinzel",serif;font-size:.55rem;color:var(--pf-color,var(--gold));opacity:0;transition:opacity .2s}
+.pf-card.active .pf-check{opacity:1}
+.pf-icon{font-size:1.5rem;margin-bottom:10px;line-height:1}
+.pf-name{font-family:"Cinzel",serif;font-size:.6rem;letter-spacing:.15em;margin-bottom:6px}
+.pf-count{font-family:"Bebas Neue",sans-serif;font-size:1.8rem;line-height:1}
+.pf-label{font-size:.5rem;letter-spacing:.18em;color:var(--dim);margin-top:2px}
+.pf-bar{height:1px;margin-top:12px;background:var(--border)}
+.pf-bar-fill{height:100%;transition:width 1.2s cubic-bezier(.16,1,.3,1)}
+
+/* SECTION HEADER */
+.s-head{padding-top:100px;margin-bottom:48px;display:grid;grid-template-columns:auto 1fr;gap:0 28px;align-items:end;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.s-num{font-family:"Bebas Neue",sans-serif;font-size:clamp(4rem,8vw,7rem);line-height:1;color:var(--border);letter-spacing:-.02em;user-select:none}
+.s-info{padding-bottom:4px}
+.s-en{font-family:"Cinzel",serif;font-size:.55rem;letter-spacing:.5em;text-transform:uppercase;margin-bottom:6px;opacity:.8}
+.s-ja{font-family:"Noto Serif JP",serif;font-weight:300;font-size:clamp(1.4rem,2.8vw,2.1rem);letter-spacing:.15em}
+
+/* CARD GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1px;background:var(--border)}
+
+/* PRODUCT CARD */
+.card{background:var(--s1);padding:26px 24px 22px;position:relative;overflow:hidden;transition:background .2s;cursor:pointer;text-decoration:none;color:inherit;display:block}
+.card::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:var(--card-accent,var(--gold));transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.16,1,.3,1)}
+.card:hover{background:var(--s2)}
+.card:hover::before{transform:scaleX(1)}
+.card-bar{position:absolute;left:0;top:0;bottom:0;width:2px;opacity:.4}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
+.card-price{font-family:"Bebas Neue",sans-serif;font-size:2.1rem;letter-spacing:.03em;line-height:1}
+.card-unit{font-size:.58rem;letter-spacing:.12em;color:var(--muted);margin-top:3px}
+.card-roast{font-family:"Cinzel",serif;font-size:.5rem;letter-spacing:.18em;padding:5px 10px;border:1px solid var(--border);color:var(--muted);text-transform:uppercase;transition:border-color .2s}
+.card:hover .card-roast{border-color:var(--card-accent,var(--gold));color:var(--cream)}
+.card-name{font-family:"Noto Serif JP",serif;font-weight:300;font-size:.9rem;line-height:1.7;letter-spacing:.04em;margin-bottom:16px;color:var(--cream)}
+.card-origin{display:flex;align-items:center;gap:10px;font-size:.6rem;letter-spacing:.1em;color:var(--muted);margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.origin-flag{font-size:1.1rem;line-height:1}
+.origin-name{color:var(--cream);font-size:.68rem;letter-spacing:.06em;margin-bottom:2px}
+.origin-alt{font-size:.56rem;opacity:.55}
+.alt-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.alt-label{font-size:.55rem;letter-spacing:.12em;color:var(--muted);width:36px;flex-shrink:0}
+.alt-bar-wrap{flex:1;height:2px;background:var(--border)}
+.alt-bar{height:100%;transition:width 1.2s cubic-bezier(.16,1,.3,1)}
+.alt-val{font-family:"Bebas Neue",sans-serif;font-size:.85rem;letter-spacing:.05em;color:var(--muted);white-space:nowrap}
+.flavor-section{margin-bottom:14px}
+.flavor-label{font-family:"Cinzel",serif;font-size:.5rem;letter-spacing:.3em;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
+.flavor-tags{display:flex;flex-wrap:wrap;gap:4px}
+.ftag{font-size:.6rem;letter-spacing:.05em;padding:3px 9px;display:flex;align-items:center;gap:4px;transition:opacity .15s}
+.ftag-icon{font-size:.7rem}
+.bitter-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.bitter-label{font-size:.55rem;letter-spacing:.12em;color:var(--muted);flex-shrink:0;width:26px}
+.bitter-dots{display:flex;gap:4px}
+.bdot{width:8px;height:8px;border-radius:50%;border:1px solid var(--border);transition:background .3s}
+.bdot.on{border-color:transparent}
+.process-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px}
+.proc-badge{font-family:"Cinzel",serif;font-size:.5rem;letter-spacing:.12em;padding:3px 8px;text-transform:uppercase}
+.variety-row{font-size:.6rem;letter-spacing:.06em;color:var(--muted);display:flex;align-items:center;gap:6px}
+.variety-label{opacity:.5;font-size:.55rem;letter-spacing:.12em}
+.variety-val{color:var(--cream)}
+.card-desc{font-size:.7rem;line-height:1.8;color:var(--muted);margin-top:14px;padding-top:14px;border-top:1px solid var(--border);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;transition:-webkit-line-clamp .3s}
+.card:hover .card-desc{-webkit-line-clamp:10}
+.card-shop-btn{margin-top:14px;font-family:"Cinzel",serif;font-size:.55rem;letter-spacing:.22em;text-transform:uppercase;padding:8px 14px;border:1px solid;display:inline-flex;align-items:center;gap:6px;transition:background .2s,color .2s,border-color .2s}
+.card:hover .card-shop-btn{background:var(--card-accent,var(--gold));color:#000 !important;border-color:transparent}
+.sp-badges{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px}
+.sp-badge{font-family:"Cinzel",serif;font-size:.48rem;letter-spacing:.15em;padding:2px 7px;text-transform:uppercase}
+.sb-scaj{background:#0a1e10;color:#50c870;border:1px solid #184828}
+.sb-coe{background:#10101c;color:#9878d8;border:1px solid #20183a}
+.sb-new{background:#1c0a0a;color:#e06060;border:1px solid #381414}
+.sb-rare{background:#1c1200;color:var(--gold2);border:1px solid #382600}
+.sb-dt{background:#0a1418;color:#40a0b8;border:1px solid #143040}
+
+/* TASTE METERS */
+.taste-section{margin-bottom:14px}
+.taste-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.taste-label{font-size:.52rem;letter-spacing:.1em;color:var(--muted);width:26px;flex-shrink:0;text-align:right}
+.taste-dots{display:flex;gap:3px}
+.tdot{width:8px;height:8px;border-radius:50%;border:1px solid var(--border);transition:background .3s}
+.tdot.on{border-color:transparent}
+/* 酸味=青 甘み=ピンク 濃度=オレンジ */
+.tdot.acid-on  {background:#5090c8;border-color:#5090c8}
+.tdot.sweet-on {background:#d060a0;border-color:#d060a0}
+.tdot.body-on  {background:#c87030;border-color:#c87030}
+
+/* SORT BAR */
+.sort-bar{
+  position:sticky;top:52px;z-index:97;
+  background:rgba(7,6,4,.93);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  padding:8px 32px;
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+}
+.sort-label{font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.25em;color:var(--muted);white-space:nowrap}
+.sort-btn{
+  font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.15em;
+  padding:5px 12px;border:1px solid var(--border);
+  background:transparent;color:var(--muted);cursor:pointer;
+  transition:border-color .2s,color .2s,background .2s;
+  text-transform:uppercase;white-space:nowrap;
+}
+.sort-btn:hover{border-color:var(--gold);color:var(--cream)}
+.sort-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(200,146,42,.08)}
+.sort-btn.active.asc::after{content:' ↑'}
+.sort-btn.active.desc::after{content:' ↓'}
+.sort-reset{
+  font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.2em;
+  padding:5px 10px;border:1px solid transparent;
+  background:transparent;color:var(--dim);cursor:pointer;
+  transition:color .2s;margin-left:auto;
+}
+.sort-reset:hover{color:var(--gold)}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+.reveal.vis{opacity:1;transform:none}
+
+footer{text-align:center;padding:80px 20px;border-top:1px solid var(--border);position:relative}
+footer::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:200px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.4}
+.f-logo{font-family:"Bebas Neue",sans-serif;font-size:3.5rem;letter-spacing:.25em;background:linear-gradient(135deg,var(--dim) 0%,var(--muted) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.f-text{font-size:.55rem;letter-spacing:.28em;color:var(--dim);margin-top:16px}
+
+@media(max-width:680px){
+  main{padding:0 12px 80px}
+  .grid{grid-template-columns:1fr;background:none;gap:2px}
+  .roast-bar{grid-template-columns:1fr}
+  .origin-grid{grid-template-columns:repeat(2,1fr)}
+  .process-filter-grid{grid-template-columns:repeat(2,1fr)}
+  .s-head{grid-template-columns:1fr}
+  .s-num{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <canvas class="hero-canvas" id="hcanvas"></canvas>
+  <div class="hero-inner">
+    <p class="hero-eyebrow">Specialty Coffee Roastery — Kakogawa, Hyogo</p>
+    <div class="hero-brand">
+      <div class="hero-brand-main">KOTOBUKI</div>
+      <span class="hero-brand-sub">ROASTERS</span>
+    </div>
+    <p class="hero-tagline">フレーバー & 産地 ガイド ― 在 庫 あ り 商 品 一 覧</p>
+    <div class="hero-divider"><span>EST. KAKOGAWA</span></div>
+  </div>
+  <div class="hero-scroll">
+    <span>SCROLL</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<nav id="nav">
+  <span class="n-logo"><span class="n-logo-mark">K</span>KOTOBUKI ROASTERS</span>
+</nav>
+
+<!-- SORT BAR -->
+<div class="sort-bar" id="sort-bar">
+  <span class="sort-label">SORT —</span>
+  <button class="sort-btn" data-key="price"  onclick="setSort('price')">価格</button>
+  <button class="sort-btn" data-key="bitter" onclick="setSort('bitter')">苦味</button>
+  <button class="sort-btn" data-key="acid"   onclick="setSort('acid')">酸味</button>
+  <button class="sort-btn" data-key="sweet"  onclick="setSort('sweet')">甘み</button>
+  <button class="sort-btn" data-key="body"   onclick="setSort('body')">濃度</button>
+  <button class="sort-reset" onclick="resetSort()">✕ リセット</button>
+</div>
+
+<main>
+  <!-- WORLD ORIGINS -->
+  <section class="map-section reveal" id="sec-origins">
+    <div class="map-title">WORLD ORIGINS</div>
+    <div class="map-sub">生産国別 在庫商品数</div>
+    <div class="origin-grid" id="origin-grid"></div>
+  </section>
+
+  <!-- FLAVOR CLOUD -->
+  <section class="flavor-cloud-section reveal" id="sec-cloud">
+    <div class="map-title">FLAVOR CLOUD</div>
+    <div class="map-sub">全商品のフレーバー頻度マップ</div>
+    <div class="fc-wrap" id="fc-wrap"></div>
+  </section>
+
+  <!-- ROAST SPECTRUM -->
+  <section class="roast-section reveal" id="sec-roast">
+    <div class="map-title">ROAST SPECTRUM</div>
+    <div class="map-sub">焙煎度別 商品一覧</div>
+    <div class="roast-bar" id="roast-bar"></div>
+  </section>
+
+  <!-- PROCESS FILTER SECTION -->
+  <section class="map-section reveal" id="sec-process">
+    <div class="map-title">PROCESS FILTER</div>
+    <div class="map-sub">精製方法から絞り込む</div>
+    <div class="process-filter-grid" id="process-filter-grid"></div>
+  </section>
+
+  <!-- FLAVOR FILTER BAR (hidden until filter active) -->
+  <div id="filter-bar" style="display:none;position:sticky;top:52px;z-index:98;background:#0a070599;backdrop-filter:blur(24px);border-bottom:1px solid #2c2018;padding:10px 32px;display:none;align-items:center;gap:12px;">
+    <span style="font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.25em;color:#6a5538;">FILTER:</span>
+    <div id="filter-tags" style="display:flex;flex-wrap:wrap;gap:6px;flex:1;"></div>
+    <button id="filter-clear" onclick="clearFilter()" style="font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.2em;color:#d4952a;background:none;border:1px solid #d4952a44;padding:5px 12px;cursor:pointer;border-radius:2px;white-space:nowrap;">✕ CLEAR</button>
+    <span id="filter-count" style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:#d4952a;white-space:nowrap;"></span>
+  </div>
+
+  <div id="product-sections"></div>
+</main>
+
+<footer>
+  <div class="f-logo">KOTOBUKI ROASTERS</div>
+  <p class="f-text">© KOTOBUKI ROASTERS — KOTOBUKIDIET.COM — SPECIALTY COFFEE — KAKOGAWA HYOGO</p>
+</footer>
+
+<script>
+/* ═══════════════════════════════════════════
+   PRODUCT DATA
+═══════════════════════════════════════════ */
+const FLAVOR_COLORS = {
+  citrus:    {bg:'#1a1e08',color:'#b8d040',icon:'🍋'},
+  floral:    {bg:'#1e0e1a',color:'#d080c0',icon:'🌸'},
+  berry:     {bg:'#1a0808',color:'#e06060',icon:'🫐'},
+  tropical:  {bg:'#1a1400',color:'#e0b030',icon:'🥭'},
+  chocolate: {bg:'#180e06',color:'#c07840',icon:'🍫'},
+  spice:     {bg:'#180e00',color:'#d09030',icon:'🌿'},
+  wine:      {bg:'#140010',color:'#c060a0',icon:'🍷'},
+  caramel:   {bg:'#180c00',color:'#d08830',icon:'🍮'},
+  tea:       {bg:'#0c1810',color:'#70b880',icon:'🍵'},
+  nutty:     {bg:'#120e04',color:'#a88040',icon:'🌰'},
+  stone:     {bg:'#0e1018',color:'#7090b8',icon:'🍑'},
+  default:   {bg:'#141010',color:'#886655',icon:'✦'},
+};
+
+function flavorStyle(f){
+  const fl = f.toLowerCase();
+  if(/lemon|citrus|orange|bergamot|mandarin|yuzu|lime/.test(fl)) return FLAVOR_COLORS.citrus;
+  if(/jasmine|floral|blossom|flower|rose/.test(fl)) return FLAVOR_COLORS.floral;
+  if(/berry|raspberry|strawberry|blueberry|cherry|grape|fig|currant|wine|redwine/.test(fl)) return FLAVOR_COLORS.berry;
+  if(/mango|tropical|lychee|ライチ|passion|pineapple|coconut/.test(fl)) return FLAVOR_COLORS.tropical;
+  if(/chocolate|cacao|cocoa/.test(fl)) return FLAVOR_COLORS.chocolate;
+  if(/spice|herb|cedar|earthy|smoky|wood/.test(fl)) return FLAVOR_COLORS.spice;
+  if(/wine|winey/.test(fl)) return FLAVOR_COLORS.wine;
+  if(/caramel|honey|syrup|brown sugar|toffee/.test(fl)) return FLAVOR_COLORS.caramel;
+  if(/tea|blacktea|green/.test(fl)) return FLAVOR_COLORS.tea;
+  if(/nut|almond|walnut|hazelnut/.test(fl)) return FLAVOR_COLORS.nutty;
+  if(/peach|apricot|stone|nectarine/.test(fl)) return FLAVOR_COLORS.stone;
+  return FLAVOR_COLORS.default;
+}
+
+const PROCESS_COLORS = {
+  'ウォッシュド':           {bg:'#081420',color:'#5090c8'},
+  'Washed':                {bg:'#081420',color:'#5090c8'},
+  'ナチュラル':             {bg:'#1a0c00',color:'#d08030'},
+  'Natural':               {bg:'#1a0c00',color:'#d08030'},
+  'アナエロビック':         {bg:'#14081e',color:'#9068d0'},
+  'Anaerobic':             {bg:'#14081e',color:'#9068d0'},
+  'ハニー':                 {bg:'#1a1000',color:'#d0a030'},
+  'カーボニックマセレーション': {bg:'#0c1808',color:'#60a858'},
+  'Thermal Shock':         {bg:'#180810',color:'#c05090'},
+  'スマトラ式':             {bg:'#0e1410',color:'#508878'},
+};
+function processStyle(p){
+  for(const k of Object.keys(PROCESS_COLORS)){
+    if(p.includes(k)) return PROCESS_COLORS[k];
+  }
+  return {bg:'#181010',color:'#886655'};
+}
+
+const ROAST_COLOR = {
+  '浅煎り': {color:'#c8d880',dot:'#aacc60'},
+  '中煎り': {color:FLAVOR_COLORS.caramel.color,dot:'#c08830'},
+  '深煎り': {color:'#d07050',dot:'#c06040'},
+  '浅煎り/深煎り': {color:FLAVOR_COLORS.default.color,dot:'#886655'},
+};
+
+// altitude → 0‒100 scale (1000m=0%, 2500m=100%)
+function altPct(m){return Math.min(100,Math.max(0,Math.round((m-800)/(2400-800)*100)))}
+
+const CATEGORIES = [
+  {
+    id:'ethiopia', label:'エチオピア', en:'ETHIOPIA', color:'#d07030',
+    flag:'🇪🇹', countryKey:'エチオピア',
+    items:[
+      {
+        name:'WUSH WUSH カッファG1 ウォッシュド',
+        url:'https://www.kotobukidiet.com/product-page/wush-wush-カッファg1-ウォッシュド',
+        price:'¥1,100', unit:'100g',
+        country:'エチオピア カッファ マイクロロット',
+        flag:'🇪🇹', altitude:2100, altLabel:'2,000–2,200m',
+        variety:'Wush Wush',
+        process:['WASHED'],
+        roast:'浅煎り', bitter:1,
+        acid:4, sweet:4, body:2,
+        flavors:['Citrus','Raspberry','Blacktea'],
+        desc:'エチオピア南西部カッファで見つかった稀少品種。ゲイシャのように華やかで、シトラスや赤系果実の爽やかなフレーバー。紅茶のようなアロマが特徴的です。',
+        badges:[{cls:'sb-scaj',text:'SCAJ 2025'}],
+      },
+      {
+        name:'エチオピア アナソラ アナエロビック',
+        url:'https://www.kotobukidiet.com/product-page/エチオピア-アナソラ-アナエロビック',
+        price:'¥1,100', unit:'100g',
+        country:'エチオピア グジ アナソラ',
+        flag:'🇪🇹', altitude:2050, altLabel:'2,050m',
+        variety:'Heirloom 在来種',
+        process:['アナエロビック ナチュラル'],
+        roast:'浅煎り', bitter:1,
+        acid:3, sweet:3, body:4,
+        flavors:['Red Wine','Blueberry','Fig'],
+        desc:'グジ北西部シャキッソ郡標高1,900mのウォッシングステーション。レッドワイン・ブルーベリー・イチジクなど華やかで強度あるフレーバーが複雑に感じられます。',
+        badges:[],
+      },
+      {
+        name:'モカ・ヘレフG１「ウォッシュド精製」',
+        url:'https://www.kotobukidiet.com/product-page/モカ-ヘレフg１-ウォッシュド精製',
+        price:'¥1,100', unit:'100g',
+        country:'エチオピア シダマ ボナ・ズリア',
+        flag:'🇪🇹', altitude:2200, altLabel:'2,200m',
+        variety:'エアルーム（エチオピア在来種）',
+        process:['ウォッシュド'],
+        roast:'浅煎り/深煎り', bitter:1,
+        acid:4, sweet:3, body:1,
+        flavors:['Citrus','Raspberry','Grape','Peach'],
+        desc:'Kotobuki焙煎が直接支援するエチオピアのスペシャルティ農園。農薬不使用。非常にクリーンな味わいで、シトラスフルーツやピーチのようなスッキリとした風味。モカ特有の香味も抜群。',
+        badges:[{cls:'sb-dt',text:'DIRECT TRADE'}],
+      },
+      {
+        name:'モカ・ヘレフG１「ナチュラル精製」',
+        url:'https://www.kotobukidiet.com/product-page/モカ-ヘレフg１-ナチュラル精製',
+        price:'¥1,100', unit:'100g',
+        country:'エチオピア シダマ ボナ・ズリア',
+        flag:'🇪🇹', altitude:2200, altLabel:'2,200m',
+        variety:'エアルーム（エチオピア在来種）',
+        process:['ナチュラル'],
+        roast:'浅煎り', bitter:1,
+        acid:3, sweet:4, body:4,
+        flavors:['Berry','Tropical Fruit','Honey','Chocolate'],
+        desc:'同農園のナチュラル精製バージョン。ウォッシュドと飲み比べることで、精製方法の違いによる味わいの変化を体感できます。',
+        badges:[{cls:'sb-dt',text:'DIRECT TRADE'}],
+      },
+    ]
+  },
+  {
+    id:'colombia', label:'コロンビア', en:'COLOMBIA', color:'#a06030',
+    flag:'🇨🇴', countryKey:'コロンビア',
+    items:[
+      {
+        name:'コロンビア ゲイシャ サーマルショック',
+        url:'https://www.kotobukidiet.com/product-page/コロンビア-ゲイシャ-サーマルショック',
+        price:'¥1,200', unit:'50g',
+        country:'コロンビア リサラルダ',
+        flag:'🇨🇴', altitude:1775, altLabel:'1,750–1,800m',
+        variety:'Geisha',
+        process:['カルチャリング','ウォッシュド','サーマルショック'],
+        roast:'浅煎り', bitter:1,
+        acid:3, sweet:5, body:3,
+        flavors:['Jasmine','Orange Blossom','Bergamot','White Peach'],
+        desc:'発酵工程に温度変化を取り入れたサーマルショックプロセス。ゲイシャ特有の華やかさを引き出しながら輪郭のはっきりしたクリーンな味わい。透明感ある酸とシルキーな口当たり。',
+        badges:[],
+      },
+      {
+        name:'コロンビア アプリコットパンチ',
+        url:'https://www.kotobukidiet.com/product-page/コロンビア-アプリコットパンチ-apricot-punch',
+        price:'¥1,200', unit:'50g',
+        country:'コロンビア',
+        flag:'🇨🇴', altitude:1800, altLabel:'〜1,800m',
+        variety:'Colombia Variety',
+        process:['インフューズド（アプリコット）'],
+        roast:'浅煎り', bitter:1,
+        acid:3, sweet:5, body:3,
+        flavors:['Apricot','Tropical Fruit','Citrus'],
+        desc:'名前の通りアプリコットのパンチが効いた個性的なカップ。トロピカルフルーツのジューシーさと爽やかな酸が調和します。',
+        badges:[],
+      },
+      {
+        name:'COLOMBIA Uba NITRO-WASH',
+        url:'https://www.kotobukidiet.com/product-page/colombia-uba-nitro-wash',
+        price:'¥1,900', unit:'50g',
+        country:'コロンビア',
+        flag:'🇨🇴', altitude:1900, altLabel:'〜1,900m',
+        variety:'Uba',
+        process:['カルチャリング','NITRO-WASH'],
+        roast:'浅煎り', bitter:1,
+        acid:3, sweet:5, body:2,
+        flavors:['Tropical Fruit','Floral','Citrus'],
+        desc:'窒素ガスを使用した革新的なNITRO-WASHプロセス。SCAJ2025に提供された特別なロット。',
+        badges:[{cls:'sb-scaj',text:'SCAJ 2025'}],
+      },
+      {
+        name:'エルディビソ サーマルショック',
+        url:'https://www.kotobukidiet.com/product-page/エルディビソ-サーマルショック',
+        price:'¥1,300', unit:'50g',
+        country:'コロンビア',
+        flag:'🇨🇴', altitude:1900, altLabel:'〜1,900m',
+        variety:'Colombia Variety',
+        process:['カルチャリング','サーマルショック'],
+        roast:'浅煎り', bitter:1,
+        acid:3, sweet:5, body:2,
+        flavors:['Floral','Stone Fruit','Citrus'],
+        desc:'SCAJ2025提供豆。サーマルショックプロセスが生み出すクリーンさと立体感のあるフレーバー構造が印象的な一杯。',
+        badges:[{cls:'sb-scaj',text:'SCAJ 2025'}],
+      },
+      {
+        name:'ラス・アギラス SIDRA WASHED',
+        url:'https://www.kotobukidiet.com/product-page/ラス-アギラス-sidra-washed',
+        price:'¥1,400', unit:'100g',
+        country:'コロンビア',
+        flag:'🇨🇴', altitude:1800, altLabel:'〜1,800m',
+        variety:'Sidra',
+        process:['Washed'],
+        roast:'浅煎り', bitter:1,
+        acid:4, sweet:3, body:1,
+        flavors:['Berry','Floral','Citrus','Tea'],
+        desc:'希少なSidra品種をウォッシュドで精製。フローラルとベリーが複雑に絡み合う上品な味わい。',
+        badges:[],
+      },
+      {
+        name:'コロンビア ジューシーグレープ',
+        url:'https://www.kotobukidiet.com/product-page/コロンビア-ジューシーグレープ',
+        price:'¥1,150', unit:'50g',
+        country:'コロンビア',
+        flag:'🇨🇴', altitude:1800, altLabel:'〜1,800m',
+        variety:'Colombia Variety',
+        process:['インフューズド（グレープ）'],
+        roast:'浅煎り', bitter:1,
+        acid:2, sweet:4, body:3,
+        flavors:['Grape','Berry','Juicy'],
+        desc:'ジューシーなグレープのフレーバーが名前そのままに広がる。発酵由来の濃密な果実感が特徴。',
+        badges:[],
+      },
+      {
+        name:'アカシアヒルズ パカマラ',
+        url:'https://www.kotobukidiet.com/product-page/アカシアヒルズ-パカマラ',
+        price:'¥1,100', unit:'100g',
+        country:'タンザニア',
+        flag:'🇹🇿', altitude:1800, altLabel:'〜1,800m',
+        variety:'Pacamara',
+        process:['Washed'],
+        roast:'浅煎り', bitter:1,
+        acid:4, sweet:3, body:1,
+        flavors:['Floral','Citrus','Honey','Tropical Fruit'],
+        desc:'パカマラ種特有の大粒の豆から生まれる豊かなボディとフローラルアロマ。',
+        badges:[],
+      },
+      {
+        name:'シナモン ラ・ピラグア コロンビア',
+        url:'https://www.kotobukidiet.com/product-page/シナモン-ラ-ピラグア-コロンビア',
+        price:'¥1,400', unit:'100g',
+        country:'コロンビア',
+        flag:'🇨🇴', altitude:1900, altLabel:'〜1,900m',
+        variety:'Colombia Variety',
+        process:['インフューズド'],
+        roast:'浅煎り', bitter:2,
+        acid:3, sweet:3, body:4,
+        flavors:['Cinnamon','Spice','Caramel','Berry'],
+        desc:'シナモンをインフューズドした個性的な一杯。スパイシーなシナモンの香りとコーヒーの甘みが見事に融合。',
+        badges:[],
+      },
+      {
+        name:'コロンビア ゲイシャ ピーチ',
+        url:'https://www.kotobukidiet.com/product-page/コロンビア-ゲイシャ-ピーチ',
+        price:'¥1,200', unit:'50g',
+        country:'コロンビア',
+        flag:'🇨🇴', altitude:1800, altLabel:'〜1,800m',
+        variety:'Geisha',
+        process:['インフューズド（ピーチ）'],
+        roast:'浅煎り', bitter:1,
+        acid:3, sweet:5, body:3,
+        flavors:['Peach','Floral','Bergamot','Honey'],
+        desc:'ゲイシャ種のフローラルな特性に、アナエロビックのピーチフレーバーが重なる贅沢な一杯。',
+        badges:[],
+      },
+      {
+        name:'日本初登場 ワイニーフラワー',
+        url:'https://www.kotobukidiet.com/product-page/7-6-7-7-限定販売-もうひとつの日本初登場-ワイニーフラワーコロンビア',
+        price:'¥2,500', unit:'50g',
+        country:'コロンビア',
+        flag:'🇨🇴', altitude:1900, altLabel:'〜1,900m',
+        variety:'Colombia Variety',
+        process:['インフューズド（フラワー）'],
+        roast:'浅煎り', bitter:1,
+        acid:3, sweet:4, body:1,
+        flavors:['Red Wine','Floral','Berry','Rose'],
+        desc:'日本初登場のロット。ワインのような複雑なフレーバーとフローラルな華やかさが共存する、唯一無二のカップ。',
+        badges:[{cls:'sb-new',text:'JAPAN FIRST'}],
+      },
+      {
+        name:'ペルラ・デ・オトゥン SUDAN RUMME',
+        url:'https://www.kotobukidiet.com/product-page/ペルラ-デ-オトゥン-sudan-rumme',
+        price:'¥2,250', unit:'50g',
+        country:'コロンビア',
+        flag:'🇨🇴', altitude:1950, altLabel:'〜1,950m',
+        variety:'Sudan Rumme',
+        process:['Experimental Natural'],
+        roast:'浅煎り', bitter:1,
+        acid:3, sweet:5, body:4,
+        flavors:['Tropical Fruit','Berry','Floral','Honey'],
+        desc:'超希少品種Sudan Rummeのエクスペリメンタルナチュラル。流通量が極めて少なく、手に入れること自体が希少体験。',
+        badges:[{cls:'sb-rare',text:'ULTRA RARE'}],
+      },
+      {
+        name:'コロンビア スイートベリー',
+        url:'https://www.kotobukidiet.com/product-page/コロンビア-スイートベリー-200g',
+        price:'¥1,600', unit:'200g',
+        country:'コロンビア',
+        flag:'🇨🇴', altitude:1800, altLabel:'〜1,800m',
+        variety:'Colombia Variety',
+        process:['ナチュラル'],
+        roast:'浅煎り', bitter:2,
+        acid:1, sweet:2, body:3,
+        flavors:['Berry','Honey','Caramel','Chocolate'],
+        desc:'甘くジューシーなベリーのフレーバーが広がる飲みやすい一杯。プレミアムライン。',
+        badges:[],
+      },
+    ]
+  },
+  {
+    id:'brazil', label:'ブラジル', en:'BRAZIL', color:'#508050',
+    flag:'🇧🇷', countryKey:'ブラジル',
+    items:[
+      {
+        name:'ブラジル ゲイシャ カーボニックマセレーション',
+        url:'https://www.kotobukidiet.com/product-page/ブラジル-ゲイシャ-カーボニックマセレーション',
+        price:'¥1,150', unit:'50g',
+        country:'ブラジル ミナスジェライス州',
+        flag:'🇧🇷', altitude:1150, altLabel:'1,000–1,300m',
+        variety:'Geisha',
+        process:['カーボニックマセレーション・ナチュラル'],
+        roast:'浅煎り', bitter:1,
+        acid:2, sweet:4, body:2,
+        flavors:['Strawberry','Mango','Lychee','Honey','Caramel'],
+        desc:'完熟チェリーを密閉環境で発酵。ナチュラルの豊かなボディに発酵由来の華やかさが重なり、従来のブラジルのイメージを覆す一杯。',
+        badges:[],
+      },
+      {
+        name:'ブラジル セーハ・ド・ボネ',
+        url:'https://www.kotobukidiet.com/product-page/ブラジル-セーハ-ド-ボネ-1',
+        price:'¥1,800', unit:'200g',
+        country:'ブラジル ミナスジェライス州',
+        flag:'🇧🇷', altitude:1100, altLabel:'〜1,100m',
+        variety:'Yellow Bourbon',
+        process:['ナチュラル'],
+        roast:'中煎り', bitter:2,
+        acid:2, sweet:3, body:2,
+        flavors:['Chocolate','Caramel','Nutty','Berry'],
+        desc:'ブラジルの名産地から。ナチュラル精製の豊かなボディと甘みが特徴。チョコレートとキャラメルのような安定した味わい。',
+        badges:[],
+      },
+      {
+        name:'ブラジル ロブスタ コニロン',
+        url:'https://www.kotobukidiet.com/product-page/ブラジル-ロブスタ-コニロン',
+        price:'¥1,370', unit:'250g',
+        country:'ブラジル',
+        flag:'🇧🇷', altitude:600, altLabel:'〜600m',
+        variety:'Robusta Conilon',
+        process:['ナチュラル'],
+        roast:'深煎り', bitter:4,
+        acid:1, sweet:1, body:3,
+        flavors:['Chocolate','Spice','Nutty'],
+        desc:'ロブスタ種コニロン。力強いボディと苦味が特徴。エスプレッソブレンドの素材としても優秀な一杯。',
+        badges:[],
+      },
+      {
+        name:'ブラジル カルモエステート',
+        url:'https://www.kotobukidiet.com/product-page/ブラジル-カルモエステート',
+        price:'¥1,800', unit:'200g',
+        country:'ブラジル ミナスジェライス州',
+        flag:'🇧🇷', altitude:1100, altLabel:'〜1,100m',
+        variety:'Yellow Bourbon',
+        process:['ナチュラル'],
+        roast:'中煎り', bitter:2,
+        acid:2, sweet:3, body:2,
+        flavors:['Chocolate','Caramel','Almond','Honey'],
+        desc:'カルモエステート農園の丁寧な仕上がり。バランスのよい甘みとコクが毎日飲みたくなる安定感を生み出します。',
+        badges:[],
+      },
+      {
+        name:'Brazil コヘゴ・ダ・リベルダージ COE2023 第5位',
+        url:'https://www.kotobukidiet.com/product-page/brazil-コヘゴ-ダ-リベルダージ-coe2023-第5位',
+        price:'¥1,150', unit:'50g',
+        country:'ブラジル',
+        flag:'🇧🇷', altitude:1100, altLabel:'〜1,100m',
+        variety:'Yellow Bourbon',
+        process:['ナチュラル'],
+        roast:'浅煎り', bitter:1,
+        acid:2, sweet:3, body:4,
+        flavors:['Berry','Caramel','Floral','Honey'],
+        desc:'2023年カップオブエクセレンス第5位受賞ロット。国際審査員が認めた卓越した品質を自宅で体験できます。',
+        badges:[{cls:'sb-coe',text:'COE 2023 #5'}],
+      },
+      {
+        name:'オーロヴェルデ ナチュラル COE2022 第3位',
+        url:'https://www.kotobukidiet.com/product-page/オークションロット-オーロヴェルデ-ナチュラル',
+        price:'¥1,150', unit:'50g',
+        country:'ブラジル',
+        flag:'🇧🇷', altitude:1100, altLabel:'〜1,100m',
+        variety:'Yellow Bourbon',
+        process:['ナチュラル'],
+        roast:'浅煎り', bitter:1,
+        acid:2, sweet:4, body:2,
+        flavors:['Berry','Floral','Caramel','Chocolate'],
+        desc:'2022年カップオブエクセレンス第3位のオークションロット。希少なアワードロットを手軽に楽しめます。',
+        badges:[{cls:'sb-coe',text:'COE 2022 #3'}],
+      },
+    ]
+  },
+  {
+    id:'world', label:'世界各地', en:'WORLD ORIGINS', color:'#6070a8',
+    flag:'🌍', countryKey:'その他',
+    items:[
+      {
+        name:'ルワンダ ニャマシェケ レッドブルボン',
+        url:'https://www.kotobukidiet.com/product-page/ルワンダ-ニャマシェケ-レッドブルボン',
+        price:'¥1,100', unit:'100g',
+        country:'ルワンダ ニャマシェケ',
+        flag:'🇷🇼', altitude:1900, altLabel:'〜1,900m',
+        variety:'Red Bourbon',
+        process:['Washed'],
+        roast:'浅煎り', bitter:1,
+        acid:2, sweet:3, body:4,
+        flavors:['Berry','Citrus','Floral','Honey'],
+        desc:'アフリカ産ルワンダのレッドブルボン種。華やかなベリーとフローラルのフレーバーが調和する上品な一杯。',
+        badges:[],
+      },
+      {
+        name:'パナマ グラン・デル・バル',
+        url:'https://www.kotobukidiet.com/product-page/パナマ-グラン-デル-バル',
+        price:'¥1,100', unit:'100g',
+        country:'パナマ',
+        flag:'🇵🇦', altitude:1700, altLabel:'〜1,700m',
+        variety:'Typica / Bourbon',
+        process:['Washed'],
+        roast:'浅煎り', bitter:1,
+        acid:3, sweet:4, body:3,
+        flavors:['Floral','Citrus','Stone Fruit','Tea'],
+        desc:'ゲイシャ発祥の地パナマより。クリーンで透明感のある味わいに、フローラルとシトラスが美しく溶け込んでいます。',
+        badges:[],
+      },
+      {
+        name:'ウガンダ ニャビロンゴ アナエロビック',
+        url:'https://www.kotobukidiet.com/product-page/ウガンダ-ニャビロンゴ-アナエロビック',
+        price:'¥1,100', unit:'100g',
+        country:'ウガンダ',
+        flag:'🇺🇬', altitude:1800, altLabel:'〜1,800m',
+        variety:'SL28',
+        process:['アナエロビック'],
+        roast:'浅煎り', bitter:1,
+        acid:3, sweet:3, body:4,
+        flavors:['Tropical Fruit','Berry','Red Wine','Honey'],
+        desc:'ウガンダのアナエロビックプロセス。アフリカらしい野性的なフルーツ感とアナエロビックの発酵由来の複雑さが楽しめます。',
+        badges:[],
+      },
+      {
+        name:'タイ OMKOI オムコイ オーガニック',
+        url:'https://www.kotobukidiet.com/product-page/日本初輸入-タイ-omkoi-オムコイ-オーガニック',
+        price:'¥1,500', unit:'100g',
+        country:'タイ オムコイ',
+        flag:'🇹🇭', altitude:1400, altLabel:'〜1,400m',
+        variety:'Bourbon / Typica',
+        process:['ナチュラル'],
+        roast:'深煎り', bitter:3,
+        acid:1, sweet:3, body:1,
+        flavors:['Tropical Fruit','Honey','Caramel','Tea'],
+        desc:'日本初輸入タイ産オーガニック認証豆。チェンマイ近郊のオムコイ地区で農薬を使わず栽培。甘みとフルーツ感のバランスが秀逸。',
+        badges:[{cls:'sb-new',text:'JAPAN FIRST'},{cls:'sb-rare',text:'ORGANIC'}],
+      },
+      {
+        name:'日本初輸入 ラヒャン インドネシア',
+        url:'https://www.kotobukidiet.com/product-page/日本初輸入-ラヒャン-インドネシア-1',
+        price:'¥1,800', unit:'100g',
+        country:'インドネシア',
+        flag:'🇮🇩', altitude:1400, altLabel:'〜1,400m',
+        variety:'Typica',
+        process:['ナチュラル'],
+        roast:'深煎り', bitter:4,
+        acid:1, sweet:5, body:5,
+        flavors:['Tropical Fruit','Spice','Earthy','Chocolate'],
+        desc:'日本初輸入のインドネシア産希少ロット。スマトラとは異なるインドネシアの個性を楽しめる在庫限りの一品。',
+        badges:[{cls:'sb-new',text:'JAPAN FIRST'},{cls:'sb-rare',text:'LIMITED'}],
+      },
+      {
+        name:'雲南 レモン＆ベルガモット アナエロビックハニー',
+        url:'https://www.kotobukidiet.com/product-page/雲南-レモン-ベルガモット-アナエロビックハニー',
+        price:'¥1,200', unit:'100g',
+        country:'中国 雲南省',
+        flag:'🇨🇳', altitude:1600, altLabel:'〜1,600m',
+        variety:'Yunnan Typica',
+        process:['アナエロビック ハニー'],
+        roast:'浅煎り', bitter:1,
+        acid:3, sweet:3, body:1,
+        flavors:['Lemon','Bergamot','Honey','Floral'],
+        desc:'中国雲南省産のユニークなロット。レモンとベルガモットのアナエロビックハニーという名の通り、柑橘系の明るいフレーバーが印象的。',
+        badges:[],
+      },
+      {
+        name:'グアテマラ COE2024 ロス・コネホス #5',
+        url:'https://www.kotobukidiet.com/product-page/グアテマラ-coe2024-one-of-a-kind-5-ロス-コネホス',
+        price:'¥1,150', unit:'50g',
+        country:'グアテマラ',
+        flag:'🇬🇹', altitude:1700, altLabel:'〜1,700m',
+        variety:'Bourbon',
+        process:['Washed'],
+        roast:'浅煎り', bitter:1,
+        acid:3, sweet:5, body:2,
+        flavors:['Floral','Caramel','Berry','Citrus'],
+        desc:'2024年カップオブエクセレンス ONE OF A KIND #5。グアテマラのウォッシュドらしいクリーンさとフローラルな個性。',
+        badges:[{cls:'sb-coe',text:'COE 2024 #5'}],
+      },
+      {
+        name:'ゲイシャ ナチュラル エドウィンファンカ ボリビア',
+        url:'https://www.kotobukidiet.com/product-page/エドウィンファンカ-ボリビア-ゲイシャ',
+        price:'¥1,100', unit:'50g',
+        country:'ボリビア',
+        flag:'🇧🇴', altitude:1900, altLabel:'〜1,900m',
+        variety:'Geisha',
+        process:['ナチュラル'],
+        roast:'浅煎り', bitter:1,
+        acid:4, sweet:4, body:2,
+        flavors:['Floral','Tropical Fruit','Berry','Honey'],
+        desc:'南米ボリビアのゲイシャ種ナチュラル精製。希少な産地と品種の組み合わせが独特のフレーバーを生み出します。',
+        badges:[],
+      },
+      {
+        name:'ペルー マチュピチュ',
+        url:'https://www.kotobukidiet.com/product-page/ペルー-マチュピチュ',
+        price:'¥1,600', unit:'200g',
+        country:'ペルー',
+        flag:'🇵🇪', altitude:1600, altLabel:'〜1,600m',
+        variety:'Typica',
+        process:['Washed'],
+        roast:'深煎り', bitter:3,
+        acid:1, sweet:2, body:3,
+        flavors:['Chocolate','Caramel','Nutty','Citrus'],
+        desc:'世界遺産マチュピチュの麓で育まれるコーヒー。マイルドでバランスの良い味わいが毎日の一杯にぴったり。',
+        badges:[],
+      },
+      {
+        name:'タンザニア ンゴロンゴロ',
+        url:'https://www.kotobukidiet.com/product-page/タンザニア-ンゴロンゴロ-200g-1',
+        price:'¥1,600', unit:'200g',
+        country:'タンザニア',
+        flag:'🇹🇿', altitude:1700, altLabel:'〜1,700m',
+        variety:'Bourbon / Kent',
+        process:['Washed'],
+        roast:'深煎り', bitter:3,
+        acid:1, sweet:3, body:1,
+        flavors:['Berry','Citrus','Chocolate','Tea'],
+        desc:'世界自然遺産ンゴロンゴロ近郊のコーヒー。アフリカらしいワイルドなベリー感と、すっきりとした後味が楽しめます。',
+        badges:[],
+      },
+      {
+        name:'インド ファインロブスタ パパクチ',
+        url:'https://www.kotobukidiet.com/product-page/インド-ファインロブスタ-パパクチ-200g',
+        price:'¥1,600', unit:'200g',
+        country:'インド',
+        flag:'🇮🇳', altitude:900, altLabel:'〜900m',
+        variety:'Fine Robusta',
+        process:['ナチュラル'],
+        roast:'深煎り', bitter:4,
+        acid:1, sweet:1, body:3,
+        flavors:['Chocolate','Spice','Earthy','Caramel'],
+        desc:'品質の高いインド産ファインロブスタ。エスプレッソにも最適なコクと苦味。インド産ならではのスパイシーな後味。',
+        badges:[],
+      },
+      {
+        name:'インドネシア マンデリン',
+        url:'https://www.kotobukidiet.com/product-page/インドネシア-マンデリン-200g',
+        price:'¥1,800', unit:'200g',
+        country:'インドネシア スマトラ島北部',
+        flag:'🇮🇩', altitude:1200, altLabel:'〜1,200m',
+        variety:'Typica',
+        process:['スマトラ式精製'],
+        roast:'深煎り', bitter:4,
+        acid:1, sweet:1, body:5,
+        flavors:['Dark Chocolate','Spice','Cedar','Earthy','Herb'],
+        desc:'スマトラ式精製による重厚なボディ感。ハーブ・スパイス・ダークチョコレート・シダーウッドを思わせるアーシーな香り。深煎り好きに特におすすめ。',
+        badges:[],
+      },
+      {
+        name:'ハワイ コナ',
+        url:'https://www.kotobukidiet.com/product-page/ハワイ-コナ',
+        price:'¥1,500', unit:'50g',
+        country:'ハワイ コナ',
+        flag:'🇺🇸', altitude:700, altLabel:'〜700m',
+        variety:'Kona Typica',
+        process:['Washed'],
+        roast:'中煎り', bitter:2,
+        acid:3, sweet:5, body:2,
+        flavors:['Caramel','Honey','Nutty','Chocolate'],
+        desc:'世界三大コーヒーのひとつ、ハワイコナ。豊かな甘みと穏やかな酸味が絶妙に調和した、なめらかな口当たりの一杯。',
+        badges:[],
+      },
+      {
+        name:'ブルーマウンテン',
+        url:'https://www.kotobukidiet.com/product-page/ブルーマウンテン',
+        price:'¥1,400', unit:'50g',
+        country:'ジャマイカ',
+        flag:'🇯🇲', altitude:1500, altLabel:'〜1,500m',
+        variety:'Blue Mountain',
+        process:['Washed'],
+        roast:'中煎り', bitter:2,
+        acid:2, sweet:3, body:2,
+        flavors:['Floral','Caramel','Chocolate','Citrus'],
+        desc:'世界三大コーヒーの王様ジャマイカ・ブルーマウンテン。完璧なバランスとなめらかなコク。苦味・酸味・甘みが高次元で調和。',
+        badges:[{cls:'sb-rare',text:'PREMIUM'}],
+      },
+      {
+        name:'稀少天然 コピルアク ジャコウネコ',
+        url:'https://www.kotobukidiet.com/product-page/稀少天然-コピルアク-ジャコウネコ-現地採取',
+        price:'¥8,800', unit:'50g',
+        country:'インドネシア（現地採取）',
+        flag:'🇮🇩', altitude:1000, altLabel:'山岳地帯',
+        variety:'Mixed Arabica',
+        process:['ナチュラル（体内発酵）'],
+        roast:'中煎り', bitter:2,
+        acid:2, sweet:3, body:3,
+        flavors:['Caramel','Chocolate','Earthy','Honey','Spice'],
+        desc:'ジャコウネコ（シベット）の消化酵素で発酵した世界最高級コーヒー。現地採取の天然品のみを厳選。独特のなめらかさと複雑なフレーバーは他に類がない。',
+        badges:[{cls:'sb-rare',text:'WORLD RAREST'}],
+      },
+      {
+        name:'グアテマラ ウエウエテナンゴ',
+        url:'https://www.kotobukidiet.com/product-page/グアテマラ-ウエウエテナンゴ-1',
+        price:'¥1,800', unit:'200g',
+        country:'グアテマラ ウエウエテナンゴ',
+        flag:'🇬🇹', altitude:1800, altLabel:'1,600〜2,000m',
+        variety:'Bourbon / Caturra',
+        process:['ウォッシュド'],
+        roast:'浅煎り', bitter:1,
+        acid:3, sweet:4, body:2,
+        flavors:['Orange','Apple','Brown Sugar','Tea'],
+        desc:'グアテマラ西部の高標高産地ウエウエテナンゴ。乾燥した風と昼夜の大きな寒暖差が生む透明感ある味わい。オレンジやアップルを思わせる明るい果実感と紅茶のような滑らかな余韻。',
+        badges:[],
+      },
+      {
+        name:'グアテマラ アンティグア',
+        url:'https://www.kotobukidiet.com/product-page/グアテマラ-アンティグア',
+        price:'¥1,800', unit:'200g',
+        country:'グアテマラ アンティグア',
+        flag:'🇬🇹', altitude:1650, altLabel:'1,500〜1,800m',
+        variety:'Bourbon / Caturra',
+        process:['ウォッシュド'],
+        roast:'深煎り', bitter:4,
+        acid:2, sweet:4, body:4,
+        flavors:['Dark Chocolate','Cacao','Roasted Nuts','Caramel'],
+        desc:'火山に囲まれたグアテマラ屈指の名産地アンティグア。ダークチョコレートのような濃厚な甘さとカカオ・ローストナッツの香ばしさ。ミルクとの相性も抜群。',
+        badges:[],
+      },
+      {
+        name:'ケニア ニエリ ファクトリー ウォッシュド',
+        url:'https://www.kotobukidiet.com/product-page/ケニア-ニエリ-ファクトリー-ウォッシュド',
+        price:'¥1,100', unit:'100g',
+        country:'ケニア ニエリ',
+        flag:'🇰🇪', altitude:1700, altLabel:'1,700m',
+        variety:'SL28 / SL34',
+        process:['ウォッシュド'],
+        roast:'深煎り', bitter:4,
+        acid:3, sweet:3, body:5,
+        flavors:['Cassis','Dark Berry','Bitter Chocolate','Winey'],
+        desc:'ケニア中部の名産地ニエリ。深煎りでもケニア特有の鮮やかな酸がしっかり輪郭を残す。カシスやダークベリーの重厚な果実感にビターチョコのコク、驚くほどクリーンな後味。',
+        badges:[],
+      },
+    ]
+  },
+  {
+    id:'blend', label:'ブレンド・定番', en:'BLEND & DAILY', color:'#a87040',
+    flag:'☕', countryKey:'ブレンド',
+    items:[
+      {
+        name:'寿ブレンド＿華',
+        url:'https://www.kotobukidiet.com/product-page/寿ブレンド-華-200g',
+        price:'¥1,800', unit:'200g',
+        country:'オリジナルブレンド',
+        flag:'🇯🇵', altitude:0, altLabel:'—',
+        variety:'Blend',
+        process:['ウォッシュド','アナエロビック'],
+        roast:'浅煎り', bitter:2,
+        acid:2, sweet:2, body:4,
+        flavors:['Floral','Berry','Honey','Citrus'],
+        desc:'Kotobuki焙煎オリジナル。華やかなフローラルとベリーの上品なブレンド。特別な一杯を求める方へ。',
+        badges:[],
+      },
+      {
+        name:'寿ブレンド＿殿',
+        url:'https://www.kotobukidiet.com/product-page/寿ブレンド-殿',
+        price:'¥1,500', unit:'200g',
+        country:'オリジナルブレンド',
+        flag:'🇯🇵', altitude:0, altLabel:'—',
+        variety:'Blend',
+        process:['ウォッシュド','スマトラ式精製'],
+        roast:'深煎り', bitter:4,
+        acid:1, sweet:3, body:3,
+        flavors:['Chocolate','Caramel','Nutty'],
+        desc:'バランスの良い中深煎りブレンド。チョコレートとキャラメルの安定したコクが毎日の一杯にふさわしい。',
+        badges:[],
+      },
+      {
+        name:'寿ブレンド＿姫',
+        url:'https://www.kotobukidiet.com/product-page/寿ブレンド-姫',
+        price:'¥1,500', unit:'200g',
+        country:'オリジナルブレンド',
+        flag:'🇯🇵', altitude:0, altLabel:'—',
+        variety:'Blend',
+        process:['ウォッシュド'],
+        roast:'浅煎り', bitter:1,
+        acid:2, sweet:3, body:2,
+        flavors:['Floral','Citrus','Honey','Tea'],
+        desc:'上品で繊細なフローラルブレンド。日本茶に親しむ方にも馴染みやすい清涼感ある一杯。',
+        badges:[],
+      },
+      {
+        name:'デイリーブレンド',
+        url:'https://www.kotobukidiet.com/product-page/デイリーブレンド-300g',
+        price:'¥1,400', unit:'200g',
+        country:'オリジナルブレンド',
+        flag:'🇯🇵', altitude:0, altLabel:'—',
+        variety:'Blend',
+        process:['ウォッシュド'],
+        roast:'中煎り', bitter:2,
+        acid:1, sweet:2, body:3,
+        flavors:['Chocolate','Caramel','Citrus'],
+        desc:'毎日飲んでも飽きない定番ブレンド。飲みやすさとコクのバランスが絶妙な、いつでも安心の一杯。',
+        badges:[],
+      },
+      {
+        name:'アイスブレンド',
+        url:'https://www.kotobukidiet.com/product-page/アイスブレンド-200g',
+        price:'¥1,600', unit:'200g',
+        country:'オリジナルブレンド',
+        flag:'🇯🇵', altitude:0, altLabel:'—',
+        variety:'Blend',
+        process:['深煎り'],
+        roast:'深煎り', bitter:4,
+        acid:1, sweet:2, body:4,
+        flavors:['Dark Chocolate','Caramel','Smoky'],
+        desc:'アイスコーヒー用に設計されたブレンド。深煎りのしっかりした苦味と甘みが、氷で薄まっても美味しさを保ちます。',
+        badges:[],
+      },
+      {
+        name:'水出しコーヒー「コールドブリュー」２ℓ対応',
+        url:'https://www.kotobukidiet.com/product-page/水出しコーヒー-コールドブリュー-２ℓ対応',
+        price:'¥850', unit:'100g',
+        country:'オリジナルブレンド',
+        flag:'🇯🇵', altitude:0, altLabel:'—',
+        variety:'Blend',
+        process:['深煎り'],
+        roast:'深煎り', bitter:3,
+        flavors:['Chocolate','Caramel','Smooth'],
+        desc:'夏の定番、水出しコーヒー用ブレンド。2Lボトルで手軽に本格コールドブリューが楽しめる。スムースで飲みやすい味わい。',
+        badges:[],
+      },
+      {
+        name:'フォレストマウンテン',
+        url:'https://www.kotobukidiet.com/product-page/フォレストマウンテン',
+        price:'¥1,600', unit:'200g',
+        country:'ブレンド',
+        flag:'🌿', altitude:0, altLabel:'—',
+        variety:'Blend',
+        process:['ウォッシュド'],
+        roast:'中煎り', bitter:2,
+        acid:2, sweet:3, body:3,
+        flavors:['Chocolate','Berry','Earthy','Caramel'],
+        desc:'森の山から着想を得たブレンド。大地感のある落ち着いたフレーバーが特徴の、飲み飽きない一杯。',
+        badges:[],
+      },
+    ]
+  },
+  {
+    id:'decaf', label:'デカフェ', en:'DECAFFEINATED', color:'#5a8860',
+    flag:'🌙', countryKey:'デカフェ',
+    items:[
+      {
+        name:'フルッタメルカドン デカフェ',
+        url:'https://www.kotobukidiet.com/product-page/フルッタメルカドン-デカフェ',
+        price:'¥1,300', unit:'100g',
+        country:'ブラジル（デカフェ処理）',
+        flag:'🇧🇷', altitude:1100, altLabel:'〜1,100m',
+        variety:'Yellow Bourbon',
+        process:['デカフェ（Sugar Cane）'],
+        roast:'深煎り', bitter:3,
+        acid:1, sweet:2, body:4,
+        flavors:['Caramel','Chocolate','Berry','Honey'],
+        desc:'砂糖きびを使った自然なデカフェ処理。カフェインを取り除いても豊かなフレーバーを保持。妊娠中や夜の一杯にも安心。',
+        badges:[],
+      },
+      {
+        name:'ドン・ラファ デカフェ',
+        url:'https://www.kotobukidiet.com/product-page/ドン-ラファ-デカフェ',
+        price:'¥1,300', unit:'100g',
+        country:'コロンビア（デカフェ処理）',
+        flag:'🇨🇴', altitude:1700, altLabel:'〜1,700m',
+        variety:'Colombia Variety',
+        process:['デカフェ（Sugar Cane）'],
+        roast:'深煎り', bitter:3,
+        acid:1, sweet:3, body:2,
+        flavors:['Caramel','Citrus','Berry','Honey'],
+        desc:'コロンビア産のデカフェ。スガーケイン（砂糖きび）プロセスで自然に除カフェイン。コロンビアらしい明るいフレーバーが健在。',
+        badges:[],
+      },
+    ]
+  },
+  {
+    id:'tea', label:'紅茶', en:'TEA', color:'#9060a0',
+    flag:'🍵', countryKey:'紅茶',
+    items:[
+      {
+        name:'業務用紅茶茶葉 アールグレイ',
+        url:'https://www.kotobukidiet.com/product-page/業務用紅茶茶葉-50g-アールグレイ',
+        price:'¥1,500', unit:'50g',
+        country:'紅茶', flag:'🍵', altitude:0, altLabel:'—',
+        variety:'Ceylon Blend',
+        process:['茶葉'],
+        roast:'—', bitter:2,
+        flavors:['Bergamot','Floral','Tea','Citrus'],
+        desc:'ベルガモットの香りが豊かなアールグレイ。業務用クオリティの茶葉を50gで。コーヒーの合間にも、ホットでもアイスでも楽しめます。',
+        badges:[],
+      },
+    ]
+  },
+];
+
+/* ═══════════════ FLAVOR CLOUD DATA ═══════════════ */
+const flavorCount = {};
+CATEGORIES.forEach(cat => cat.items.forEach(item => {
+  item.flavors.forEach(f => {
+    const key = f.toLowerCase();
+    flavorCount[key] = (flavorCount[key] || 0) + 1;
+  });
+}));
+
+/* ═══════════════ ORIGIN COUNT ═══════════════ */
+const originCount = {};
+const originFlags = {};
+// 国名をcountryフィールドの先頭単語ではなく、flagと国名の対応で集計
+const COUNTRY_NAME_MAP = {
+  '🇪🇹':'エチオピア','🇨🇴':'コロンビア','🇧🇷':'ブラジル',
+  '🇷🇼':'ルワンダ','🇵🇦':'パナマ','🇺🇬':'ウガンダ',
+  '🇹🇭':'タイ','🇮🇩':'インドネシア','🇨🇳':'中国',
+  '🇬🇹':'グアテマラ','🇧🇴':'ボリビア','🇵🇪':'ペルー',
+  '🇹🇿':'タンザニア','🇮🇳':'インド','🇺🇸':'ハワイ','🇯🇲':'ジャマイカ','🇰🇪':'ケニア',
+};
+CATEGORIES.forEach(cat => cat.items.forEach(item => {
+  if(item.altitude === 0) return;
+  const name = COUNTRY_NAME_MAP[item.flag] || item.country.split(' ')[0].replace(/[（(].*$/,'').trim();
+  const key = item.flag + ' ' + name;
+  originCount[key] = (originCount[key]||0)+1;
+  originFlags[key] = item.flag;
+}));
+
+/* ═══════════════ PROCESS COUNT ═══════════════ */
+// 精製方法の正規化
+function normalizeProcess(p) {
+  if(!p) return 'その他';
+  // 複合・特殊を先に判定
+  if(/カルチャリング|culturing/i.test(p))                                return 'カルチャリング';
+  if(/nitro[\s-]?wash/i.test(p))                                       return 'NITRO-WASH';
+  if(/thermal.?shock|サーマルショック/i.test(p))                        return 'サーマルショック';
+  if(/carbonic|カーボニック/i.test(p))                                  return 'カーボニックマセレーション';
+  if(/インフューズド|infused/i.test(p))                                 return 'インフューズド';
+  if(/アナエロビック.*ハニー|anaerobic.*honey/i.test(p))                return 'アナエロビック ハニー';
+  if(/アナエロビック.*ナチュラル|anaerobic.*natural/i.test(p))          return 'アナエロビック ナチュラル';
+  if(/washed.*natural|natural.*washed|ウォッシュド.*ナチュラル|ナチュラル.*ウォッシュド/i.test(p)) return 'ウォッシュド + ナチュラル';
+  if(/experimental.*natural|ナチュラル.*experim/i.test(p))             return 'ナチュラル';
+  if(/anaerobic|アナエロビック/i.test(p))                               return 'アナエロビック';
+  if(/washed|ウォッシュド/i.test(p))                                    return 'ウォッシュド';
+  if(/natural|ナチュラル/i.test(p))                                     return 'ナチュラル';
+  if(/honey|ハニー/i.test(p))                                           return 'ハニー';
+  if(/スマトラ/i.test(p))                                               return 'スマトラ式';
+  if(/デカフェ/i.test(p))                                               return 'デカフェ';
+  if(/体内発酵/i.test(p))                                               return 'ナチュラル';
+  if(/深煎り/i.test(p))                                                 return 'ナチュラル';
+  if(/ドリップ/i.test(p))                                               return 'ドリップバッグ';
+  if(/茶葉/i.test(p))                                                   return '茶葉';
+  if(/各種/i.test(p))                                                   return 'ドリップバッグ';
+  return p;
+}
+const processCount = {};
+CATEGORIES.forEach(cat => cat.items.forEach(item => {
+  item.process.forEach(p => {
+    const n = normalizeProcess(p);
+    processCount[n] = (processCount[n]||0)+1;
+  });
+}));
+
+const PROCESS_META = {
+  'カルチャリング':              { color:'#e8c060', bg:'#201800', icon:'🔬' },
+  'ウォッシュド':               { color:'#5090c8', bg:'#081420', icon:'💧' },
+  'ナチュラル':                 { color:'#d08030', bg:'#1a0c00', icon:'☀️' },
+  'アナエロビック':             { color:'#9068d0', bg:'#14081e', icon:'🫧' },
+  'アナエロビック ナチュラル':  { color:'#b060c8', bg:'#180828', icon:'🫧☀️' },
+  'アナエロビック ハニー':      { color:'#c080a0', bg:'#1e0818', icon:'🫧🍯' },
+  'ハニー':                     { color:'#d0a030', bg:'#1a1000', icon:'🍯' },
+  'カーボニックマセレーション': { color:'#60a858', bg:'#0c1808', icon:'🌿' },
+  'サーマルショック':           { color:'#c05090', bg:'#180810', icon:'🌡️' },
+  'NITRO-WASH':                { color:'#50b8d8', bg:'#081820', icon:'⚗️' },
+  'インフューズド':             { color:'#e07858', bg:'#1a0800', icon:'✨' },
+  'ウォッシュド + ナチュラル':  { color:'#88a860', bg:'#0e1408', icon:'💧☀️' },
+  'スマトラ式':                 { color:'#508878', bg:'#0e1410', icon:'🌴' },
+  'デカフェ':                   { color:'#70b880', bg:'#082010', icon:'🌙' },
+  'ドリップバッグ':             { color:'#a08868', bg:'#1a1510', icon:'☕' },
+  '茶葉':                       { color:'#80b870', bg:'#0c180a', icon:'🍵' },
+};
+
+/* ═══════════════ ROAST DATA ═══════════════ */
+const roastData = {'浅煎り':[],'中煎り':[],'深煎り':[],'浅煎り/深煎り':[],'各種':[]};
+CATEGORIES.forEach(cat => cat.items.forEach(item => {
+  const r = item.roast;
+  if(roastData[r]) roastData[r].push({name:item.name, color:cat.color});
+}));
+
+/* ═══════════════ BUILD NAV ═══════════════ */
+const nav = document.getElementById('nav');
+[
+  {id:'sec-origins', label:'産地マップ',    color:'#d4952a'},
+  {id:'sec-cloud',   label:'フレーバー',    color:'#d4952a'},
+  {id:'sec-process', label:'精製方法',      color:'#d4952a'},
+  {id:'sec-roast',   label:'焙煎度',        color:'#d4952a'},
+  ...CATEGORIES.map(c=>({id:'sec-'+c.id,label:c.label,color:c.color}))
+].forEach(n=>{
+  const a=document.createElement('a');
+  a.className='n-link'; a.href='#'+n.id;
+  a.innerHTML=`<span class="n-dot" style="background:${n.color}"></span>${n.label}`;
+  nav.appendChild(a);
+});
+
+/* ═══════════════ ORIGIN GRID ═══════════════ */
+// 国名 → 3文字コード + セクションID マッピング
+const ORIGIN_CODE = {
+  'エチオピア':   { code:'ETH', sec:'sec-ethiopia' },
+  'コロンビア':   { code:'COL', sec:'sec-colombia' },
+  'ブラジル':     { code:'BRA', sec:'sec-brazil'   },
+  'ルワンダ':     { code:'RWA', sec:'sec-world'    },
+  'パナマ':       { code:'PAN', sec:'sec-world'    },
+  'ウガンダ':     { code:'UGA', sec:'sec-world'    },
+  'タイ':         { code:'THA', sec:'sec-world'    },
+  'インドネシア': { code:'IDN', sec:'sec-world'    },
+  '中国':         { code:'CHN', sec:'sec-world'    },
+  'グアテマラ':   { code:'GTM', sec:'sec-world'    },
+  'ボリビア':     { code:'BOL', sec:'sec-world'    },
+  'ペルー':       { code:'PER', sec:'sec-world'    },
+  'タンザニア':   { code:'TZA', sec:'sec-world'    },
+  'インド':       { code:'IND', sec:'sec-world'    },
+  'ハワイ':       { code:'HAW', sec:'sec-world'    },
+  'ジャマイカ':   { code:'JAM', sec:'sec-world'    },
+  'ケニア':       { code:'KEN', sec:'sec-world'    },
+};
+
+const ogEl = document.getElementById('origin-grid');
+const maxCount = Math.max(...Object.values(originCount));
+Object.entries(originCount).sort((a,b)=>b[1]-a[1]).forEach(([key,cnt])=>{
+  const [flag,...rest] = key.split(' ');
+  const name = rest.join(' ');
+  const pct = Math.round(cnt/maxCount*100);
+  const meta = ORIGIN_CODE[name] || { code: name.slice(0,3).toUpperCase(), sec: 'sec-world' };
+
+  const d = document.createElement('div');
+  d.className = 'og-card';
+  d.style.cssText = 'cursor:pointer;';
+  d.innerHTML=`
+    <div class="og-flag">${flag}</div>
+    <div class="og-code">${meta.code}</div>
+    <div class="og-country">${name}</div>
+    <div class="og-count">${cnt}</div>
+    <div class="og-label">PRODUCTS IN STOCK</div>
+    <div class="og-bar"><div class="og-bar-fill" data-pct="${pct}" style="width:0%"></div></div>
+    <div class="og-goto">→ 商品を見る</div>
+  `;
+  // smooth scroll
+  d.addEventListener('click', () => {
+    const target = document.getElementById(meta.sec);
+    if(target) target.scrollIntoView({ behavior:'smooth', block:'start' });
+  });
+  ogEl.appendChild(d);
+});
+
+/* ═══════════════ PROCESS FILTER GRID ═══════════════ */
+const pfEl = document.getElementById('process-filter-grid');
+const maxPc = Math.max(...Object.values(processCount));
+Object.entries(processCount).sort((a,b)=>b[1]-a[1]).forEach(([p,cnt])=>{
+  const pm  = PROCESS_META[p] || {color:'#a08868',bg:'#1a1510',icon:'☕'};
+  const pct = Math.round(cnt/maxPc*100);
+  const d   = document.createElement('div');
+  d.className      = 'pf-card';
+  d.dataset.process = p;
+  d.style.setProperty('--pf-color', pm.color);
+  d.style.setProperty('--pf-bg',    pm.bg);
+  d.innerHTML = `
+    <div class="pf-check">✓</div>
+    <div class="pf-icon">${pm.icon}</div>
+    <div class="pf-name" style="color:${pm.color}">${p}</div>
+    <div class="pf-count" style="color:${pm.color}">${cnt}</div>
+    <div class="pf-label">PRODUCTS</div>
+    <div class="pf-bar"><div class="pf-bar-fill" data-pct="${pct}" style="width:0%;background:${pm.color}"></div></div>
+  `;
+  d.addEventListener('click', () => toggleProcessFilter(p));
+  pfEl.appendChild(d);
+});
+
+/* ═══════════════ FLAVOR CLOUD ═══════════════ */
+const fcEl = document.getElementById('fc-wrap');
+const maxFc = Math.max(...Object.values(flavorCount));
+
+// ── フィルター状態管理（フレーバー・精製方法 共通） ──
+let activeFilters  = new Set(); // フレーバー
+let activeProcessFilters = new Set(); // 精製方法
+
+function applyFilter() {
+  const allCards = document.querySelectorAll('.card[data-flavors]');
+  const bar      = document.getElementById('filter-bar');
+  const tagsEl   = document.getElementById('filter-tags');
+  const countEl  = document.getElementById('filter-count');
+  const hasFilter = activeFilters.size > 0 || activeProcessFilters.size > 0;
+
+  if (!hasFilter) {
+    allCards.forEach(c => { c.style.display=''; c.style.opacity=''; c.style.transform=''; });
+    document.querySelectorAll('#product-sections .reveal').forEach(s => s.style.display='');
+    bar.style.display = 'none';
+    return;
+  }
+
+  bar.style.display = 'flex';
+
+  // フィルタータグ表示（フレーバー + 精製）
+  const flavorTags = [...activeFilters].map(f => {
+    const st = flavorStyle(f);
+    return `<span style="font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.1em;padding:3px 10px;border-radius:2px;background:${st.bg};color:${st.color};border:1px solid ${st.color}40;display:flex;align-items:center;gap:5px;">
+      ${st.icon} ${f}
+      <span onclick="removeFlavorFilter('${f}')" style="cursor:pointer;opacity:.6;margin-left:4px;">✕</span>
+    </span>`;
+  });
+  const procTags = [...activeProcessFilters].map(p => {
+    const pm = PROCESS_META[p] || {color:'#a08868',bg:'#1a1510',icon:'☕'};
+    return `<span style="font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.1em;padding:3px 10px;border-radius:2px;background:${pm.bg};color:${pm.color};border:1px solid ${pm.color}40;display:flex;align-items:center;gap:5px;">
+      ${pm.icon} ${p}
+      <span onclick="removeProcessFilter('${p}')" style="cursor:pointer;opacity:.6;margin-left:4px;">✕</span>
+    </span>`;
+  });
+  tagsEl.innerHTML = [...flavorTags, ...procTags].join('');
+
+  // カードフィルタリング
+  let visCount = 0;
+  allCards.forEach(c => {
+    const cardFlavors  = c.dataset.flavors.split(',');
+    const cardProcs    = (c.dataset.processes||'').split(',');
+
+    const flavorMatch = activeFilters.size === 0 || [...activeFilters].every(f =>
+      cardFlavors.some(cf => cf.includes(f) || f.includes(cf))
+    );
+    const procMatch = activeProcessFilters.size === 0 || [...activeProcessFilters].some(p =>
+      cardProcs.some(cp => cp === p)
+    );
+
+    if (flavorMatch && procMatch) {
+      c.style.display=''; c.style.opacity='1'; visCount++;
+    } else {
+      c.style.display='none';
+    }
+  });
+  countEl.textContent = visCount + ' 件';
+
+  document.querySelectorAll('#product-sections .reveal').forEach(sec => {
+    const visible = [...sec.querySelectorAll('.card[data-flavors]')].some(c => c.style.display !== 'none');
+    sec.style.display = visible ? '' : 'none';
+  });
+
+  const firstVisible = [...document.querySelectorAll('#product-sections .reveal')]
+    .find(s => s.style.display !== 'none');
+  if (firstVisible) setTimeout(() => firstVisible.scrollIntoView({ behavior:'smooth', block:'start' }), 50);
+}
+
+// ── フレーバーフィルター ──
+function addFilter(flavor) {
+  activeFilters.add(flavor.toLowerCase());
+  updateFcHighlight();
+  applyFilter();
+}
+function removeFlavorFilter(flavor) {
+  activeFilters.delete(flavor.toLowerCase());
+  updateFcHighlight();
+  applyFilter();
+}
+function removeFilter(flavor) { removeFlavorFilter(flavor); } // 後方互換
+
+function updateFcHighlight() {
+  document.querySelectorAll('.fc-item').forEach(el => {
+    const f = el.dataset.flavor;
+    if (activeFilters.has(f)) {
+      el.style.outline='1px solid currentColor'; el.style.borderRadius='3px';
+      el.style.padding='2px 6px'; el.style.opacity='1';
+    } else {
+      el.style.outline=''; el.style.padding='';
+      el.style.opacity = activeFilters.size > 0 ? '0.3' : '';
+    }
+  });
+}
+
+// ── 精製方法フィルター ──
+function toggleProcessFilter(p) {
+  if (activeProcessFilters.has(p)) {
+    activeProcessFilters.delete(p);
+  } else {
+    activeProcessFilters.add(p);
+  }
+  // pf-cardのactiveクラス更新
+  document.querySelectorAll('.pf-card').forEach(el => {
+    el.classList.toggle('active', activeProcessFilters.has(el.dataset.process));
+  });
+  applyFilter();
+}
+function removeProcessFilter(p) {
+  activeProcessFilters.delete(p);
+  document.querySelectorAll('.pf-card').forEach(el => {
+    el.classList.toggle('active', activeProcessFilters.has(el.dataset.process));
+  });
+  applyFilter();
+}
+
+// ── 全クリア ──
+function clearFilter() {
+  activeFilters.clear();
+  activeProcessFilters.clear();
+  updateFcHighlight();
+  document.querySelectorAll('.pf-card').forEach(el => el.classList.remove('active'));
+  const allCards = document.querySelectorAll('.card[data-flavors]');
+  allCards.forEach(c => { c.style.display=''; c.style.opacity=''; c.style.transform=''; });
+  document.querySelectorAll('#product-sections .reveal').forEach(s => s.style.display='');
+  document.getElementById('filter-bar').style.display='none';
+}
+
+Object.entries(flavorCount).sort((a,b)=>b[1]-a[1]).forEach(([f,cnt])=>{
+  const ratio = cnt/maxFc;
+  const size = 0.65 + ratio*1.8;
+  const st = flavorStyle(f);
+  const el=document.createElement('span');
+  el.className='fc-item';
+  el.dataset.flavor = f;
+  el.textContent = st.icon + ' ' + f;
+  el.style.cssText=`font-size:${size}rem;color:${st.color};opacity:${0.4+ratio*.6};cursor:pointer;transition:opacity .2s,transform .2s,outline .15s;`;
+  el.title = `「${f}」でフィルター`;
+  el.addEventListener('click', () => {
+    if (activeFilters.has(f)) {
+      removeFilter(f);
+    } else {
+      addFilter(f);
+    }
+  });
+  fcEl.appendChild(el);
+});
+
+/* ═══════════════ ROAST SPECTRUM ═══════════════ */
+const rbEl = document.getElementById('roast-bar');
+
+function scrollToCard(name) {
+  // data-flavorsを持つaタグの中からcard-nameテキストで検索
+  const allCards = document.querySelectorAll('.card[data-flavors]');
+  const target = [...allCards].find(c => {
+    const nameEl = c.querySelector('.card-name');
+    return nameEl && nameEl.textContent.trim().includes(name.trim().slice(0, 12));
+  });
+  if (target) {
+    // フィルターが有効な場合は一旦解除
+    if (activeFilters.size > 0) clearFilter();
+    setTimeout(() => {
+      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // ハイライト演出
+      target.style.transition = 'box-shadow .3s';
+      target.style.boxShadow = `0 0 0 2px var(--gold)`;
+      setTimeout(() => { target.style.boxShadow = ''; }, 1800);
+    }, 50);
+  }
+}
+
+['浅煎り','中煎り','深煎り'].forEach(r=>{
+  const rc = ROAST_COLOR[r];
+  const d = document.createElement('div');
+  d.className = 'roast-col';
+
+  // タイトル
+  const items = roastData[r];
+  const extraItems = roastData['浅煎り/深煎り'];
+  const titleDiv = document.createElement('div');
+  titleDiv.className = 'roast-col-title';
+  titleDiv.style.color = rc.color;
+  titleDiv.textContent = `${r} — ${items.length}品${r==='浅煎り'?' (+'+extraItems.length+'品 選択可)':''}`;
+  d.appendChild(titleDiv);
+
+  // 通常アイテム
+  items.forEach(i => {
+    const row = document.createElement('div');
+    row.className = 'roast-item';
+    row.style.cssText = 'cursor:pointer;transition:color .15s,opacity .15s;';
+    row.title = `「${i.name}」の商品カードへ`;
+    row.innerHTML = `<span class="roast-item-dot" style="background:${i.color}"></span><span>${i.name}</span>`;
+    row.addEventListener('click', () => scrollToCard(i.name));
+    row.addEventListener('mouseenter', () => row.style.opacity = '.7');
+    row.addEventListener('mouseleave', () => row.style.opacity = '');
+    d.appendChild(row);
+  });
+
+  // 浅煎り/深煎り選択可アイテム（浅煎りカラムにのみ表示）
+  if (r === '浅煎り') {
+    extraItems.forEach(i => {
+      const row = document.createElement('div');
+      row.className = 'roast-item';
+      row.style.cssText = 'opacity:.55;cursor:pointer;transition:opacity .15s;';
+      row.title = `「${i.name}」の商品カードへ`;
+      row.innerHTML = `<span class="roast-item-dot" style="background:${i.color}"></span><span>${i.name} <em style="font-size:.55rem">(深煎りも選択可)</em></span>`;
+      row.addEventListener('click', () => scrollToCard(i.name));
+      row.addEventListener('mouseenter', () => row.style.opacity = '.85');
+      row.addEventListener('mouseleave', () => row.style.opacity = '.55');
+      d.appendChild(row);
+    });
+  }
+
+  rbEl.appendChild(d);
+});
+
+/* ═══════════════ PRODUCT SECTIONS ═══════════════ */
+const psEl = document.getElementById('product-sections');
+CATEGORIES.forEach((cat,ci)=>{
+  const sec=document.createElement('section');
+  sec.id='sec-'+cat.id; sec.className='reveal';
+  sec.innerHTML=`
+    <div class="s-head">
+      <div class="s-num" style="color:${cat.color}22">${String(ci+1).padStart(2,'0')}</div>
+      <div class="s-info">
+        <div class="s-en" style="color:${cat.color}">${cat.flag} ${cat.en}</div>
+        <div class="s-ja">${cat.label}</div>
+      </div>
+    </div>
+    <div class="grid" id="grid-${cat.id}"></div>
+  `;
+  psEl.appendChild(sec);
+
+  const grid=sec.querySelector(`#grid-${cat.id}`);
+  cat.items.forEach((item,ii)=>{
+    const bitterHTML = Array.from({length:5},(_,i)=>{
+      const on = i<item.bitter;
+      const col = item.bitter<=1?'#a8c840':item.bitter<=2?'#d4952a':item.bitter<=3?'#d07040':'#c84040';
+      return `<span class="bdot${on?' on':''}" style="${on?`background:${col};border-color:${col}`:''}"></span>`;
+    }).join('');
+
+    const flavorHTML = item.flavors.map(f=>{
+      const st=flavorStyle(f);
+      return `<span class="ftag" style="background:${st.bg};color:${st.color};border:1px solid ${st.color}30">
+        <span class="ftag-icon">${st.icon}</span>${f}
+      </span>`;
+    }).join('');
+
+    const processHTML = item.process.map(p=>{
+      const ps=processStyle(p);
+      return `<span class="proc-badge" style="background:${ps.bg};color:${ps.color};border:1px solid ${ps.color}30">${p}</span>`;
+    }).join('');
+
+    const badgesHTML = item.badges.map(b=>`<span class="sp-badge ${b.cls}">${b.text}</span>`).join('');
+
+    const altPctVal = item.altitude>0 ? altPct(item.altitude) : 0;
+
+    const card=document.createElement('a');
+    card.className='card';
+    card.dataset.flavors   = item.flavors.map(f=>f.toLowerCase()).join(',');
+    card.dataset.processes = item.process.map(p=>normalizeProcess(p)).join(',');
+    card.dataset.bitter    = item.bitter||0;
+    card.dataset.acid      = item.acid||0;
+    card.dataset.sweet     = item.sweet||0;
+    card.dataset.body      = item.body||0;
+    card.dataset.price     = parseInt((item.price||'0').replace(/[¥,]/g,''))||0;
+    card.dataset.name      = item.name;
+    card.dataset.catId     = cat.id;
+    if(item.url){ card.href=item.url; card.target='_blank'; card.rel='noopener noreferrer'; }
+    card.style.cssText=`--card-accent:${cat.color};animation-delay:${ii*.04}s`;
+    card.innerHTML=`
+      <div class="card-bar" style="background:linear-gradient(to bottom,${cat.color},transparent)"></div>
+      ${badgesHTML?`<div class="sp-badges">${badgesHTML}</div>`:''}
+      <div class="card-top">
+        <div class="card-price-block">
+          <div class="card-price" style="color:${cat.color}">${item.price}</div>
+          <div class="card-unit">/ ${item.unit}</div>
+        </div>
+        <div class="card-roast">
+          <span>${item.roast}</span>
+        </div>
+      </div>
+      <div class="card-name">${item.name}</div>
+      <div class="card-origin">
+        <span class="origin-flag">${item.flag}</span>
+        <div class="origin-detail">
+          <div class="origin-name">${item.country}</div>
+          ${item.variety?`<div class="origin-alt">${item.variety}</div>`:''}
+        </div>
+      </div>
+      ${item.altitude>0?`
+      <div class="alt-row">
+        <div class="alt-label">標高</div>
+        <div class="alt-bar-wrap"><div class="alt-bar" data-pct="${altPctVal}" style="width:0%;background:${cat.color}60"></div></div>
+        <div class="alt-val" style="color:${cat.color}">${item.altLabel}</div>
+      </div>`:''}
+      <div class="flavor-section">
+        <div class="flavor-label">Flavor Profile</div>
+        <div class="flavor-tags">${flavorHTML}</div>
+      </div>
+      <div class="bitter-row">
+        <div class="bitter-label">苦味</div>
+        <div class="bitter-dots">${bitterHTML}</div>
+      </div>
+      <div class="taste-section">
+        ${item.acid!=null?`
+        <div class="taste-row">
+          <div class="taste-label">酸味</div>
+          <div class="taste-dots">${Array.from({length:5},(_,i)=>`<span class="tdot${i<item.acid?' on acid-on':''}"></span>`).join('')}</div>
+        </div>`:''}
+        ${item.sweet!=null?`
+        <div class="taste-row">
+          <div class="taste-label">甘み</div>
+          <div class="taste-dots">${Array.from({length:5},(_,i)=>`<span class="tdot${i<item.sweet?' on sweet-on':''}"></span>`).join('')}</div>
+        </div>`:''}
+        ${item.body!=null?`
+        <div class="taste-row">
+          <div class="taste-label">濃度</div>
+          <div class="taste-dots">${Array.from({length:5},(_,i)=>`<span class="tdot${i<item.body?' on body-on':''}"></span>`).join('')}</div>
+        </div>`:''}
+      </div>
+      <div class="process-row">${processHTML}</div>
+      <div class="variety-row">
+        <span class="variety-label">VARIETY —</span>
+        <span class="variety-val">${item.variety}</span>
+      </div>
+      <div class="card-desc">${item.desc}</div>
+      ${item.url?`<div class="card-shop-btn" style="border-color:${cat.color}30;color:${cat.color}">ショップで購入 →</div>`:''}
+    `;
+    grid.appendChild(card);
+  });
+});
+
+/* ═══════════════ SORT ═══════════════ */
+let currentSort = null; // {key, dir:'asc'|'desc'}
+
+function setSort(key) {
+  if(currentSort && currentSort.key === key) {
+    // 同じキーなら昇順↔降順を切り替え
+    currentSort.dir = currentSort.dir === 'desc' ? 'asc' : 'desc';
+  } else {
+    currentSort = { key, dir: 'desc' };
+  }
+  // ボタンのアクティブ状態更新
+  document.querySelectorAll('.sort-btn').forEach(btn => {
+    btn.classList.remove('active','asc','desc');
+    if(btn.dataset.key === key) {
+      btn.classList.add('active', currentSort.dir);
+    }
+  });
+  applySortAndFilter();
+}
+
+function resetSort() {
+  currentSort = null;
+  document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active','asc','desc'));
+  applySortAndFilter();
+}
+
+function applySortAndFilter() {
+  // フィルター適用（既存applyFilterを呼ぶ）
+  applyFilter();
+  if(!currentSort) return;
+
+  const { key, dir } = currentSort;
+  const mult = dir === 'desc' ? -1 : 1;
+
+  // 全セクションの表示中カードをソート
+  document.querySelectorAll('#product-sections .reveal').forEach(sec => {
+    const grid = sec.querySelector('.grid');
+    if(!grid) return;
+    const cards = [...grid.querySelectorAll('.card[data-flavors]')]
+      .filter(c => c.style.display !== 'none');
+    if(!cards.length) return;
+
+    cards.sort((a,b) => {
+      const av = parseFloat(a.dataset[key]||0);
+      const bv = parseFloat(b.dataset[key]||0);
+      return (av - bv) * mult;
+    });
+
+    // DOMを並べ替え
+    cards.forEach(c => grid.appendChild(c));
+  });
+}
+
+// applyFilterの末尾でソートも適用されるようにオーバーライド
+const _origApply = applyFilter;
+// applySortAndFilterはapplyFilter内からは呼ばない（循環回避）
+// ソートボタン押下時はsetSort→applySortAndFilter→applyFilter+sort の順
+
+/* ═══════════════ HERO CANVAS ═══════════════ */
+const canvas=document.getElementById('hcanvas');
+const ctx=canvas.getContext('2d');
+let W,H,particles=[];
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;initP()}
+function initP(){
+  particles=[];
+  const n=Math.min(60,Math.floor(W*H/18000));
+  for(let i=0;i<n;i++) particles.push({
+    x:Math.random()*W,y:Math.random()*H,
+    vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,
+    r:Math.random()*1.5+.5,
+    a:Math.random()*.3+.05
+  });
+}
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  // radial glow
+  const g=ctx.createRadialGradient(W/2,H*.6,0,W/2,H*.6,Math.min(W,H)*.7);
+  g.addColorStop(0,'#3a1e0818');g.addColorStop(1,'transparent');
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  // particles
+  particles.forEach(p=>{
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0||p.x>W)p.vx*=-1;
+    if(p.y<0||p.y>H)p.vy*=-1;
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(212,149,42,${p.a})`;ctx.fill();
+  });
+  // connections
+  for(let i=0;i<particles.length;i++){
+    for(let j=i+1;j<particles.length;j++){
+      const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y;
+      const d=Math.sqrt(dx*dx+dy*dy);
+      if(d<120){
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x,particles[i].y);
+        ctx.lineTo(particles[j].x,particles[j].y);
+        ctx.strokeStyle=`rgba(212,149,42,${.08*(1-d/120)})`;
+        ctx.lineWidth=.5;ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(draw);
+}
+window.addEventListener('resize',resize);
+resize();draw();
+
+/* ═══════════════ SCROLL REVEAL ═══════════════ */
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('vis');
+      // animate bars
+      e.target.querySelectorAll('[data-pct]').forEach(b=>{
+        setTimeout(()=>b.style.width=b.dataset.pct+'%',100);
+      });
+      io.unobserve(e.target);
+    }
+  });
+},{threshold:.06});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+// also observe cards inside sections
+setTimeout(()=>{
+  document.querySelectorAll('.card').forEach((c,i)=>{
+    c.style.opacity='0';c.style.transform='translateY(20px)';
+    const cio=new IntersectionObserver(([e])=>{
+      if(e.isIntersecting){
+        setTimeout(()=>{
+          c.style.transition='opacity .4s ease,transform .4s ease';
+          c.style.opacity='1';c.style.transform='none';
+          c.querySelectorAll('[data-pct]').forEach(b=>{
+            setTimeout(()=>b.style.width=b.dataset.pct+'%',200);
+          });
+        },i%8*40);
+        cio.unobserve(c);
+      }
+    },{threshold:.05});
+    cio.observe(c);
+  });
+},100);
+</script>
+<script>
+// Wix iFrame 高さ自動通知
+function notifyHeight() {
+  const h = Math.max(
+    document.body.scrollHeight,
+    document.documentElement.scrollHeight
+  );
+  window.parent.postMessage({ type: 'height', value: h }, '*');
+}
+// ページ読み込み後・リサイズ時・DOM変化時に通知
+window.addEventListener('load', () => setTimeout(notifyHeight, 300));
+window.addEventListener('resize', notifyHeight);
+new MutationObserver(notifyHeight).observe(document.body, {
+  subtree: true, childList: true, attributes: true
+});
+</script>
+</body>
+</html>
