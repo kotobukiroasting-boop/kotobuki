@@ -491,16 +491,26 @@
     list.querySelectorAll(".customer-item").forEach(el => el.remove());
 
     const customers = {};
+    const lastSeenTimes = JSON.parse(localStorage.getItem("lastSeenTimes") || "{}");
+
     allMessages.forEach(msg => {
       if (msg.role === "customer") {
-        customers[msg.name] = {
-          lastMessage: msg.type === "image" ? "📷 画像" : msg.type === "link" ? "🔗 リンク" : msg.type === "broadcast" ? "📢 お知らせ" : msg.text,
-          lastTime: msg.timestamp
-        };
+        const existing = customers[msg.name];
+        const msgTime = msg.timestamp?.seconds || 0;
+        if (!existing || msgTime > (existing.lastTimestamp || 0)) {
+          customers[msg.name] = {
+            lastMessage: msg.type === "image" ? "📷 画像" : msg.type === "link" ? "🔗 リンク" : msg.type === "broadcast" ? "📢 お知らせ" : msg.text,
+            lastTime: msg.timestamp,
+            lastTimestamp: msgTime
+          };
+        }
       }
     });
 
-    const names = Object.keys(customers);
+    // 最新順に並び替え
+    const names = Object.keys(customers).sort((a, b) => 
+      (customers[b].lastTimestamp || 0) - (customers[a].lastTimestamp || 0)
+    );
     document.getElementById("emptyList").style.display = names.length === 0 ? "block" : "none";
 
     function normN(n) { return String(n).replace(/\s/g, "").replace(/　/g, "").toLowerCase(); }
@@ -537,11 +547,18 @@
         }
       }
 
+      // 未読チェック
+      const lastSeen = lastSeenTimes[name] || 0;
+      const isUnread = (c.lastTimestamp || 0) > lastSeen && name !== selectedCustomer;
+      
       item.innerHTML = `
-        <div class="avatar">${name.charAt(0)}</div>
+        <div class="avatar" style="${isUnread ? 'background:#e74c3c' : ''}">${name.charAt(0)}</div>
         <div class="customer-info">
-          <div class="customer-name">${escapeHtml(name)}</div>
-          <div class="last-message">${escapeHtml(c.lastMessage)}</div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <div class="customer-name" style="${isUnread ? 'font-weight:900;color:#1a1a2e' : ''}">${escapeHtml(name)}</div>
+            ${isUnread ? '<span style="background:#e74c3c;color:white;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:bold">NEW</span>' : ''}
+          </div>
+          <div class="last-message" style="${isUnread ? 'color:#333;font-weight:600' : ''}">${escapeHtml(c.lastMessage)}</div>
           ${memberBadge}
         </div>
         <div class="customer-meta">
@@ -556,6 +573,12 @@
   // ===== お客さまを選択 =====
   function selectCustomer(name) {
     selectedCustomer = name;
+
+    // 既読時刻を保存
+    const lastSeenTimes = JSON.parse(localStorage.getItem("lastSeenTimes") || "{}");
+    lastSeenTimes[name] = Math.floor(Date.now() / 1000);
+    localStorage.setItem("lastSeenTimes", JSON.stringify(lastSeenTimes));
+
     document.getElementById("customerList").classList.add("hidden");
     document.getElementById("chatPanel").classList.add("active");
     document.getElementById("backBtn").style.display = "block";
