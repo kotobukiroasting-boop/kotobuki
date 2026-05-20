@@ -360,6 +360,11 @@
 
       <div id="couponCount" style="font-size:13px;color:#888;margin-bottom:12px"></div>
 
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <button id="couponTabSend" onclick="showCouponTab('send')" style="flex:1;background:#e74c3c;color:white;border:none;border-radius:8px;padding:8px;cursor:pointer;font-size:13px">📤 配信</button>
+        <button id="couponTabHistory" onclick="showCouponTab('history')" style="flex:1;background:#888;color:white;border:none;border-radius:8px;padding:8px;cursor:pointer;font-size:13px">📋 履歴</button>
+      </div>
+      <div id="couponHistoryList" style="display:none;max-height:250px;overflow-y:auto;margin-bottom:12px"></div>
       <button id="couponSendBtn" style="background:linear-gradient(135deg,#e74c3c,#c0392b);margin-bottom:8px">🎂 選択した方に送信</button>
       <button id="couponCancelBtn" style="background:#aaa">キャンセル</button>
     </div>
@@ -427,7 +432,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, setDoc, doc }
+  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, setDoc, doc, getDoc, updateDoc }
     from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -473,6 +478,7 @@
     onSnapshot(q, (snapshot) => {
       allMessages = [];
       snapshot.forEach(doc => allMessages.push({ id: doc.id, ...doc.data() }));
+      checkNewMessages(allMessages);
       renderCustomerList();
       if (selectedCustomer) renderChat(selectedCustomer);
     });
@@ -854,8 +860,11 @@
 
     const names = Array.from(checked).map(el => el.dataset.name);
 
+    const today = new Date();
+    const sentMonth = `${today.getFullYear()}-${today.getMonth()+1}`;
     let count = 0;
     for (const name of names) {
+      // メッセージ送信
       await addDoc(collection(db, "messages"), {
         text: text,
         type: "coupon",
@@ -864,11 +873,20 @@
         roomId: name,
         timestamp: serverTimestamp()
       });
+      // クーポン履歴をFirestoreに保存
+      await setDoc(doc(db, "coupons", `${sentMonth}_${name}`), {
+        name: name,
+        month: sentMonth,
+        text: text,
+        used: false,
+        sentAt: serverTimestamp()
+      });
       count++;
     }
 
     document.getElementById("couponModal").style.display = "none";
     alert(`✅ ${count}名にクーポンを送信しました！`);
+    renderCouponHistory();
   });
 
   // CSVアップロード時にallMembersも保存
@@ -920,6 +938,103 @@
     reader.readAsText(file, "UTF-8");
     e.target.value = "";
   });
+
+  // ===== クーポン履歴 =====
+  window.showCouponTab = function(tab) {
+    const sendArea = document.getElementById("couponTargetList");
+    const historyArea = document.getElementById("couponHistoryList");
+    const sendBtn = document.getElementById("couponSendBtn");
+    const countEl = document.getElementById("couponCount");
+    const textArea = document.getElementById("couponText");
+
+    if (tab === 'history') {
+      sendArea.style.display = "none";
+      historyArea.style.display = "block";
+      sendBtn.style.display = "none";
+      countEl.style.display = "none";
+      textArea.style.display = "none";
+      document.getElementById("couponTabHistory").style.background = "#e74c3c";
+      document.getElementById("couponTabSend").style.background = "#888";
+      renderCouponHistory();
+    } else {
+      sendArea.style.display = "block";
+      historyArea.style.display = "none";
+      sendBtn.style.display = "block";
+      countEl.style.display = "block";
+      textArea.style.display = "block";
+      document.getElementById("couponTabSend").style.background = "#e74c3c";
+      document.getElementById("couponTabHistory").style.background = "#888";
+    }
+  };
+
+  async function renderCouponHistory() {
+    const el = document.getElementById("couponHistoryList");
+    el.innerHTML = '<div style="text-align:center;padding:16px;color:#aaa">読み込み中...</div>';
+    try {
+      const { getDocs } = await import("https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js");
+      const snap = await getDocs(collection(db, "coupons"));
+      if (snap.empty) {
+        el.innerHTML = '<div style="text-align:center;padding:16px;color:#aaa">履歴はありません</div>';
+        return;
+      }
+      const docs = [];
+      snap.forEach(d => docs.push({ id: d.id, ...d.data() }));
+      docs.sort((a, b) => (b.sentAt?.seconds || 0) - (a.sentAt?.seconds || 0));
+
+      el.innerHTML = docs.map(d => `
+        <div style="display:flex;align-items:center;padding:10px 12px;border-bottom:1px solid #f0f0f0;gap:10px" id="coupon_${d.id}">
+          <div style="flex:1">
+            <div style="font-size:14px;font-weight:bold">${d.name}</div>
+            <div style="font-size:12px;color:#888">${d.month}月配信</div>
+          </div>
+          ${d.used
+            ? '<span style="background:#e8f5e9;color:#2e7d32;font-size:12px;padding:4px 10px;border-radius:12px">✅ 使用済み</span>'
+            : `<button onclick="markCouponUsed('${d.id}')" style="background:#fff;border:1px solid #e74c3c;color:#e74c3c;font-size:12px;padding:4px 10px;border-radius:12px;cursor:pointer">使用済みにする</button>`
+          }
+        </div>
+      `).join('');
+    } catch(e) {
+      el.innerHTML = '<div style="text-align:center;padding:16px;color:#e74c3c">読み込みエラー</div>';
+    }
+  }
+
+  window.markCouponUsed = async function(id) {
+    await updateDoc(doc(db, "coupons", id), { used: true });
+    renderCouponHistory();
+  };
+
+  // ===== ブラウザ通知（新着チャット） =====
+  async function requestNotificationPermission() {
+    if (!("Notification" in window)) return;
+    if (Notification.permission === "default") {
+      await Notification.requestPermission();
+    }
+  }
+
+  function sendNotification(title, body) {
+    if (Notification.permission === "granted") {
+      new Notification(title, { body, icon: "https://kotobukiroasting-boop.github.io/kotobuki/favicon.ico" });
+    }
+  }
+
+  let lastMessageCount = 0;
+  let isFirstLoad = true;
+
+  function checkNewMessages(messages) {
+    if (isFirstLoad) {
+      lastMessageCount = messages.filter(m => m.role === "customer").length;
+      isFirstLoad = false;
+      return;
+    }
+    const customerMessages = messages.filter(m => m.role === "customer");
+    if (customerMessages.length > lastMessageCount) {
+      const latest = customerMessages[customerMessages.length - 1];
+      sendNotification("💬 新着メッセージ", `${latest.name}：${latest.text}`);
+      lastMessageCount = customerMessages.length;
+    }
+  }
+
+  requestNotificationPermission();
 
   function nl2br(text) {
     return text.replace(/\n/g, '<br>');

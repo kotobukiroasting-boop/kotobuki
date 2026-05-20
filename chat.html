@@ -625,6 +625,11 @@
         }
       });
 
+      // 通知チェック用に全メッセージ収集
+      const allMsgs = [];
+      snapshot.forEach(doc => allMsgs.push({ id: doc.id, ...doc.data() }));
+      checkNewAdminMessage(allMsgs);
+
       snapshot.forEach((doc) => {
         const data = doc.data();
         const isMyMessage = data.role === "customer" && data.name === userName;
@@ -670,6 +675,41 @@
       container.scrollTop = container.scrollHeight;
     });
   }
+
+  // ===== ブラウザ通知（返信お知らせ） =====
+  let lastAdminMsgCount = 0;
+  let chatFirstLoad = true;
+
+  async function requestChatNotification() {
+    if (!("Notification" in window)) return;
+    if (Notification.permission === "default") {
+      await Notification.requestPermission();
+    }
+  }
+
+  function checkNewAdminMessage(messages) {
+    const myAdminMsgs = messages.filter(m =>
+      (m.role === "admin" && m.roomId === userName) ||
+      (m.role === "admin" && m.roomId === "broadcast")
+    );
+    if (chatFirstLoad) {
+      lastAdminMsgCount = myAdminMsgs.length;
+      chatFirstLoad = false;
+      return;
+    }
+    if (myAdminMsgs.length > lastAdminMsgCount) {
+      const latest = myAdminMsgs[myAdminMsgs.length - 1];
+      if (Notification.permission === "granted") {
+        new Notification("☕ Kotobuki焙煎からメッセージ", {
+          body: latest.text.substring(0, 50),
+          icon: "https://kotobukiroasting-boop.github.io/kotobuki/favicon.ico"
+        });
+      }
+      lastAdminMsgCount = myAdminMsgs.length;
+    }
+  }
+
+  requestChatNotification();
 
   function nl2br(text) { return text.replace(/\n/g, '<br>'); }
   function linkify(text) { return text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>'); }
