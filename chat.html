@@ -651,7 +651,7 @@
         div.className = "message " + msgClass;
 
         const time = data.timestamp
-          ? new Date(data.timestamp.toDate()).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })
+          ? new Date(data.timestamp.toDate()).toLocaleString("ja-JP", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })
           : "";
 
         let content = "";

@@ -343,6 +343,7 @@
     <button id="broadcastOpenBtn" style="background:rgba(255,255,255,0.15);color:white;border:1px solid rgba(255,255,255,0.4);border-radius:20px;padding:6px 12px;font-size:13px;font-weight:bold;cursor:pointer;white-space:nowrap">📢 一斉配信</button>
     <button id="csvOpenBtn" style="background:rgba(255,215,0,0.2);color:#f5d06a;border:1px solid rgba(255,215,0,0.4);border-radius:20px;padding:6px 12px;font-size:13px;font-weight:bold;cursor:pointer;white-space:nowrap">👑 SP会員</button>
     <button id="couponOpenBtn" style="background:rgba(255,100,100,0.2);color:#ffaaaa;border:1px solid rgba(255,100,100,0.4);border-radius:20px;padding:6px 12px;font-size:13px;font-weight:bold;cursor:pointer;white-space:nowrap">🎂 クーポン</button>
+    <button id="notifyBtn" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:6px 12px;font-size:13px;cursor:pointer;white-space:nowrap">🔔 通知OFF</button>
   </div>
 
   <!-- クーポン送信モーダル -->
@@ -511,7 +512,7 @@
       item.dataset.name = name;
 
       const time = c.lastTime
-        ? new Date(c.lastTime.toDate()).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })
+        ? new Date(c.lastTime.toDate()).toLocaleString("ja-JP", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })
         : "";
 
       // 会員情報を照合
@@ -580,7 +581,7 @@
       div.className = `message ${msg.role === "admin" ? "admin" : "customer"}`;
 
       const time = msg.timestamp
-        ? new Date(msg.timestamp.toDate()).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })
+        ? new Date(msg.timestamp.toDate()).toLocaleString("ja-JP", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })
         : "";
 
       let content = "";
@@ -1004,11 +1005,29 @@
   };
 
   // ===== ブラウザ通知（新着チャット） =====
+  function updateNotifyBtn() {
+    const btn = document.getElementById("notifyBtn");
+    if (!btn) return;
+    if (!("Notification" in window)) {
+      btn.textContent = "🔕 通知非対応";
+      btn.style.color = "rgba(255,255,255,0.3)";
+    } else if (Notification.permission === "granted") {
+      btn.textContent = "🔔 通知ON";
+      btn.style.color = "#90ee90";
+      btn.style.borderColor = "rgba(144,238,144,0.4)";
+    } else {
+      btn.textContent = "🔕 通知OFF";
+      btn.style.color = "#ffaaaa";
+      btn.style.borderColor = "rgba(255,170,170,0.4)";
+    }
+  }
+
   async function requestNotificationPermission() {
     if (!("Notification" in window)) return;
     if (Notification.permission === "default") {
       await Notification.requestPermission();
     }
+    updateNotifyBtn();
   }
 
   function sendNotification(title, body) {
@@ -1016,6 +1035,25 @@
       new Notification(title, { body, icon: "https://kotobukiroasting-boop.github.io/kotobuki/favicon.ico" });
     }
   }
+
+  // 通知ボタンクリックで許可リクエスト
+  document.getElementById("notifyBtn").addEventListener("click", async () => {
+    if (!("Notification" in window)) {
+      alert("このブラウザは通知に対応していません");
+      return;
+    }
+    if (Notification.permission === "granted") {
+      alert("通知はすでにONです！");
+      return;
+    }
+    await Notification.requestPermission();
+    updateNotifyBtn();
+    if (Notification.permission === "granted") {
+      alert("✅ 通知をONにしました！新着メッセージをお知らせします。");
+    } else {
+      alert("通知が許可されませんでした。ブラウザの設定から許可してください。");
+    }
+  });
 
   let lastMessageCount = 0;
   let isFirstLoad = true;
@@ -1035,6 +1073,7 @@
   }
 
   requestNotificationPermission();
+  updateNotifyBtn();
 
   function nl2br(text) {
     return text.replace(/\n/g, '<br>');
