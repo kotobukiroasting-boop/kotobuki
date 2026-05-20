@@ -587,7 +587,21 @@
       el.classList.toggle("active", el.dataset.name === name);
     });
     renderChat(name);
+
+    // ブラウザ履歴に追加（スマホの戻るボタン対応）
+    history.pushState({ customer: name }, "", "");
   }
+
+  // スマホの戻るボタンでチャット一覧に戻る
+  window.addEventListener("popstate", (e) => {
+    if (selectedCustomer) {
+      document.getElementById("customerList").classList.remove("hidden");
+      document.getElementById("chatPanel").classList.remove("active");
+      document.getElementById("backBtn").style.display = "none";
+      document.getElementById("headerTitle").textContent = "🛠️ 管理者画面";
+      selectedCustomer = null;
+    }
+  });
 
   // ===== チャット描画 =====
   function renderChat(name) {
