@@ -568,6 +568,31 @@
   loadSpMembers();
 
   // ===== ログイン =====
+  // ===== FCMキュー監視 =====
+  function listenFCMQueue(name) {
+    const q = query(collection(db, "fcmQueue"), orderBy("sentAt", "desc"));
+    let firstLoad = true;
+    onSnapshot(q, (snap) => {
+      if (firstLoad) { firstLoad = false; return; }
+      snap.docChanges().forEach((change) => {
+        if (change.type === "added") {
+          const d = change.doc.data();
+          if (d.customerName === name) {
+            if (Notification.permission === "granted") {
+              new Notification(d.title, {
+                body: d.body,
+                icon: '/kotobuki/icon-192.png'
+              });
+            }
+          }
+        }
+      });
+    });
+  }
+
+  // firstMessageTimeをここで宣言
+  let firstMessageTime = null;
+
   // ===== FCMプッシュ通知 =====
   async function initFCM(name) {
     try {
@@ -743,8 +768,6 @@
   }
 
   // ===== メッセージ受信 =====
-  let firstMessageTime = null;
-
   function startListening() {
     const q = query(collection(db, "messages"), orderBy("timestamp"));
     onSnapshot(q, (snapshot) => {
