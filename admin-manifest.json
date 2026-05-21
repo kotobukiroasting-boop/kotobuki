@@ -1,8 +1,10 @@
 {
-  "name": "Kotobuki管理者画面",
+  "id": "/kotobuki/admin",
+  "name": "Kotobuki管理者",
   "short_name": "K-Admin",
   "description": "Kotobuki焙煎 チャット管理者画面",
-  "start_url": "./admin.html",
+  "start_url": "/kotobuki/admin.html",
+  "scope": "/kotobuki/admin.html",
   "display": "standalone",
   "background_color": "#1a1a2e",
   "theme_color": "#1a1a2e",
