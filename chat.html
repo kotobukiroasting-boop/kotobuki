@@ -494,8 +494,10 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, getDoc, doc }
+  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, getDoc, doc, setDoc }
     from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+  import { getMessaging, getToken, onMessage }
+    from "https://www.gstatic.com/firebasejs/12.13.0/firebase-messaging.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBHDzP3-BPYr1T9yBFmHNzCE52umgZBTzQ",
@@ -566,15 +568,58 @@
   loadSpMembers();
 
   // ===== ログイン =====
+  // ===== FCMプッシュ通知 =====
+  async function initFCM(name) {
+    try {
+      const messaging = getMessaging(app);
+
+      // フォアグラウンド通知
+      onMessage(messaging, (payload) => {
+        console.log('フォアグラウンド通知:', payload);
+        if (Notification.permission === "granted") {
+          new Notification(payload.notification.title, {
+            body: payload.notification.body,
+            icon: '/kotobuki/icon-192.png'
+          });
+        }
+      });
+
+      // 通知許可を取得してトークンを保存
+      const permission = await Notification.requestPermission();
+      if (permission !== "granted") return;
+
+      const token = await getToken(messaging, {
+        vapidKey: "BG8l33jRwAjpyMgwNVzucZS4rgwYABFeG7ra-2HsV2A7VDUwc1TCilxxG1pKpmXxxWTNUs7Y_DDFZwX2knddnkE",
+        serviceWorkerRegistration: await navigator.serviceWorker.register('/kotobuki/firebase-messaging-sw.js')
+      });
+
+      if (token) {
+        // トークンをFirestoreに保存（名前と紐付け）
+        await setDoc(doc(db, "fcmTokens", token), {
+          name: name,
+          token: token,
+          updatedAt: serverTimestamp()
+        });
+        console.log("FCMトークン登録完了");
+      }
+    } catch(e) {
+      console.log("FCM初期化エラー:", e);
+    }
+  }
+
   function startChat(name) {
     userName = name;
     document.getElementById("nameModal").style.display = "none";
     document.getElementById("currentUserName").textContent = name + " さん";
-    // Firestoreデータ取得済みならすぐチェック、未取得なら少し待つ
     if (spDataLoaded) {
       checkSpMember(userName);
     }
     startListening();
+    listenFCMQueue(name);
+    // FCM通知を初期化
+    if ("serviceWorker" in navigator) {
+      initFCM(name);
+    }
   }
 
   // 自動ログイン

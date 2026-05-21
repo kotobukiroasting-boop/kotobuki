@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理者画面</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      background: #f0f2f5;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .header {
+      background: #1a1a2e;
+      color: white;
+      padding: 14px 16px;
+      font-size: 17px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 22px;
+      cursor: pointer;
+      display: none;
+      padding: 0 4px;
+    }
+
+    .main { flex: 1; display: flex; overflow: hidden; }
+
+    /* ===== お客さま一覧 ===== */
+    .customer-list {
+      width: 100%;
+      background: white;
+      border-right: 1px solid #e0e0e0;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+
+    .list-header {
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #888;
+      background: #f9f9f9;
+      border-bottom: 1px solid #eee;
+    }
+
+    .customer-item {
+      display: flex;
+      align-items: center;
+      padding: 14px 16px;
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
+      gap: 12px;
+      transition: background 0.15s;
+    }
+
+    .customer-item:hover, .customer-item.active { background: #f0f4ff; }
+
+    .avatar {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: #075e54;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .customer-info { flex: 1; overflow: hidden; }
+    .customer-name { font-weight: bold; font-size: 15px; color: #222; }
+    .last-message { font-size: 13px; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+    .customer-meta { text-align: right; flex-shrink: 0; }
+    .last-time { font-size: 12px; color: #aaa; }
+
+    .unread-dot {
+      width: 10px; height: 10px;
+      background: #075e54;
+      border-radius: 50%;
+      margin-left: auto;
+      margin-top: 4px;
+    }
+
+    .empty-list { text-align: center; padding: 60px 20px; color: #aaa; }
+    .empty-list div { font-size: 48px; margin-bottom: 12px; }
+
+    /* ===== チャット画面 ===== */
+    .chat-panel { flex: 1; display: none; flex-direction: column; background: #f0f2f5; }
+    .chat-panel.active { display: flex; }
+
+    #messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .message {
+      max-width: 78%;
+      padding: 10px 14px;
+      border-radius: 18px;
+      font-size: 15px;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+    .message.customer {
+      background: white;
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .message.admin {
+      background: #d1e8ff;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+
+    .message .name { font-size: 12px; color: #888; margin-bottom: 4px; }
+    .message .time { font-size: 11px; color: #aaa; text-align: right; margin-top: 4px; }
+
+    .message img {
+      max-width: 100%;
+      border-radius: 10px;
+      margin-top: 6px;
+      display: block;
+      cursor: pointer;
+    }
+
+    .message a { color: #075e54; word-break: break-all; }
+
+    /* 入力エリア */
+    .input-area { background: white; border-top: 1px solid #e0e0e0; flex-shrink: 0; }
+
+    .link-bar {
+      display: none;
+      padding: 8px 12px;
+      gap: 8px;
+      align-items: center;
+      border-bottom: 1px solid #eee;
+    }
+
+    .link-bar.open { display: flex; }
+
+    .link-bar input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .link-bar button {
+      background: #1a1a2e;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .input-row {
+      display: flex;
+      padding: 10px 12px;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
+      padding: 4px;
+      color: #666;
+      flex-shrink: 0;
+    }
+
+    #messageInput {
+      flex: 1;
+      padding: 10px 16px;
+      border: 1px solid #ddd;
+      border-radius: 24px;
+      font-size: 15px;
+      outline: none;
+      background: #f5f5f5;
+    }
+
+    #messageInput:focus { border-color: #1a1a2e; background: white; }
+
+    #sendBtn {
+      background: #1a1a2e;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    #imagePreview {
+      display: none;
+      padding: 8px 12px;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    #imagePreview.show { display: flex; }
+    #imagePreview img { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; }
+    #imagePreview span { font-size: 13px; color: #666; flex: 1; }
+    #imagePreview button { background: none; border: none; font-size: 20px; cursor: pointer; color: #e74c3c; }
+
+    /* モーダル */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .modal-box {
+      background: white;
+      border-radius: 16px;
+      padding: 28px 24px;
+      width: 300px;
+      text-align: center;
+    }
+
+    .modal-box h2 { margin-bottom: 8px; color: #1a1a2e; }
+    .modal-box p { color: #666; font-size: 14px; margin-bottom: 16px; }
+
+    .modal-box input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 15px;
+      margin-bottom: 12px;
+      outline: none;
+      text-align: center;
+      letter-spacing: 4px;
+    }
+
+    .modal-box input:focus { border-color: #1a1a2e; }
+
+    .modal-box button {
+      width: 100%;
+      padding: 12px;
+      background: #1a1a2e;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .error { color: #e74c3c; font-size: 13px; margin-top: 8px; display: none; }
+
+    #imgModal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #imgModal.show { display: flex; }
+    #imgModal img { max-width: 95vw; max-height: 90vh; border-radius: 8px; }
+
+    @media (max-width: 600px) {
+      .customer-list.hidden { display: none; }
+    }
+
+    @media (min-width: 601px) {
+      .customer-list { width: 320px; }
+      .chat-panel { display: flex; }
+      .back-btn { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="modal" id="passwordModal">
+    <div class="modal-box">
+      <h2>🔒 管理者ログイン</h2>
+      <p>パスワードを入力してください</p>
+      <input type="password" id="passwordInput" placeholder="••••••••">
+      <button id="loginBtn">ログイン</button>
+      <div class="error" id="errorMsg">パスワードが違います</div>
+    </div>
+  </div>
+
+  <div id="imgModal" onclick="this.classList.remove('show')">
+    <img id="imgModalSrc" src="">
+  </div>
+
+  <!-- 一斉配信モーダル -->
+  <div class="modal" id="broadcastModal" style="display:none">
+    <div class="modal-box">
+      <h2>📢 一斉配信</h2>
+      <p>全お客さまのチャットに届きます</p>
+      <textarea id="broadcastInput" placeholder="お知らせ内容を入力..." style="width:100%;height:100px;padding:10px;border:1px solid #ddd;border-radius:8px;font-size:14px;resize:none;outline:none;margin-bottom:12px;font-family:inherit"></textarea>
+      <button id="broadcastSendBtn" style="margin-bottom:8px">📢 全員に送信</button>
+      <button id="broadcastCancelBtn" style="background:#aaa">キャンセル</button>
+    </div>
+  </div>
+
+  <div class="header">
+    <button class="back-btn" id="backBtn">←</button>
+    <span id="headerTitle">🛠️ 管理者画面</span>
+    <button id="broadcastOpenBtn" style="background:rgba(255,255,255,0.15);color:white;border:1px solid rgba(255,255,255,0.4);border-radius:20px;padding:6px 12px;font-size:13px;font-weight:bold;cursor:pointer;white-space:nowrap">📢 一斉配信</button>
+    <button id="csvOpenBtn" style="background:rgba(255,215,0,0.2);color:#f5d06a;border:1px solid rgba(255,215,0,0.4);border-radius:20px;padding:6px 12px;font-size:13px;font-weight:bold;cursor:pointer;white-space:nowrap">👑 SP会員</button>
+    <button id="couponOpenBtn" style="background:rgba(255,100,100,0.2);color:#ffaaaa;border:1px solid rgba(255,100,100,0.4);border-radius:20px;padding:6px 12px;font-size:13px;font-weight:bold;cursor:pointer;white-space:nowrap">🎂 クーポン</button>
+    <button id="notifyBtn" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:6px 12px;font-size:13px;cursor:pointer;white-space:nowrap">🔔 通知OFF</button>
+  </div>
+
+  <!-- クーポン送信モーダル -->
+  <div class="modal" id="couponModal" style="display:none">
+    <div class="modal-box" style="width:380px;max-height:90vh;overflow-y:auto">
+      <h2 style="color:#e74c3c">🎂 誕生月クーポン送信</h2>
+      <p id="couponMonthLabel" style="margin-bottom:12px"></p>
+
+      <!-- クーポン文面 -->
+      <textarea id="couponText" style="width:100%;height:100px;padding:10px;border:1px solid #ddd;border-radius:8px;font-size:13px;resize:none;outline:none;margin-bottom:10px;font-family:inherit"></textarea>
+
+      <!-- 対象者リスト -->
+      <div style="font-size:13px;font-weight:bold;color:#333;margin-bottom:8px">📋 対象者（チャット登録済みの方のみ送信）</div>
+      <div id="couponTargetList" style="max-height:200px;overflow-y:auto;border:1px solid #eee;border-radius:8px;margin-bottom:12px"></div>
+
+      <div id="couponCount" style="font-size:13px;color:#888;margin-bottom:12px"></div>
+
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <button id="couponTabSend" onclick="showCouponTab('send')" style="flex:1;background:#e74c3c;color:white;border:none;border-radius:8px;padding:8px;cursor:pointer;font-size:13px">📤 配信</button>
+        <button id="couponTabHistory" onclick="showCouponTab('history')" style="flex:1;background:#888;color:white;border:none;border-radius:8px;padding:8px;cursor:pointer;font-size:13px">📋 履歴</button>
+      </div>
+      <div id="couponHistoryList" style="display:none;max-height:250px;overflow-y:auto;margin-bottom:12px"></div>
+      <button id="couponSendBtn" style="background:linear-gradient(135deg,#e74c3c,#c0392b);margin-bottom:8px">🎂 選択した方に送信</button>
+      <button id="couponCancelBtn" style="background:#aaa">キャンセル</button>
+    </div>
+  </div>
+
+  <!-- SP会員管理モーダル -->
+  <div class="modal" id="spModal" style="display:none">
+    <div class="modal-box" style="width:360px">
+      <h2 style="color:#c9a84c">👑 SP会員管理</h2>
+      <p>CSVファイルを読み込んで会員リストを更新します</p>
+      <div style="background:#f9f9f9;border:2px dashed #ddd;border-radius:10px;padding:16px;margin-bottom:12px;text-align:center;cursor:pointer" id="csvDropArea">
+        <div style="font-size:32px">📄</div>
+        <div style="font-size:13px;color:#888;margin-top:6px">CSVファイルをドロップ<br>または</div>
+        <label style="margin-top:8px;display:inline-block;padding:8px 16px;background:#1a1a2e;color:white;border-radius:20px;font-size:13px;cursor:pointer">
+          ファイルを選択
+          <input type="file" id="csvFileInput" accept=".csv" style="display:none">
+        </label>
+      </div>
+      <div style="font-size:12px;color:#888;margin-bottom:12px;text-align:left">
+        CSVフォーマット：<br>
+        <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px">名前,有効期限</code><br>
+        <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px">田中太郎,2026-03-31</code>
+      </div>
+      <div id="spMemberList" style="max-height:200px;overflow-y:auto;margin-bottom:12px;text-align:left;display:none">
+        <div style="font-size:13px;font-weight:bold;margin-bottom:8px;color:#1a1a2e">📋 現在の会員リスト</div>
+        <div id="spMemberItems"></div>
+      </div>
+      <button id="spModalClose" style="background:#aaa">閉じる</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="customer-list" id="customerList">
+      <div class="list-header">お客さま一覧</div>
+      <div class="empty-list" id="emptyList">
+        <div>💬</div>
+        まだメッセージはありません
+      </div>
+    </div>
+
+    <div class="chat-panel" id="chatPanel">
+      <div id="messages"></div>
+      <div class="input-area">
+        <div id="imagePreview">
+          <img id="previewImg" src="">
+          <span id="previewName"></span>
+          <button id="cancelImage">✕</button>
+        </div>
+
+        <div class="link-bar" id="linkBar">
+          <input type="url" id="linkInput" placeholder="https://...">
+          <button id="sendLinkBtn">送信</button>
+        </div>
+
+        <div class="input-row">
+          <button class="icon-btn" id="imageBtn">📎</button>
+          <input type="file" id="fileInput" accept="image/*" style="display:none">
+          <button class="icon-btn" id="linkBtn">🔗</button>
+          <input type="text" id="messageInput" placeholder="返信を入力...">
+          <button id="sendBtn">➤</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, setDoc, doc, getDoc, updateDoc }
+    from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBHDzP3-BPYr1T9yBFmHNzCE52umgZBTzQ",
+    authDomain: "chat-6d912.firebaseapp.com",
+    projectId: "chat-6d912",
+    storageBucket: "chat-6d912.firebasestorage.app",
+    messagingSenderId: "488783011532",
+    appId: "1:488783011532:web:5c522e8b73676c02b5ec69"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // ===== 会員データ（最初に宣言） =====
+  let spMembers = JSON.parse(localStorage.getItem("spMembers") || "[]");
+  let allMembersCsv = JSON.parse(localStorage.getItem("allMembers") || "[]");
+
+
+  const ADMIN_PASSWORD = "admin1234";
+  let selectedCustomer = null;
+  let allMessages = [];
+  let pendingImage = null;
+
+  // ===== ログイン =====
+  document.getElementById("loginBtn").addEventListener("click", () => {
+    const pw = document.getElementById("passwordInput").value;
+    if (pw === ADMIN_PASSWORD) {
+      document.getElementById("passwordModal").style.display = "none";
+      startListening();
+    } else {
+      document.getElementById("errorMsg").style.display = "block";
+    }
+  });
+
+  document.getElementById("passwordInput").addEventListener("keydown", e => {
+    if (e.key === "Enter") document.getElementById("loginBtn").click();
+  });
+
+  // ===== 全メッセージ監視 =====
+  function startListening() {
+    const q = query(collection(db, "messages"), orderBy("timestamp"));
+    onSnapshot(q, (snapshot) => {
+      allMessages = [];
+      snapshot.forEach(doc => allMessages.push({ id: doc.id, ...doc.data() }));
+      checkNewMessages(allMessages);
+      renderCustomerList();
+      if (selectedCustomer) renderChat(selectedCustomer);
+    });
+  }
+
+  // ===== お客さま一覧 =====
+  function renderCustomerList() {
+    const list = document.getElementById("customerList");
+    list.querySelectorAll(".customer-item").forEach(el => el.remove());
+
+    const customers = {};
+    const lastSeenTimes = JSON.parse(localStorage.getItem("lastSeenTimes") || "{}");
+
+    allMessages.forEach(msg => {
+      if (msg.role === "customer") {
+        const existing = customers[msg.name];
+        const msgTime = msg.timestamp?.seconds || 0;
+        if (!existing || msgTime > (existing.lastTimestamp || 0)) {
+          customers[msg.name] = {
+            lastMessage: msg.type === "image" ? "📷 画像" : msg.type === "link" ? "🔗 リンク" : msg.type === "broadcast" ? "📢 お知らせ" : msg.text,
+            lastTime: msg.timestamp,
+            lastTimestamp: msgTime
+          };
+        }
+      }
+    });
+
+    // 最新順に並び替え
+    const names = Object.keys(customers).sort((a, b) => 
+      (customers[b].lastTimestamp || 0) - (customers[a].lastTimestamp || 0)
+    );
+    document.getElementById("emptyList").style.display = names.length === 0 ? "block" : "none";
+
+    function normN(n) { return String(n).replace(/\s/g, "").replace(/　/g, "").toLowerCase(); }
+
+    names.forEach(name => {
+      const c = customers[name];
+      const item = document.createElement("div");
+      item.className = "customer-item" + (name === selectedCustomer ? " active" : "");
+      item.dataset.name = name;
+
+      const time = c.lastTime
+        ? new Date(c.lastTime.toDate()).toLocaleString("ja-JP", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })
+        : "";
+
+      // 会員情報を照合
+      const memberInfo = allMembersCsv.find(m => normN(m.name) === normN(name));
+      let memberBadge = "";
+      if (memberInfo) {
+        if (memberInfo.is_sp === "1") {
+          const exp = memberInfo.expiry ? new Date(memberInfo.expiry) : null;
+          const today = new Date();
+          const diffDays = exp ? Math.ceil((exp - today) / (1000 * 60 * 60 * 24)) : null;
+          const expColor = diffDays === null ? "#aaa" : diffDays < 0 ? "#e74c3c" : diffDays <= 30 ? "#ff9800" : "#c9a84c";
+          const expText = exp ? exp.toLocaleDateString("ja-JP", { year: "numeric", month: "short", day: "numeric" }) : "";
+          memberBadge = `<div style="display:flex;gap:4px;margin-top:4px;flex-wrap:wrap;align-items:center">
+            <span style="background:#3d1a00;color:#f5d06a;font-size:10px;padding:2px 7px;border-radius:10px;border:1px solid #c9a84c">👑 SP会員</span>
+            <span style="color:${expColor};font-size:10px;font-weight:bold">${expText}</span>
+            ${memberInfo.birth_month ? `<span style="background:#f5f0ff;color:#7a5af8;font-size:10px;padding:2px 7px;border-radius:10px">🎂 ${memberInfo.birth_month}月</span>` : ""}
+          </div>`;
+        } else if (memberInfo.birth_month) {
+          memberBadge = `<div style="margin-top:4px">
+            <span style="background:#f5f0ff;color:#7a5af8;font-size:10px;padding:2px 7px;border-radius:10px">🎂 ${memberInfo.birth_month}月</span>
+          </div>`;
+        }
+      }
+
+      // 未読チェック
+      const lastSeen = lastSeenTimes[name] || 0;
+      const isUnread = (c.lastTimestamp || 0) > lastSeen && name !== selectedCustomer;
+      
+      item.innerHTML = `
+        <div class="avatar" style="${isUnread ? 'background:#e74c3c' : ''}">${name.charAt(0)}</div>
+        <div class="customer-info">
+          <div style="display:flex;align-items:center;gap:6px">
+            <div class="customer-name" style="${isUnread ? 'font-weight:900;color:#1a1a2e' : ''}">${escapeHtml(name)}</div>
+            ${isUnread ? '<span style="background:#e74c3c;color:white;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:bold">NEW</span>' : ''}
+          </div>
+          <div class="last-message" style="${isUnread ? 'color:#333;font-weight:600' : ''}">${escapeHtml(c.lastMessage)}</div>
+          ${memberBadge}
+        </div>
+        <div class="customer-meta">
+          <div class="last-time">${time}</div>
+        </div>
+      `;
+      item.addEventListener("click", () => selectCustomer(name));
+      list.appendChild(item);
+    });
+  }
+
+  // ===== お客さまを選択 =====
+  function selectCustomer(name) {
+    selectedCustomer = name;
+
+    // 既読時刻を保存
+    const lastSeenTimes = JSON.parse(localStorage.getItem("lastSeenTimes") || "{}");
+    lastSeenTimes[name] = Math.floor(Date.now() / 1000);
+    localStorage.setItem("lastSeenTimes", JSON.stringify(lastSeenTimes));
+
+    document.getElementById("customerList").classList.add("hidden");
+    document.getElementById("chatPanel").classList.add("active");
+    document.getElementById("backBtn").style.display = "block";
+    document.getElementById("headerTitle").textContent = name + " さん";
+    document.querySelectorAll(".customer-item").forEach(el => {
+      el.classList.toggle("active", el.dataset.name === name);
+    });
+    renderChat(name);
+
+    // ブラウザ履歴に追加（スマホの戻るボタン対応）
+    history.pushState({ customer: name }, "", "");
+  }
+
+  // スマホの戻るボタンでチャット一覧に戻る
+  window.addEventListener("popstate", (e) => {
+    if (selectedCustomer) {
+      document.getElementById("customerList").classList.remove("hidden");
+      document.getElementById("chatPanel").classList.remove("active");
+      document.getElementById("backBtn").style.display = "none";
+      document.getElementById("headerTitle").textContent = "🛠️ 管理者画面";
+      selectedCustomer = null;
+    }
+  });
+
+  // ===== チャット描画 =====
+  function renderChat(name) {
+    const container = document.getElementById("messages");
+    container.innerHTML = "";
+
+    allMessages.forEach(msg => {
+      const isCustomerMsg = msg.role === "customer" && msg.name === name;
+      const isAdminReply = msg.role === "admin" && msg.roomId === name;
+      const isBroadcast = msg.role === "admin" && msg.roomId === "broadcast";
+      if (!isCustomerMsg && !isAdminReply && !isBroadcast) return;
+
+      const div = document.createElement("div");
+      div.className = `message ${msg.role === "admin" ? "admin" : "customer"}`;
+
+      const time = msg.timestamp
+        ? new Date(msg.timestamp.toDate()).toLocaleString("ja-JP", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })
+        : "";
+
+      let content = "";
+      if (msg.type === "image" && msg.imageData) {
+        const safe = msg.imageData;
+        content = `<img src="${safe}" onclick="document.getElementById('imgModal').classList.add('show'); document.getElementById('imgModalSrc').src=this.src">`;
+        if (msg.text) content += `<div>${nl2br(escapeHtml(msg.text))}</div>`;
+      } else if (msg.type === "link") {
+        content = `<a href="${escapeHtml(msg.text)}" target="_blank" rel="noopener">${escapeHtml(msg.text)}</a>`;
+      } else {
+        content = linkify(nl2br(escapeHtml(msg.text || "")));
+      }
+
+      div.innerHTML = `
+        <div class="name">${escapeHtml(msg.name)}</div>
+        <div>${content}</div>
+        <div class="time">${time}</div>
+      `;
+      container.appendChild(div);
+    });
+
+    container.scrollTop = container.scrollHeight;
+  }
+
+  // ===== 戻るボタン =====
+  document.getElementById("backBtn").addEventListener("click", () => {
+    document.getElementById("customerList").classList.remove("hidden");
+    document.getElementById("chatPanel").classList.remove("active");
+    document.getElementById("backBtn").style.display = "none";
+    document.getElementById("headerTitle").textContent = "🛠️ 管理者画面";
+    selectedCustomer = null;
+  });
+
+  // ===== 画像添付 =====
+  document.getElementById("imageBtn").addEventListener("click", () => {
+    document.getElementById("fileInput").click();
+  });
+
+  document.getElementById("fileInput").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const MAX = 800;
+        let w = img.width, h = img.height;
+        if (w > MAX) { h = h * MAX / w; w = MAX; }
+        if (h > MAX) { w = w * MAX / h; h = MAX; }
+        canvas.width = w; canvas.height = h;
+        canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+        pendingImage = canvas.toDataURL("image/jpeg", 0.7);
+        document.getElementById("previewImg").src = pendingImage;
+        document.getElementById("previewName").textContent = file.name;
+        document.getElementById("imagePreview").classList.add("show");
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
+  });
+
+  document.getElementById("cancelImage").addEventListener("click", () => {
+    pendingImage = null;
+    document.getElementById("imagePreview").classList.remove("show");
+  });
+
+  // ===== リンク送信 =====
+  document.getElementById("linkBtn").addEventListener("click", () => {
+    document.getElementById("linkBar").classList.toggle("open");
+    document.getElementById("linkInput").focus();
+  });
+
+  document.getElementById("sendLinkBtn").addEventListener("click", sendLink);
+  document.getElementById("linkInput").addEventListener("keydown", e => {
+    if (e.key === "Enter") sendLink();
+  });
+
+  async function sendLink() {
+    if (!selectedCustomer) return;
+    const input = document.getElementById("linkInput");
+    let url = input.value.trim();
+    if (!url) return;
+    if (!url.startsWith("http")) url = "https://" + url;
+    input.value = "";
+    document.getElementById("linkBar").classList.remove("open");
+
+    await addDoc(collection(db, "messages"), {
+      text: url,
+      type: "link",
+      name: "スタッフ",
+      role: "admin",
+      roomId: selectedCustomer,
+      timestamp: serverTimestamp()
+    });
+  }
+
+  // ===== テキスト・画像送信 =====
+  document.getElementById("sendBtn").addEventListener("click", sendMessage);
+  document.getElementById("messageInput").addEventListener("keydown", e => {
+    if (e.key === "Enter") sendMessage();
+  });
+
+  async function sendMessage() {
+    if (!selectedCustomer) return;
+    const input = document.getElementById("messageInput");
+    const text = input.value.trim();
+
+    if (pendingImage) {
+      input.value = "";
+      const imgData = pendingImage;
+      pendingImage = null;
+      document.getElementById("imagePreview").classList.remove("show");
+
+      await addDoc(collection(db, "messages"), {
+        text: text || "",
+        imageData: imgData,
+        type: "image",
+        name: "スタッフ",
+        role: "admin",
+        roomId: selectedCustomer,
+        timestamp: serverTimestamp()
+      });
+      // FCM通知送信
+      await addDoc(collection(db, "fcmQueue"), {
+        customerName: selectedCustomer,
+        title: "☕ Kotobuki焙煎からメッセージ",
+        body: "📷 画像が届きました",
+        sentAt: serverTimestamp()
+      });
+    } else if (text) {
+      input.value = "";
+      await addDoc(collection(db, "messages"), {
+        text,
+        type: "text",
+        name: "スタッフ",
+        role: "admin",
+        roomId: selectedCustomer,
+        timestamp: serverTimestamp()
+      });
+      // FCM通知送信
+      await addDoc(collection(db, "fcmQueue"), {
+        customerName: selectedCustomer,
+        title: "☕ Kotobuki焙煎からメッセージ",
+        body: text.substring(0, 50),
+        sentAt: serverTimestamp()
+      });
+    }
+  }
+
+  // ===== 一斉配信 =====
+  document.getElementById("broadcastOpenBtn").addEventListener("click", () => {
+    document.getElementById("broadcastModal").style.display = "flex";
+    document.getElementById("broadcastInput").focus();
+  });
+
+  document.getElementById("broadcastCancelBtn").addEventListener("click", () => {
+    document.getElementById("broadcastModal").style.display = "none";
+    document.getElementById("broadcastInput").value = "";
+  });
+
+  document.getElementById("broadcastSendBtn").addEventListener("click", async () => {
+    const text = document.getElementById("broadcastInput").value.trim();
+    if (!text) { alert("内容を入力してください"); return; }
+
+    await addDoc(collection(db, "messages"), {
+      text: text,
+      type: "broadcast",
+      name: "📢 お知らせ",
+      role: "admin",
+      roomId: "broadcast",
+      timestamp: serverTimestamp()
+    });
+
+    document.getElementById("broadcastModal").style.display = "none";
+    document.getElementById("broadcastInput").value = "";
+    alert("✅ 全員に送信しました！");
+  });
+
+  // ===== SP会員管理 =====
+
+  document.getElementById("csvOpenBtn").addEventListener("click", () => {
+    document.getElementById("spModal").style.display = "flex";
+    renderSpList();
+  });
+
+  document.getElementById("spModalClose").addEventListener("click", () => {
+    document.getElementById("spModal").style.display = "none";
+  });
+
+  function renderSpList() {
+    const items = document.getElementById("spMemberItems");
+    const list = document.getElementById("spMemberList");
+    if (spMembers.length === 0) { list.style.display = "none"; return; }
+    list.style.display = "block";
+    items.innerHTML = spMembers.map(m => {
+      const expiry = new Date(m.expiry);
+      const today = new Date();
+      const diffDays = Math.ceil((expiry - today) / (1000 * 60 * 60 * 24));
+      const color = diffDays < 0 ? "#e74c3c" : diffDays <= 30 ? "#ff9800" : "#075e54";
+      return `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:13px">
+        <span>👑 ${m.name}</span>
+        <span style="color:${color}">${m.expiry}${diffDays < 0 ? " (期限切れ)" : diffDays <= 30 ? " (残り"+diffDays+"日)" : ""}</span>
+      </div>`;
+    }).join("");
+  }
+
+
+
+  // ===== 誕生月クーポン =====
+
+  document.getElementById("couponOpenBtn").addEventListener("click", () => {
+    document.getElementById("couponModal").style.display = "flex";
+    renderCouponList();
+  });
+
+  document.getElementById("couponCancelBtn").addEventListener("click", () => {
+    document.getElementById("couponModal").style.display = "none";
+  });
+
+  function renderCouponList() {
+    const today = new Date();
+    const thisMonth = today.getMonth() + 1;
+    // 誕生月 or 前後1ヶ月（3ヶ月間対象）
+    const targetMonths = [
+      ((thisMonth - 2 + 12) % 12) + 1,
+      thisMonth,
+      thisMonth % 12 + 1
+    ];
+
+    document.getElementById("couponMonthLabel").textContent =
+      `${thisMonth}月（前後含む ${targetMonths.join('・')}月生まれの方が対象）`;
+
+    // 有効期限：誕生月・翌月・翌々月
+    const m1 = thisMonth;
+    const m2 = thisMonth % 12 + 1;
+    const m3 = m2 % 12 + 1;
+    const couponTextEl = document.getElementById("couponText");
+    couponTextEl.value = `🎁 お誕生日月おめでとうございます！
+コーヒー豆増量クーポンをプレゼント🎉
+
+有効期限：${m1}月・${m2}月・${m3}月
+ご来店の際にスタッフにお声がけください☕`;
+
+    // チャットに登録済みのお客さまと照合
+    const chatCustomers = {};
+    allMessages.forEach(msg => {
+      if (msg.role === "customer") chatCustomers[msg.name] = true;
+    });
+
+    // 対象者を抽出
+    function normName(n) { return String(n).replace(/[\s　]/g, "").toLowerCase(); }
+    const chatNormalized = {};
+    Object.keys(chatCustomers).forEach(n => { chatNormalized[normName(n)] = n; });
+
+    const targets = allMembersCsv.filter(m => {
+      return targetMonths.includes(parseInt(m.birth_month)) && chatNormalized[normName(m.name)];
+    });
+
+    const listEl = document.getElementById("couponTargetList");
+    listEl.innerHTML = "";
+
+    if (targets.length === 0) {
+      listEl.innerHTML = '<div style="padding:16px;text-align:center;color:#aaa">対象者なし（チャット未登録の方は送信できません）</div>';
+      document.getElementById("couponCount").textContent = "";
+      return;
+    }
+
+    targets.forEach(m => {
+      const row = document.createElement("div");
+      row.style.cssText = "display:flex;align-items:center;padding:8px 12px;border-bottom:1px solid #f0f0f0;gap:10px";
+      row.innerHTML = `
+        <input type="checkbox" class="couponCheck" data-name="${m.name}" checked style="width:16px;height:16px;cursor:pointer">
+        <div style="flex:1;font-size:14px">${m.name}</div>
+        <div style="font-size:12px;color:${m.is_sp === '1' ? '#c9a84c' : '#888'}">${m.is_sp === '1' ? '👑 SP' : 'スタンダード'}</div>
+        <div style="font-size:12px;color:#aaa">${m.birth_month}月生まれ</div>
+      `;
+      listEl.appendChild(row);
+    });
+
+    document.getElementById("couponCount").textContent = `${targets.length}名が対象（チェックを外すと除外できます）`;
+  }
+
+  document.getElementById("couponSendBtn").addEventListener("click", async () => {
+    const text = document.getElementById("couponText").value.trim();
+    if (!text) { alert("クーポン文面を入力してください"); return; }
+
+    const checked = document.querySelectorAll(".couponCheck:checked");
+    if (checked.length === 0) { alert("送信先を選択してください"); return; }
+
+    const names = Array.from(checked).map(el => el.dataset.name);
+
+    const today = new Date();
+    const sentMonth = `${today.getFullYear()}-${today.getMonth()+1}`;
+    let count = 0;
+    for (const name of names) {
+      // メッセージ送信
+      await addDoc(collection(db, "messages"), {
+        text: text,
+        type: "coupon",
+        name: "🎂 誕生月クーポン",
+        role: "admin",
+        roomId: name,
+        timestamp: serverTimestamp()
+      });
+      // クーポン履歴をFirestoreに保存
+      await setDoc(doc(db, "coupons", `${sentMonth}_${name}`), {
+        name: name,
+        month: sentMonth,
+        text: text,
+        used: false,
+        sentAt: serverTimestamp()
+      });
+      count++;
+    }
+
+    document.getElementById("couponModal").style.display = "none";
+    alert(`✅ ${count}名にクーポンを送信しました！`);
+    renderCouponHistory();
+  });
+
+  // CSVアップロード時にallMembersも保存
+  document.getElementById("csvFileInput").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const lines = ev.target.result.split("\n").filter(l => l.trim());
+      const members = [];
+      const spMembers2 = [];
+      lines.forEach((line, i) => {
+        if (i === 0 && (line.includes("名前") || line.includes("\u540d\u524d"))) return;
+        const cols = line.split(",");
+        if (cols.length >= 2) {
+          const name = cols[0].trim();
+          const expiry = cols[1].trim();
+          const is_sp = cols[2] ? cols[2].trim() : "0";
+          const birth_month = cols[3] ? cols[3].trim() : "";
+          if (name) {
+            members.push({ name, expiry, is_sp, birth_month });
+            if (is_sp === "1") spMembers2.push({ name, expiry });
+          }
+        }
+      });
+
+      if (members.length === 0) { alert("CSVの形式が正しくありません"); return; }
+
+      // 全会員・SP会員両方保存
+      allMembersCsv = members;
+      localStorage.setItem("allMembers", JSON.stringify(members));
+      spMembers = spMembers2;
+      localStorage.setItem("spMembers", JSON.stringify(spMembers2));
+
+      setDoc(doc(db, "settings", "allMembers"), {
+        type: "allMembers",
+        data: JSON.stringify(members),
+        timestamp: serverTimestamp()
+      });
+      setDoc(doc(db, "settings", "spMembers"), {
+        type: "spMembers",
+        data: JSON.stringify(spMembers2),
+        timestamp: serverTimestamp()
+      });
+
+      alert("✅ " + members.length + "件の会員情報を読み込みました！");
+      renderSpList();
+    };
+    reader.readAsText(file, "UTF-8");
+    e.target.value = "";
+  });
+
+  // ===== クーポン履歴 =====
+  window.showCouponTab = function(tab) {
+    const sendArea = document.getElementById("couponTargetList");
+    const historyArea = document.getElementById("couponHistoryList");
+    const sendBtn = document.getElementById("couponSendBtn");
+    const countEl = document.getElementById("couponCount");
+    const textArea = document.getElementById("couponText");
+
+    if (tab === 'history') {
+      sendArea.style.display = "none";
+      historyArea.style.display = "block";
+      sendBtn.style.display = "none";
+      countEl.style.display = "none";
+      textArea.style.display = "none";
+      document.getElementById("couponTabHistory").style.background = "#e74c3c";
+      document.getElementById("couponTabSend").style.background = "#888";
+      renderCouponHistory();
+    } else {
+      sendArea.style.display = "block";
+      historyArea.style.display = "none";
+      sendBtn.style.display = "block";
+      countEl.style.display = "block";
+      textArea.style.display = "block";
+      document.getElementById("couponTabSend").style.background = "#e74c3c";
+      document.getElementById("couponTabHistory").style.background = "#888";
+    }
+  };
+
+  async function renderCouponHistory() {
+    const el = document.getElementById("couponHistoryList");
+    el.innerHTML = '<div style="text-align:center;padding:16px;color:#aaa">読み込み中...</div>';
+    try {
+      const { getDocs } = await import("https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js");
+      const snap = await getDocs(collection(db, "coupons"));
+      if (snap.empty) {
+        el.innerHTML = '<div style="text-align:center;padding:16px;color:#aaa">履歴はありません</div>';
+        return;
+      }
+      const docs = [];
+      snap.forEach(d => docs.push({ id: d.id, ...d.data() }));
+      docs.sort((a, b) => (b.sentAt?.seconds || 0) - (a.sentAt?.seconds || 0));
+
+      el.innerHTML = docs.map(d => `
+        <div style="display:flex;align-items:center;padding:10px 12px;border-bottom:1px solid #f0f0f0;gap:10px" id="coupon_${d.id}">
+          <div style="flex:1">
+            <div style="font-size:14px;font-weight:bold">${d.name}</div>
+            <div style="font-size:12px;color:#888">${d.month}月配信</div>
+          </div>
+          ${d.used
+            ? '<span style="background:#e8f5e9;color:#2e7d32;font-size:12px;padding:4px 10px;border-radius:12px">✅ 使用済み</span>'
+            : `<button onclick="markCouponUsed('${d.id}')" style="background:#fff;border:1px solid #e74c3c;color:#e74c3c;font-size:12px;padding:4px 10px;border-radius:12px;cursor:pointer">使用済みにする</button>`
+          }
+        </div>
+      `).join('');
+    } catch(e) {
+      el.innerHTML = '<div style="text-align:center;padding:16px;color:#e74c3c">読み込みエラー</div>';
+    }
+  }
+
+  window.markCouponUsed = async function(id) {
+    await updateDoc(doc(db, "coupons", id), { used: true });
+    renderCouponHistory();
+  };
+
+  // ===== FCMプッシュ通知送信（お客さまへ） =====
+  async function sendFCMToCustomer(customerName, message) {
+    try {
+      // そのお客さまのトークンを取得
+      const { getDocs: getDocsF, query: queryF, where: whereF, collection: colF } = 
+        await import("https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js");
+      const q = queryF(collection(db, "fcmTokens"), whereF("name", "==", customerName));
+      const snap = await getDocs(q);
+      snap.forEach(async (d) => {
+        const token = d.data().token;
+        // Firestoreにキューとして保存（送信はService Workerが担当）
+        await addDoc(collection(db, "fcmQueue"), {
+          token,
+          title: "☕ Kotobuki焙煎からメッセージ",
+          body: message.substring(0, 50),
+          sentAt: serverTimestamp()
+        });
+      });
+    } catch(e) {
+      console.log("FCM送信エラー:", e);
+    }
+  }
+
+  // ===== ブラウザ通知（新着チャット） =====
+  function updateNotifyBtn() {
+    const btn = document.getElementById("notifyBtn");
+    if (!btn) return;
+    if (!("Notification" in window)) {
+      btn.textContent = "🔕 通知非対応";
+      btn.style.color = "rgba(255,255,255,0.3)";
+    } else if (Notification.permission === "granted") {
+      btn.textContent = "🔔 通知ON";
+      btn.style.color = "#90ee90";
+      btn.style.borderColor = "rgba(144,238,144,0.4)";
+    } else {
+      btn.textContent = "🔕 通知OFF";
+      btn.style.color = "#ffaaaa";
+      btn.style.borderColor = "rgba(255,170,170,0.4)";
+    }
+  }
+
+  async function requestNotificationPermission() {
+    if (!("Notification" in window)) return;
+    if (Notification.permission === "default") {
+      await Notification.requestPermission();
+    }
+    updateNotifyBtn();
+  }
+
+  function sendNotification(title, body) {
+    if (Notification.permission === "granted") {
+      new Notification(title, { body, icon: "https://kotobukiroasting-boop.github.io/kotobuki/favicon.ico" });
+    }
+  }
+
+  // 通知ボタンクリックで許可リクエスト
+  document.getElementById("notifyBtn").addEventListener("click", async () => {
+    if (!("Notification" in window)) {
+      alert("このブラウザは通知に対応していません");
+      return;
+    }
+    if (Notification.permission === "granted") {
+      alert("通知はすでにONです！");
+      return;
+    }
+    await Notification.requestPermission();
+    updateNotifyBtn();
+    if (Notification.permission === "granted") {
+      alert("✅ 通知をONにしました！新着メッセージをお知らせします。");
+    } else {
+      alert("通知が許可されませんでした。ブラウザの設定から許可してください。");
+    }
+  });
+
+  let lastMessageCount = 0;
+  let isFirstLoad = true;
+
+  function checkNewMessages(messages) {
+    if (isFirstLoad) {
+      lastMessageCount = messages.filter(m => m.role === "customer").length;
+      isFirstLoad = false;
+      return;
+    }
+    const customerMessages = messages.filter(m => m.role === "customer");
+    if (customerMessages.length > lastMessageCount) {
+      const latest = customerMessages[customerMessages.length - 1];
+      sendNotification("💬 新着メッセージ", `${latest.name}：${latest.text}`);
+      lastMessageCount = customerMessages.length;
+    }
+  }
+
+  requestNotificationPermission();
+  updateNotifyBtn();
+
+  function nl2br(text) {
+    return text.replace(/\n/g, '<br>');
+  }
+
+  function linkify(text) {
+    return text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+</script>
+</body>
+</html>
