@@ -183,6 +183,14 @@ footer::before{content:"";position:absolute;top:0;left:50%;transform:translateX(
   .sl-num{display:none}
   .params-row{grid-template-columns:repeat(2,1fr)}
 }
+
+<style id="nav-ext-style">
+.n-ext-wrap{display:flex;align-items:center;gap:4px;margin-right:10px;padding-right:14px;border-right:1px solid var(--border);flex-shrink:0}
+.n-ext-btn{display:flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid var(--btn-color,#4ba8d8);color:var(--btn-color,#4ba8d8);background:rgba(0,0,0,.0);font-family:"Cinzel",serif;font-size:.48rem;letter-spacing:.1em;text-decoration:none;text-transform:uppercase;transition:background .2s,color .2s;white-space:nowrap;line-height:1.4;border-radius:2px}
+.n-ext-btn:hover{background:var(--btn-color,#4ba8d8);color:#000}
+.n-ext-btn span{display:block;text-align:left}
+@media(max-width:480px){.n-ext-btn span{display:none}.n-ext-btn{padding:6px 9px;font-size:.7rem}}
+</style>
 </style>
 </head>
 <body>
@@ -207,13 +215,16 @@ footer::before{content:"";position:absolute;top:0;left:50%;transform:translateX(
 
 <nav id="nav">
   <span class="n-logo"><span class="n-mark">K</span>KOTOBUKI ROASTERS</span>
+  <div class="n-ext-wrap"><a class="n-ext-btn" href="kotobuki-dripper-guide.html" style="--btn-color:#60c090">📐<span>器具別<br>レシピ</span></a><a class="n-ext-btn" href="kotobuki-iced-coffee.html" style="--btn-color:#40c8f0">🧊<span>アイス<br>レシピ</span></a></div>
   <a class="n-link" href="#sec-select">器具を選ぶ</a>
   <a class="n-link" href="#sec-recipes">レシピ一覧</a>
   <a class="n-link" href="#sec-gear">器具ガイド</a>
   <a class="n-link" href="#sec-grind">挽き目・温度</a>
   <a class="n-link" href="#sec-water">水について</a>
   <a class="n-link" href="#sec-pairing">フードペアリング</a>
-  <a class="n-link" href="kotobuki-dripper-guide.html" style="color:var(--method-drip);border-left:1px solid var(--border);margin-left:6px;padding-left:18px">📐 器具別レシピ →</a>
+  
+  
+
 </nav>
 
 <main>

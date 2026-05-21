@@ -144,6 +144,14 @@ footer::before{content:"";position:absolute;top:0;left:50%;transform:translateX(
   .compare-grid{grid-template-columns:1fr}
   .ds-head{flex-wrap:wrap}
 }
+
+<style id="nav-ext-style">
+.n-ext-wrap{display:flex;align-items:center;gap:4px;margin-right:10px;padding-right:14px;border-right:1px solid var(--border);flex-shrink:0}
+.n-ext-btn{display:flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid var(--btn-color,#4ba8d8);color:var(--btn-color,#4ba8d8);background:rgba(0,0,0,.0);font-family:"Cinzel",serif;font-size:.48rem;letter-spacing:.1em;text-decoration:none;text-transform:uppercase;transition:background .2s,color .2s;white-space:nowrap;line-height:1.4;border-radius:2px}
+.n-ext-btn:hover{background:var(--btn-color,#4ba8d8);color:#000}
+.n-ext-btn span{display:block;text-align:left}
+@media(max-width:480px){.n-ext-btn span{display:none}.n-ext-btn{padding:6px 9px;font-size:.7rem}}
+</style>
 </style>
 </head>
 <body>
@@ -167,12 +175,15 @@ footer::before{content:"";position:absolute;top:0;left:50%;transform:translateX(
 
 <nav>
   <span class="n-logo"><span class="n-mark">K</span>KOTOBUKI</span>
+  <div class="n-ext-wrap"><a class="n-ext-btn" href="kotobuki-recipe-guide.html" style="--btn-color:#4ba8d8">☕<span>豆別<br>レシピ</span></a><a class="n-ext-btn" href="kotobuki-iced-coffee.html" style="--btn-color:#40c8f0">🧊<span>アイス<br>レシピ</span></a></div>
   <a class="n-link" href="#sec-switch"><span class="n-dot" style="background:var(--switch)"></span>Switch</a>
   <a class="n-link" href="#sec-deep27"><span class="n-dot" style="background:var(--deep27)"></span>Deep27</a>
   <a class="n-link" href="#sec-origami"><span class="n-dot" style="background:var(--origami-w)"></span>Origami</a>
   <a class="n-link" href="#sec-april"><span class="n-dot" style="background:var(--april)"></span>April</a>
   <a class="n-link" href="#sec-v60"><span class="n-dot" style="background:var(--v60)"></span>V60</a>
-  <a class="n-link" href="kotobuki-recipe-guide.html" style="color:var(--blue);border-left:1px solid var(--border);margin-left:6px;padding-left:18px">☕ 豆別レシピ →</a>
+  
+  
+
 </nav>
 
 <main>

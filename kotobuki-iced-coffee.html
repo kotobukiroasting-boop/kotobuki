@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kotobuki Roasters — アイスコーヒー レシピガイド</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+JP:wght@200;300;400;500&family=Bebas+Neue&family=Noto+Sans+JP:wght@200;300;400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#02060d; --s1:#06101c; --s2:#0a1828; --s3:#102030; --border:#16304a;
+  --blue:#4ba8d8; --blue2:#80ccf0; --cream:#ddf0fc; --muted:#4e88aa; --dim:#244460;
+  /* Ice coffee accent colors */
+  --flash:  #40c8f0;  /* 急冷ドリップ — icy cyan */
+  --glass:  #6090e0;  /* グラス注ぎ — cool blue */
+  --cold:   #50d0a0;  /* 水出し — mint green */
+  --batch:  #9060d8;  /* 大量作り置き — purple */
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--cream);font-family:"Noto Sans JP",sans-serif;font-weight:300;overflow-x:hidden}
+::selection{background:var(--blue);color:#000}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;padding:80px 24px}
+.hero-bg{position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 40% at 30% 60%, rgba(64,200,240,.06) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 35% at 70% 40%, rgba(80,208,160,.05) 0%, transparent 55%)}
+.hero-rule{position:absolute;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--flash),transparent);opacity:.15}
+.hero-rule.top{top:60px}.hero-rule.bottom{bottom:60px}
+/* Ice particles */
+.ice-particle{position:absolute;border-radius:2px;opacity:0;animation:iceFall linear infinite}
+@keyframes iceFall{
+  0%  {opacity:0;transform:translateY(-20px) rotate(0deg)}
+  10% {opacity:.4}
+  90% {opacity:.2}
+  100%{opacity:0;transform:translateY(100vh) rotate(360deg)}
+}
+.hero-inner{position:relative;z-index:2;max-width:800px}
+.hero-eyebrow{font-family:"Cinzel",serif;font-size:.58rem;letter-spacing:.55em;color:var(--flash);opacity:.8;margin-bottom:28px;animation:fadeUp .9s ease both}
+.hero-brand{font-family:"Bebas Neue",sans-serif;font-size:clamp(4rem,16vw,12rem);letter-spacing:.06em;line-height:.88;background:linear-gradient(160deg,var(--cream) 0%,var(--flash) 60%,var(--cold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:block;animation:fadeUp .9s .08s ease both}
+.hero-brand-sub{font-family:"Bebas Neue",sans-serif;font-size:clamp(1.2rem,4vw,3.2rem);letter-spacing:.32em;color:var(--flash);display:block;margin-top:8px;text-shadow:0 0 60px rgba(64,200,240,.4);animation:fadeUp .9s .15s ease both}
+.hero-divider{display:flex;align-items:center;gap:14px;justify-content:center;margin:24px 0;animation:fadeUp .9s .22s ease both}
+.hero-divider::before,.hero-divider::after{content:"";display:block;width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--flash));opacity:.3}
+.hero-divider::after{transform:scaleX(-1)}
+.hero-divider-text{font-family:"Cinzel",serif;font-size:.52rem;letter-spacing:.4em;color:var(--dim)}
+.hero-copy{font-family:"Noto Serif JP",serif;font-weight:200;font-size:clamp(.7rem,1.5vw,.85rem);letter-spacing:.25em;color:var(--muted);line-height:2.4;animation:fadeUp .9s .28s ease both}
+.hero-copy strong{color:var(--cream);font-weight:400}
+/* Temp badge */
+.hero-temp{display:inline-flex;align-items:center;gap:10px;margin-top:24px;padding:8px 20px;border:1px solid var(--flash)33;background:rgba(64,200,240,.06);font-family:"Bebas Neue",sans-serif;font-size:1.6rem;letter-spacing:.15em;color:var(--flash);animation:fadeUp .9s .35s ease both}
+.hero-scroll{position:absolute;bottom:44px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;font-family:"Cinzel",serif;font-size:.46rem;letter-spacing:.45em;color:var(--muted);opacity:.4;animation:fadeUp .9s .5s ease both}
+.scroll-line{width:1px;height:44px;background:linear-gradient(to bottom,var(--flash),transparent);animation:scrollPulse 2.5s ease-in-out infinite}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes scrollPulse{0%,100%{opacity:.15;transform:scaleY(.5);transform-origin:top}50%{opacity:.7;transform:scaleY(1);transform-origin:top}}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:99;background:rgba(2,6,13,.93);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;overflow-x:auto;scrollbar-width:none;padding:0 24px}
+nav::-webkit-scrollbar{display:none}
+.n-logo{font-family:"Cinzel",serif;font-size:.62rem;letter-spacing:.22em;color:var(--flash);white-space:nowrap;padding:13px 18px 13px 0;border-right:1px solid var(--border);margin-right:18px;flex-shrink:0;display:flex;align-items:center;gap:9px}
+.n-mark{width:20px;height:20px;border:1px solid var(--flash);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.52rem;flex-shrink:0}
+.n-link{font-family:"Cinzel",serif;font-size:.5rem;letter-spacing:.12em;color:var(--muted);white-space:nowrap;padding:15px 12px;text-decoration:none;text-transform:uppercase;transition:color .2s;flex-shrink:0;display:flex;align-items:center;gap:5px}
+.n-link:hover{color:var(--flash)}
+.n-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+
+/* ── MAIN ── */
+main{max-width:1100px;margin:0 auto;padding:0 28px 140px}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.reveal.vis{opacity:1;transform:none}
+
+/* ── OVERVIEW CARDS ── */
+.overview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1px;background:var(--border);margin-bottom:64px}
+.ov-card{background:var(--s1);padding:24px 20px;position:relative;overflow:hidden;transition:background .2s;cursor:pointer;text-decoration:none;color:inherit;display:block}
+.ov-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--ov-color,var(--flash));transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.16,1,.3,1)}
+.ov-card:hover{background:var(--s2)}
+.ov-card:hover::before{transform:scaleX(1)}
+.ov-num{font-family:"Bebas Neue",sans-serif;font-size:3rem;line-height:1;color:var(--border);margin-bottom:8px}
+.ov-icon{font-size:1.8rem;margin-bottom:10px;line-height:1}
+.ov-name{font-family:"Cinzel",serif;font-size:.6rem;letter-spacing:.18em;margin-bottom:6px}
+.ov-desc{font-size:.62rem;color:var(--muted);line-height:1.8;margin-bottom:10px}
+.ov-tag{display:inline-block;font-family:"Cinzel",serif;font-size:.46rem;letter-spacing:.15em;padding:2px 8px;border:1px solid;text-transform:uppercase;opacity:.8}
+.ov-time{font-family:"Bebas Neue",sans-serif;font-size:1.4rem;margin-top:10px}
+
+/* ── SECTION ── */
+.ice-section{padding-top:96px}
+.ice-section+.ice-section{border-top:1px solid var(--border)}
+.sec-head{display:flex;align-items:flex-start;gap:24px;margin-bottom:40px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+.sec-icon{font-size:3rem;flex-shrink:0;line-height:1;margin-top:4px}
+.sec-info{flex:1}
+.sec-en{font-family:"Cinzel",serif;font-size:.52rem;letter-spacing:.45em;text-transform:uppercase;margin-bottom:6px;opacity:.8}
+.sec-ja{font-family:"Noto Serif JP",serif;font-weight:300;font-size:clamp(1.2rem,2.4vw,1.8rem);letter-spacing:.12em}
+.sec-desc{font-size:.7rem;color:var(--muted);line-height:2;margin-top:8px}
+.sec-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.sec-badge{font-family:"Cinzel",serif;font-size:.46rem;letter-spacing:.15em;padding:3px 9px;border:1px solid;text-transform:uppercase}
+
+/* ── RECIPE LAYOUT ── */
+.recipe-body{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
+.recipe-body.single{grid-template-columns:1fr}
+
+/* ── PARAM BAR ── */
+.params-row{display:grid;gap:1px;background:var(--border);margin-bottom:20px}
+.params-row.p4{grid-template-columns:repeat(4,1fr)}
+.params-row.p5{grid-template-columns:repeat(5,1fr)}
+.params-row.p3{grid-template-columns:repeat(3,1fr)}
+.p-cell{background:var(--s2);padding:12px 8px;text-align:center}
+.p-val{font-family:"Bebas Neue",sans-serif;font-size:1.3rem;line-height:1;margin-bottom:3px}
+.p-key{font-family:"Cinzel",serif;font-size:.42rem;letter-spacing:.18em;color:var(--dim);text-transform:uppercase}
+
+/* ── CARD ── */
+.rc{background:var(--s1);padding:28px 24px;position:relative;overflow:hidden}
+.rc-accent{position:absolute;left:0;top:0;bottom:0;width:3px}
+.rc-title{font-family:"Cinzel",serif;font-size:.56rem;letter-spacing:.25em;text-transform:uppercase;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+/* Steps */
+.steps-title{font-family:"Cinzel",serif;font-size:.5rem;letter-spacing:.28em;color:var(--muted);text-transform:uppercase;margin-bottom:12px}
+.step{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start}
+.step-num{font-family:"Bebas Neue",sans-serif;font-size:1.3rem;line-height:1;color:var(--dim);flex-shrink:0;width:20px;text-align:right}
+.step-body{flex:1}
+.step-title{font-family:"Cinzel",serif;font-size:.56rem;letter-spacing:.1em;color:var(--cream);margin-bottom:3px}
+.step-detail{font-size:.62rem;color:var(--muted);line-height:1.8}
+.step-time{font-family:"DM Mono",monospace;font-size:.58rem;color:var(--flash);background:#041020;border:1px solid var(--border);padding:1px 6px;border-radius:2px;margin-right:4px}
+.step-warn{font-family:"DM Mono",monospace;font-size:.56rem;color:#e8b840;background:#1a1000;border:1px solid #2a1800;padding:1px 6px;border-radius:2px;margin-right:4px}
+/* Tip / Note */
+.rc-tip{margin-top:16px;padding:12px 14px;background:#040e1e;border-left:2px solid var(--flash);font-size:.62rem;color:var(--muted);line-height:1.9}
+.rc-tip strong{color:var(--blue2);font-weight:400}
+.rc-warn{margin-top:10px;padding:10px 14px;background:#100800;border-left:2px solid #e8b840;font-size:.6rem;color:#9a8050;line-height:1.9}
+.rc-warn strong{color:#e8b840;font-weight:400}
+.rc-note{margin-top:10px;padding:10px 14px;background:var(--s2);border:1px solid var(--border);font-size:.6rem;color:var(--muted);line-height:1.8}
+.rc-note strong{color:var(--cream);font-weight:400}
+
+/* ── ICE CHART (timeline visual) ── */
+.timeline{margin:20px 0 16px;position:relative}
+.tl-label{font-family:"Cinzel",serif;font-size:.48rem;letter-spacing:.2em;color:var(--dim);text-transform:uppercase;margin-bottom:10px}
+.tl-bar-wrap{height:28px;background:var(--s2);border:1px solid var(--border);border-radius:2px;overflow:hidden;position:relative;margin-bottom:6px}
+.tl-bar{height:100%;border-radius:2px;display:flex;align-items:center;padding:0 8px;font-family:"DM Mono",monospace;font-size:.52rem;white-space:nowrap;transition:width 1.4s cubic-bezier(.16,1,.3,1)}
+.tl-time{font-family:"Cinzel",serif;font-size:.44rem;letter-spacing:.12em;color:var(--dim);text-align:right}
+
+/* ── COMPARISON ── */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
+.compare-col{background:var(--s2);padding:16px 14px}
+.compare-col-title{font-family:"Cinzel",serif;font-size:.5rem;letter-spacing:.2em;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.compare-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)}
+.compare-row:last-child{border-bottom:none}
+.compare-key{font-size:.6rem;color:var(--muted)}
+.compare-val{font-family:"DM Mono",monospace;font-size:.6rem;color:var(--cream)}
+
+/* ── BEAN RECOMMEND ── */
+.bean-rec{margin-top:16px}
+.bean-rec-title{font-family:"Cinzel",serif;font-size:.5rem;letter-spacing:.25em;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
+.bean-tags{display:flex;flex-wrap:wrap;gap:5px}
+.btag{font-size:.6rem;padding:3px 9px;border-radius:2px;border:1px solid}
+
+/* ── SCALE TABLE ── */
+.scale-table{width:100%;border-collapse:collapse;font-size:.62rem;margin-top:16px}
+.scale-table th{font-family:"Cinzel",serif;font-size:.48rem;letter-spacing:.22em;color:var(--muted);text-transform:uppercase;padding:10px 14px;border-bottom:1px solid var(--border);text-align:left;background:var(--s2)}
+.scale-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--muted);background:var(--s1);transition:background .15s}
+.scale-table tr:hover td{background:var(--s2)}
+.scale-table td:first-child{color:var(--cream);font-family:"Bebas Neue",sans-serif;font-size:1rem;letter-spacing:.05em}
+.scale-table td strong{color:var(--cream)}
+
+footer{text-align:center;padding:60px 20px;border-top:1px solid var(--border);position:relative}
+footer::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:160px;height:1px;background:linear-gradient(90deg,transparent,var(--flash),transparent);opacity:.3}
+.f-logo{font-family:"Bebas Neue",sans-serif;font-size:2.8rem;letter-spacing:.25em;background:linear-gradient(135deg,var(--dim) 0%,var(--flash) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.f-text{font-size:.52rem;letter-spacing:.25em;color:var(--dim);margin-top:12px;font-family:"Cinzel",serif}
+
+@media(max-width:720px){
+  main{padding:0 12px 80px}
+  .recipe-body{grid-template-columns:1fr}
+  .overview-grid{grid-template-columns:repeat(2,1fr)}
+  .params-row.p5{grid-template-columns:repeat(3,1fr)}
+  .params-row.p4{grid-template-columns:repeat(2,1fr)}
+  .compare-grid{grid-template-columns:1fr}
+  .sec-head{flex-wrap:wrap}
+}
+
+<style id="nav-ext-style">
+.n-ext-wrap{display:flex;align-items:center;gap:4px;margin-right:10px;padding-right:14px;border-right:1px solid var(--border);flex-shrink:0}
+.n-ext-btn{display:flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid var(--btn-color,#4ba8d8);color:var(--btn-color,#4ba8d8);background:rgba(0,0,0,.0);font-family:"Cinzel",serif;font-size:.48rem;letter-spacing:.1em;text-decoration:none;text-transform:uppercase;transition:background .2s,color .2s;white-space:nowrap;line-height:1.4;border-radius:2px}
+.n-ext-btn:hover{background:var(--btn-color,#4ba8d8);color:#000}
+.n-ext-btn span{display:block;text-align:left}
+@media(max-width:480px){.n-ext-btn span{display:none}.n-ext-btn{padding:6px 9px;font-size:.7rem}}
+</style>
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-rule top"></div>
+  <div class="hero-rule bottom"></div>
+  <!-- Ice particles -->
+  <div id="ice-particles"></div>
+  <div class="hero-inner">
+    <p class="hero-eyebrow">Kotobuki Roasters — Summer Recipe Guide</p>
+    <span class="hero-brand">ICED</span>
+    <span class="hero-brand-sub">COFFEE GUIDE</span>
+    <div class="hero-divider"><span class="hero-divider-text">アイスコーヒー 全4パターン</span></div>
+    <p class="hero-copy">
+      夏のコーヒーは、淹れ方で味わいが大きく変わる。<br>
+      <strong>急冷・グラス注ぎ・水出し・大量作り置き</strong><br>
+      豆と目的に合わせた4つのレシピを紹介します。
+    </p>
+    <div class="hero-temp">🧊 SUMMER 2025 — 4 RECIPES</div>
+  </div>
+  <div class="hero-scroll"><span>SCROLL</span><div class="scroll-line"></div></div>
+</section>
+
+<nav>
+  <span class="n-logo"><span class="n-mark">K</span>KOTOBUKI</span>
+  <div class="n-ext-wrap"><a class="n-ext-btn" href="kotobuki-recipe-guide.html" style="--btn-color:#4ba8d8">☕<span>豆別<br>レシピ</span></a><a class="n-ext-btn" href="kotobuki-dripper-guide.html" style="--btn-color:#60c090">📐<span>器具別<br>レシピ</span></a></div>
+  <a class="n-link" href="#sec-flash"><span class="n-dot" style="background:var(--flash)"></span>急冷ドリップ</a>
+  <a class="n-link" href="#sec-glass"><span class="n-dot" style="background:var(--glass)"></span>グラス注ぎ</a>
+  <a class="n-link" href="#sec-cold"><span class="n-dot" style="background:var(--cold)"></span>水出し</a>
+  <a class="n-link" href="#sec-batch"><span class="n-dot" style="background:var(--batch)"></span>大量作り置き</a>
+  
+  
+
+</nav>
+
+<main>
+
+  <!-- OVERVIEW -->
+  <div style="padding-top:64px;margin-bottom:8px">
+    <div style="font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.35em;color:var(--muted);margin-bottom:16px;text-transform:uppercase">▸ レシピを選ぶ</div>
+  </div>
+  <div class="overview-grid reveal">
+    <a class="ov-card" href="#sec-flash" style="--ov-color:var(--flash)">
+      <div class="ov-num">01</div>
+      <div class="ov-icon">❄️</div>
+      <div class="ov-name" style="color:var(--flash)">急冷ドリップ</div>
+      <div class="ov-desc">氷の上に直接ドリップ。瞬時に冷やすことでフレーバーを閉じ込める本格スタイル。</div>
+      <div class="ov-tag" style="color:var(--flash);border-color:var(--flash)44">Flash Brew</div>
+      <div class="ov-time" style="color:var(--flash)">〜3分</div>
+    </a>
+    <a class="ov-card" href="#sec-glass" style="--ov-color:var(--glass)">
+      <div class="ov-num">02</div>
+      <div class="ov-icon">🥂</div>
+      <div class="ov-name" style="color:var(--glass)">グラス注ぎ</div>
+      <div class="ov-desc">濃いめにドリップして、氷入りグラスに注ぐシンプルな方法。</div>
+      <div class="ov-tag" style="color:var(--glass);border-color:var(--glass)44">Over Ice</div>
+      <div class="ov-time" style="color:var(--glass)">〜4分</div>
+    </a>
+    <a class="ov-card" href="#sec-cold" style="--ov-color:var(--cold)">
+      <div class="ov-num">03</div>
+      <div class="ov-icon">🌙</div>
+      <div class="ov-name" style="color:var(--cold)">水出し（コールドブリュー）</div>
+      <div class="ov-desc">冷水で12〜16時間かけて抽出。まろやかで甘みのある夏の定番。</div>
+      <div class="ov-tag" style="color:var(--cold);border-color:var(--cold)44">Cold Brew</div>
+      <div class="ov-time" style="color:var(--cold)">12〜16時間</div>
+    </a>
+    <a class="ov-card" href="#sec-batch" style="--ov-color:var(--batch)">
+      <div class="ov-num">04</div>
+      <div class="ov-icon">🫙</div>
+      <div class="ov-name" style="color:var(--batch)">大量作り置き（バッチブリュー）</div>
+      <div class="ov-desc">1L容器にお湯と粉を入れてドリッパーで濾す。まとめて作れる業務・家庭向け。</div>
+      <div class="ov-tag" style="color:var(--batch);border-color:var(--batch)44">Batch Brew</div>
+      <div class="ov-time" style="color:var(--batch)">〜15分</div>
+    </a>
+  </div>
+
+  <!-- ════════════════════════════════
+       01  急冷ドリップ（Flash Brew）
+  ════════════════════════════════ -->
+  <section class="ice-section reveal" id="sec-flash">
+    <div class="sec-head">
+      <div class="sec-icon">❄️</div>
+      <div class="sec-info">
+        <div class="sec-en" style="color:var(--flash)">01 — Flash Brew / Ice Drip</div>
+        <div class="sec-ja">急冷ドリップ</div>
+        <div class="sec-desc">
+          サーバーの中に氷を入れ、その上に直接ドリップして瞬時に冷やす方法。高温で抽出した香りとフレーバーを急冷で閉じ込めるため、<strong style="color:var(--cream)">最もクリアでフレーバーが豊かなアイスコーヒー</strong>が作れる。特に浅煎りの豆との相性が抜群。
+        </div>
+        <div class="sec-badges">
+          <span class="sec-badge" style="color:var(--flash);border-color:var(--flash)44">❄️ 急冷でフレーバーを閉じ込める</span>
+          <span class="sec-badge" style="color:var(--blue);border-color:var(--blue)44">🌸 浅煎り・フローラル系に最適</span>
+          <span class="sec-badge" style="color:var(--cold);border-color:var(--cold)44">⏱ 3分で完成</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="recipe-body">
+      <div class="rc">
+        <div class="rc-accent" style="background:var(--flash)"></div>
+        <div class="rc-title" style="color:var(--flash)">基本レシピ ／ 1杯分（300ml仕上がり）</div>
+        <div class="params-row p5">
+          <div class="p-cell"><div class="p-val" style="color:var(--flash)">20g</div><div class="p-key">豆の量</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--blue)">180ml</div><div class="p-key">お湯</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--cream)">120g</div><div class="p-key">氷（サーバー内）</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--cream)">93℃</div><div class="p-key">湯温</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--muted)">〜3分</div><div class="p-key">抽出時間</div></div>
+        </div>
+        <div class="steps-title">抽出ステップ</div>
+        <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">準備</div><div class="step-detail">サーバーに<strong style="color:var(--cream)">120gの氷</strong>を入れておく。V60またはオリガミ（円錐フィルター）をセット。豆は<strong style="color:var(--cream)">中細挽き</strong>で20g。</div></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">蒸らし</div><div class="step-detail"><span class="step-time">0:00</span>40gのお湯で30秒蒸らす。通常より少し多めで。</div></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">注湯</div><div class="step-detail"><span class="step-time">0:30〜</span>残り140gを2〜3回に分けてゆっくり注ぐ。</div></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">完成</div><div class="step-detail">抽出したコーヒーが氷に当たり、そのまま急冷される。氷が溶けて約300mlになれば完成。グラスに氷を足して提供。</div></div></div>
+        <div class="rc-tip"><strong>急冷の効果:</strong> 高温で引き出したフレーバー成分を瞬時に固定。酸化が抑えられ、フローラルやフルーティな香りがそのまま残る。作ったらすぐ飲むのがベスト。</div>
+        <div class="bean-rec">
+          <div class="bean-rec-title">おすすめの豆</div>
+          <div class="bean-tags">
+            <span class="btag" style="background:#071422;color:#b8d040;border-color:#b8d04033">🍋 エチオピア ウォッシュド</span>
+            <span class="btag" style="background:#0a0e22;color:#d080c0;border-color:#d080c033">🌸 コロンビア ゲイシャ</span>
+            <span class="btag" style="background:#071422;color:#b8d040;border-color:#b8d04033">🍊 グアテマラ ウエウエテナンゴ</span>
+            <span class="btag" style="background:#04101e;color:#4ba8d8;border-color:#4ba8d833">💧 ルワンダ レッドブルボン</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="rc" style="background:var(--s2)">
+        <div class="rc-accent" style="background:var(--flash)"></div>
+        <div class="rc-title" style="color:var(--flash)">氷の量と仕上がりの調整</div>
+        <p style="font-size:.65rem;color:var(--muted);line-height:1.9;margin-bottom:16px">お湯と氷の<strong style="color:var(--cream)">合計が仕上がり量</strong>になります。氷の比率で濃さを調整できます。</p>
+        <table class="scale-table">
+          <thead>
+            <tr>
+              <th>豆</th><th>お湯</th><th>氷</th><th>仕上がり</th><th>濃さ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>15g</td><td>130ml</td><td>90g</td><td>約200ml</td><td>濃いめ（ストレート向き）</td></tr>
+            <tr><td>20g</td><td>180ml</td><td>120g</td><td>約280ml</td><td>標準（1杯分）</td></tr>
+            <tr><td>20g</td><td>160ml</td><td>140g</td><td>約270ml</td><td>薄め（ミルク割り向き）</td></tr>
+            <tr><td>30g</td><td>270ml</td><td>180g</td><td>約420ml</td><td>2杯分・標準</td></tr>
+          </tbody>
+        </table>
+        <div class="rc-warn" style="margin-top:14px"><strong>注意:</strong> 氷が全て溶けると薄くなる。溶けきる前に提供するか、仕上がりを少し濃い目に設定して。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════
+       02  グラス注ぎ（Over Ice）
+  ════════════════════════════════ -->
+  <section class="ice-section reveal" id="sec-glass">
+    <div class="sec-head">
+      <div class="sec-icon">🥂</div>
+      <div class="sec-info">
+        <div class="sec-en" style="color:var(--glass)">02 — Over Ice / Glass Pour</div>
+        <div class="sec-ja">グラス注ぎ（濃縮→氷割り）</div>
+        <div class="sec-desc">
+          通常より<strong style="color:var(--cream)">濃いめにホットドリップ</strong>してから、氷の入ったグラスに注ぐシンプルな方法。急冷ドリップより器具が少なくて済み、ミルクやシロップとの組み合わせにも向く。カフェでの提供スタイルにも使いやすい。
+        </div>
+        <div class="sec-badges">
+          <span class="sec-badge" style="color:var(--glass);border-color:var(--glass)44">🥂 器具が少なくて簡単</span>
+          <span class="sec-badge" style="color:var(--batch);border-color:var(--batch)44">🥛 ミルク・シロップと相性◎</span>
+          <span class="sec-badge" style="color:var(--cold);border-color:var(--cold)44">☕ 中〜深煎り向き</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="recipe-body">
+      <div class="rc">
+        <div class="rc-accent" style="background:var(--glass)"></div>
+        <div class="rc-title" style="color:var(--glass)">基本レシピ ／ 1杯分</div>
+        <div class="params-row p4">
+          <div class="p-cell"><div class="p-val" style="color:var(--glass)">20g</div><div class="p-key">豆の量</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--blue)">200ml</div><div class="p-key">お湯（濃いめ）</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--cream)">88℃</div><div class="p-key">湯温</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--muted)">〜3:30</div><div class="p-key">抽出時間</div></div>
+        </div>
+        <div class="steps-title">抽出ステップ</div>
+        <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">グラスに氷を準備</div><div class="step-detail">グラスに氷をたっぷり（150〜200g）入れておく。ステンレスカップや保冷性の高いグラスが望ましい。</div></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">濃いめにドリップ</div><div class="step-detail"><span class="step-time">0:00</span>豆20gに対して水200mlで通常より<strong style="color:var(--cream)">濃いめ（1:10）</strong>に抽出。挽き目は中挽き〜中細挽き。</div></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">蒸らし〜注湯</div><div class="step-detail"><span class="step-time">0:30〜</span>40gで30秒蒸らし → 残り160gを2回に分けて注ぐ。</div></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">氷のグラスへ注ぐ</div><div class="step-detail">抽出が終わったら<strong style="color:var(--cream)">すぐに</strong>氷入りグラスへ高めから勢いよく注ぐ（撹拌効果で混ざりやすい）。</div></div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">完成</div><div class="step-detail">氷が溶けて250〜300mlが目安。すぐに提供。</div></div></div>
+        <div class="rc-tip"><strong>Point:</strong> 抽出後は時間を置かず素早く注ぐこと。コーヒーが熱いまま時間が経つと酸化して風味が落ちる。高いところから注ぐと対流で均一に冷える。</div>
+      </div>
+
+      <div class="rc">
+        <div class="rc-accent" style="background:var(--glass)"></div>
+        <div class="rc-title" style="color:var(--glass)">急冷 vs グラス注ぎ 比較</div>
+        <div class="compare-grid">
+          <div class="compare-col">
+            <div class="compare-col-title" style="color:var(--flash)">❄️ 急冷ドリップ</div>
+            <div class="compare-row"><span class="compare-key">フレーバー</span><span class="compare-val">鮮やかに残る</span></div>
+            <div class="compare-row"><span class="compare-key">クリア感</span><span class="compare-val">高い</span></div>
+            <div class="compare-row"><span class="compare-key">向く豆</span><span class="compare-val">浅煎り</span></div>
+            <div class="compare-row"><span class="compare-key">向く飲み方</span><span class="compare-val">ストレート</span></div>
+            <div class="compare-row"><span class="compare-key">手間</span><span class="compare-val">やや多い</span></div>
+          </div>
+          <div class="compare-col">
+            <div class="compare-col-title" style="color:var(--glass)">🥂 グラス注ぎ</div>
+            <div class="compare-row"><span class="compare-key">フレーバー</span><span class="compare-val">落ち着いた印象</span></div>
+            <div class="compare-row"><span class="compare-key">クリア感</span><span class="compare-val">中程度</span></div>
+            <div class="compare-row"><span class="compare-key">向く豆</span><span class="compare-val">中〜深煎り</span></div>
+            <div class="compare-row"><span class="compare-key">向く飲み方</span><span class="compare-val">ミルク・シロップ割り</span></div>
+            <div class="compare-row"><span class="compare-key">手間</span><span class="compare-val">少ない</span></div>
+          </div>
+        </div>
+        <div class="rc-note" style="margin-top:1px">
+          <strong>アレンジのヒント：</strong><br>
+          🥛 カフェオレ → 牛乳1:コーヒー1<br>
+          🍦 コーヒーフロート → バニラアイスをのせる<br>
+          🍮 キャラメルラテ → キャラメルシロップ+ミルクフォーム<br>
+          🧃 ソーダ割り → 炭酸水1:コーヒー1（浅煎り推奨）
+        </div>
+        <div class="bean-rec" style="margin-top:14px">
+          <div class="bean-rec-title">おすすめの豆</div>
+          <div class="bean-tags">
+            <span class="btag" style="background:#060e18;color:#c07840;border-color:#c0784033">🍫 ブラジル カルモエステート</span>
+            <span class="btag" style="background:#060e18;color:#c07840;border-color:#c0784033">🍮 寿ブレンド 殿</span>
+            <span class="btag" style="background:#060e18;color:#c07840;border-color:#c0784033">☕ アイスブレンド</span>
+            <span class="btag" style="background:#060e18;color:#c07840;border-color:#c0784033">🌴 インドネシア マンデリン</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════
+       03  水出し（Cold Brew）
+  ════════════════════════════════ -->
+  <section class="ice-section reveal" id="sec-cold">
+    <div class="sec-head">
+      <div class="sec-icon">🌙</div>
+      <div class="sec-info">
+        <div class="sec-en" style="color:var(--cold)">03 — Cold Brew / Water Drip</div>
+        <div class="sec-ja">水出し（コールドブリュー）</div>
+        <div class="sec-desc">
+          冷水で長時間かけてゆっくり抽出するコールドブリュー。高温を使わないため<strong style="color:var(--cream)">カフェインと酸味が少なく</strong>、まろやかで甘みのある味わいが特徴。夜に仕込んで朝に飲める。2Lボトルでの作り方と、小さなポットでの作り方を紹介。
+        </div>
+        <div class="sec-badges">
+          <span class="sec-badge" style="color:var(--cold);border-color:var(--cold)44">🌙 前夜仕込み → 朝飲める</span>
+          <span class="sec-badge" style="color:var(--flash);border-color:var(--flash)44">😌 カフェイン・酸味少なめ</span>
+          <span class="sec-badge" style="color:var(--batch);border-color:var(--batch)44">🍶 まろやか・甘みが出る</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="recipe-body">
+      <div class="rc">
+        <div class="rc-accent" style="background:var(--cold)"></div>
+        <div class="rc-title" style="color:var(--cold)">2Lボトルレシピ（作り置き向き）</div>
+        <div class="params-row p4">
+          <div class="p-cell"><div class="p-val" style="color:var(--cold)">100g</div><div class="p-key">豆の量</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--blue)">2,000ml</div><div class="p-key">冷水</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--cream)">冷水（4℃）</div><div class="p-key">水温</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--muted)">12〜16h</div><div class="p-key">抽出時間</div></div>
+        </div>
+        <div class="steps-title">抽出ステップ</div>
+        <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">挽き目</div><div class="step-detail"><strong style="color:var(--cream)">極粗挽き</strong>（フレンチプレスより粗め）。細かいと過抽出・渋みが出やすい。</div></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">セット</div><div class="step-detail">2Lボトルに粉100gを入れ、冷水を少しずつ注いで全体を湿らせる。残りの水を加え、軽くかき混ぜる。</div></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">冷蔵庫へ</div><div class="step-detail"><span class="step-time">仕込み〜</span>冷蔵庫に入れる。<strong style="color:var(--cream)">常温では12時間以内</strong>に濾すこと（過抽出・衛生的にNG）。</div></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">濾す</div><div class="step-detail"><span class="step-time">12〜16h後</span>ペーパーフィルター（V60 or ケメックス）かコーヒーフィルター付きボトルで濾す。</div></div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">保存・提供</div><div class="step-detail">濾した液体を冷蔵で<strong style="color:var(--cream)">3〜5日以内</strong>に飲み切る。グラスに氷を入れてそのまま注ぐだけ。</div></div></div>
+        <div class="rc-tip"><strong>水出しのコツ:</strong> 12時間でさっぱり、16時間でリッチな仕上がりに。まず12時間で味を確認して好みの時間を見つけて。濾し方はペーパーフィルターが一番クリアに仕上がる。</div>
+        <div class="rc-warn"><strong>注意:</strong> 常温放置は12時間を超えないこと。必ず冷蔵庫で抽出・保存。飲み切りは5日以内。匂いや味に違和感があれば廃棄。</div>
+      </div>
+
+      <div class="rc">
+        <div class="rc-accent" style="background:var(--cold)"></div>
+        <div class="rc-title" style="color:var(--cold)">小さなポット ／ 600mlレシピ</div>
+        <div class="params-row p4">
+          <div class="p-cell"><div class="p-val" style="color:var(--cold)">45g</div><div class="p-key">豆の量</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--blue)">600ml</div><div class="p-key">冷水</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--cream)">冷水</div><div class="p-key">水温</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--muted)">12〜14h</div><div class="p-key">抽出時間</div></div>
+        </div>
+        <div class="steps-title">抽出ステップ（小容量版）</div>
+        <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">フィルターにセット</div><div class="step-detail">コールドブリューポット（またはメイソンジャー）のフィルターバスケットに粗挽き45gを入れる。</div></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">水を注ぐ</div><div class="step-detail">冷水600mlをゆっくり注いでフィルターを沈める。軽くスプーンで押して全体を湿らせる。</div></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">冷蔵庫で待機</div><div class="step-detail">蓋をして冷蔵庫へ。12〜14時間待つ。</div></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">フィルターを抜いて完成</div><div class="step-detail">フィルターバスケットをゆっくり引き抜いて完成。そのまま冷蔵保存。</div></div></div>
+        <div class="rc-note">
+          <strong>おすすめアレンジ：</strong><br>
+          🥛 コールドブリューラテ → 牛乳またはオーツミルクで1:1割り<br>
+          🍋 レモンコールドブリュー → レモン1片を浸漬中に一緒に入れる（柑橘系の豆に◎）<br>
+          🍦 コーヒートニック → トニックウォーター1:コールドブリュー1 + 氷
+        </div>
+        <div class="bean-rec" style="margin-top:14px">
+          <div class="bean-rec-title">おすすめの豆</div>
+          <div class="bean-tags">
+            <span class="btag" style="background:#04101a;color:#50d0a0;border-color:#50d0a033">🌙 水出しコーヒー（コールドブリュー）専用豆</span>
+            <span class="btag" style="background:#060e18;color:#c07840;border-color:#c0784033">🧊 アイスブレンド</span>
+            <span class="btag" style="background:#07121a;color:#e0b040;border-color:#e0b04033">🇨🇴 コロンビア ジューシーグレープ</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════
+       04  大量作り置き（Batch Brew）
+  ════════════════════════════════ -->
+  <section class="ice-section reveal" id="sec-batch">
+    <div class="sec-head">
+      <div class="sec-icon">🫙</div>
+      <div class="sec-info">
+        <div class="sec-en" style="color:var(--batch)">04 — Batch Brew / Large Scale</div>
+        <div class="sec-ja">大量作り置き（バッチブリュー）</div>
+        <div class="sec-desc">
+          1Lの容器（ピッチャーや耐熱ボトル）にコーヒーの粉とお湯を入れて蒸らし・浸漬させてからドリッパーで濾す方法。まとめて作れるので<strong style="color:var(--cream)">カフェの営業前準備や家庭での週末まとめ作り</strong>に最適。通常のドリップより均一な仕上がりになりやすい。
+        </div>
+        <div class="sec-badges">
+          <span class="sec-badge" style="color:var(--batch);border-color:var(--batch)44">🫙 まとめて作れる</span>
+          <span class="sec-badge" style="color:var(--flash);border-color:var(--flash)44">☕ カフェ営業前準備に</span>
+          <span class="sec-badge" style="color:var(--cold);border-color:var(--cold)44">⏱ 15分で1L完成</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="recipe-body">
+      <div class="rc">
+        <div class="rc-accent" style="background:var(--batch)"></div>
+        <div class="rc-title" style="color:var(--batch)">基本レシピ ／ 1L仕上がり</div>
+        <div class="params-row p4">
+          <div class="p-cell"><div class="p-val" style="color:var(--batch)">65g</div><div class="p-key">豆の量</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--blue)">850ml</div><div class="p-key">お湯</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--cream)">88℃</div><div class="p-key">湯温</div></div>
+          <div class="p-cell"><div class="p-val" style="color:var(--muted)">10〜15分</div><div class="p-key">所要時間</div></div>
+        </div>
+        <div class="steps-title">抽出ステップ（浸漬→ドリッパー濾過）</div>
+        <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">粗挽き</div><div class="step-detail"><strong style="color:var(--cream)">粗挽き〜中粗挽き</strong>（フレンチプレス程度）。細かすぎるとフィルターが詰まり時間がかかりすぎる。</div></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">1Lピッチャーに粉を入れる</div><div class="step-detail">耐熱の1Lピッチャー（またはフレンチプレス）に粉65gを入れる。</div></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">お湯を注ぐ</div><div class="step-detail"><span class="step-time">0:00</span>88℃のお湯を850ml一気に注ぐ。スプーンで底からゆっくりかき混ぜて全体を均一に湿らせる。</div></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">浸漬</div><div class="step-detail"><span class="step-time">4〜5分</span>蓋またはラップをして4〜5分待機。<span class="step-warn">5分を超えると渋みが出やすいので注意。</span></div></div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">ドリッパーで濾す</div><div class="step-detail"><span class="step-time">5分後〜</span>V60やケメックスにペーパーフィルターをセット。ピッチャーの液体をゆっくり注いで濾す。</div></div></div>
+        <div class="step"><div class="step-num">6</div><div class="step-body"><div class="step-title">急冷して保存</div><div class="step-detail">濾したコーヒーを氷の入った別の容器に注いで急冷。または冷蔵庫で冷やす。提供時に氷グラスへ。</div></div></div>
+        <div class="rc-tip"><strong>バッチブリューのポイント:</strong> 浸漬時間は<strong style="color:var(--cream)">4分を基準</strong>に。豆が新鮮なほどガスが出てよく膨らむ。濾す際は一度に大量を注がず、少しずつ加えると詰まりにくい。</div>
+      </div>
+
+      <div class="rc">
+        <div class="rc-accent" style="background:var(--batch)"></div>
+        <div class="rc-title" style="color:var(--batch)">量を増やすスケールアップ表</div>
+        <p style="font-size:.65rem;color:var(--muted);line-height:1.9;margin-bottom:16px">豆：水 = <strong style="color:var(--cream)">1:13</strong> が基本比率（アイスコーヒーは濃いめが安心）。仕上がりは氷で薄まることを想定。</p>
+        <table class="scale-table">
+          <thead>
+            <tr><th>豆</th><th>お湯</th><th>浸漬時間</th><th>仕上がり</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>30g</td><td>400ml</td><td>4分</td><td>約400ml（2〜3杯分）</td></tr>
+            <tr><td>65g</td><td>850ml</td><td>4〜5分</td><td>約850ml（5〜6杯分）</td></tr>
+            <tr><td>100g</td><td>1,300ml</td><td>4〜5分</td><td>約1,300ml（8〜9杯分）</td></tr>
+            <tr><td>150g</td><td>2,000ml</td><td>5分</td><td>約2L（12〜13杯分）</td></tr>
+          </tbody>
+        </table>
+        <div class="rc-note" style="margin-top:14px">
+          <strong>2L以上を作る場合：</strong><br>
+          大きな鍋やバケツサイズの容器でも同様に作れます。濾す際はケメックスより大きなフィルター（ネルドリップやコーヒーサック）が便利。<br><br>
+          <strong>保存：</strong> 冷蔵で2〜3日以内に使い切ること。カフェでの日替わり仕込みがおすすめ。
+        </div>
+        <div class="bean-rec" style="margin-top:14px">
+          <div class="bean-rec-title">おすすめの豆（大量向き）</div>
+          <div class="bean-tags">
+            <span class="btag" style="background:#060814;color:#9060d8;border-color:#9060d833">🫙 アイスブレンド（200g）</span>
+            <span class="btag" style="background:#060814;color:#9060d8;border-color:#9060d833">🫙 寿ブレンド 殿（200g）</span>
+            <span class="btag" style="background:#060814;color:#9060d8;border-color:#9060d833">🫙 デイリーブレンド（200g）</span>
+            <span class="btag" style="background:#060814;color:#9060d8;border-color:#9060d833">🫙 ブラジル カルモエステート（200g）</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4パターン比較まとめ -->
+  <section style="padding-top:80px;border-top:1px solid var(--border)" class="reveal">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,5vw,3.5rem);letter-spacing:.1em;background:linear-gradient(135deg,var(--cream) 0%,var(--flash) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px">4 PATTERNS COMPARED</div>
+    <div style="font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.3em;color:var(--muted);margin-bottom:32px;text-transform:uppercase">4つのレシピ 比較まとめ</div>
+    <div style="overflow-x:auto">
+    <table class="scale-table" style="min-width:640px">
+      <thead>
+        <tr>
+          <th>方法</th><th>仕込み時間</th><th>フレーバー</th><th>向く豆</th><th>おすすめシーン</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="color:var(--flash)">❄️ 急冷ドリップ</td>
+          <td>3分</td>
+          <td>鮮やか・クリア</td>
+          <td>浅煎り・ウォッシュド</td>
+          <td>スペシャルティをそのまま楽しむ</td>
+        </tr>
+        <tr>
+          <td style="color:var(--glass)">🥂 グラス注ぎ</td>
+          <td>4分</td>
+          <td>落ち着いた・まろやか</td>
+          <td>中〜深煎り</td>
+          <td>ミルク割り・カフェ提供・手軽に</td>
+        </tr>
+        <tr>
+          <td style="color:var(--cold)">🌙 水出し</td>
+          <td>12〜16時間</td>
+          <td>甘み・まろやか・低酸</td>
+          <td>深煎り・アイス専用ブレンド</td>
+          <td>前夜仕込み・夏の常備コーヒー</td>
+        </tr>
+        <tr>
+          <td style="color:var(--batch)">🫙 大量作り置き</td>
+          <td>15分</td>
+          <td>バランス・安定</td>
+          <td>ブレンド・深煎り</td>
+          <td>カフェ営業前・家族や来客用</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="f-logo">KOTOBUKI ROASTERS</div>
+  <p class="f-text">© KOTOBUKI ROASTERS — KOTOBUKIDIET.COM — KAKOGAWA HYOGO</p>
+</footer>
+
+<script>
+// Ice particles
+(function(){
+  const wrap = document.getElementById('ice-particles');
+  for(let i=0;i<18;i++){
+    const p = document.createElement('div');
+    p.className = 'ice-particle';
+    const size = Math.random()*6+3;
+    const colors = ['rgba(64,200,240,', 'rgba(80,208,160,', 'rgba(96,144,224,'];
+    const color = colors[Math.floor(Math.random()*colors.length)];
+    p.style.cssText = `
+      width:${size}px;height:${size*1.2}px;
+      left:${Math.random()*100}%;
+      background:${color}${Math.random()*.3+.1});
+      animation-duration:${Math.random()*12+8}s;
+      animation-delay:${Math.random()*10}s;
+    `;
+    wrap.appendChild(p);
+  }
+})();
+
+// Reveal
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting){ e.target.classList.add('vis'); io.unobserve(e.target); }
+  });
+},{threshold:.05});
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// Wix height
+function notifyHeight(){
+  const h = Math.max(document.body.scrollHeight,document.documentElement.scrollHeight);
+  window.parent.postMessage({type:'height',value:h},'*');
+}
+window.addEventListener('load',()=>setTimeout(notifyHeight,300));
+window.addEventListener('resize',notifyHeight);
+new MutationObserver(notifyHeight).observe(document.body,{subtree:true,childList:true,attributes:true});
+</script>
+</body>
+</html>
