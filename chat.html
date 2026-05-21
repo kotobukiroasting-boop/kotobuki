@@ -343,41 +343,42 @@
   </div>
 
   <!-- ヘッダー -->
-  <div class="header">
-    <div style="width:90px"></div>
-    <div class="header-title">☕ Kotobuki焙煎チャット</div>
-    <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">
-      <a class="home-btn" href="https://kotobukiroasting-boop.github.io/kotobuki/" target="_blank" rel="noopener">🏠 ホームページへ</a>
-      <a class="home-btn" href="https://www.google.com/maps/dir/?api=1&destination=兵庫県加古川市尾上町池田830-152+Kotobuki焙煎" target="_blank" rel="noopener" style="background:rgba(66,133,244,0.2);border-color:rgba(66,133,244,0.5);color:#add4ff;font-size:12px;padding:4px 10px">📍 お店へのルート</a>
-      <a class="home-btn" href="https://kotobukiroasting-boop.github.io/kotobuki/kotobuki_flavor_guide.html" target="_blank" rel="noopener" style="background:rgba(255,180,0,0.2);border-color:rgba(255,180,0,0.5);color:#ffd980;font-size:12px;padding:4px 10px">☕ 豆を探す</a>
-      <a class="home-btn" href="https://kotobukiroasting-boop.github.io/kotobuki/kotobuki-recipe-guide.html" target="_blank" rel="noopener" style="background:rgba(100,200,100,0.2);border-color:rgba(100,200,100,0.5);color:#a0e0a0;font-size:12px;padding:4px 10px">📖 ブリューレシピ</a>
+  <div class="header" style="flex-direction:column;padding:8px 12px;gap:6px">
+    <div style="display:flex;align-items:center;justify-content:center;width:100%">
+      <div class="header-title" style="font-size:16px">☕ Kotobuki焙煎チャット</div>
+    </div>
+    <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center">
+      <a class="home-btn" href="https://kotobukiroasting-boop.github.io/kotobuki/" target="_blank" rel="noopener" style="font-size:11px;padding:3px 8px">🏠 HP</a>
+      <a class="home-btn" href="https://www.google.com/maps/dir/?api=1&destination=兵庫県加古川市尾上町池田830-152+Kotobuki焙煎" target="_blank" rel="noopener" style="background:rgba(66,133,244,0.2);border-color:rgba(66,133,244,0.5);color:#add4ff;font-size:11px;padding:3px 8px">📍 ルート</a>
+      <a class="home-btn" href="https://kotobukiroasting-boop.github.io/kotobuki/kotobuki_flavor_guide.html" target="_blank" rel="noopener" style="background:rgba(255,180,0,0.2);border-color:rgba(255,180,0,0.5);color:#ffd980;font-size:11px;padding:3px 8px">☕ 豆を探す</a>
+      <a class="home-btn" href="https://kotobukiroasting-boop.github.io/kotobuki/kotobuki-recipe-guide.html" target="_blank" rel="noopener" style="background:rgba(100,200,100,0.2);border-color:rgba(100,200,100,0.5);color:#a0e0a0;font-size:11px;padding:3px 8px">📖 レシピ</a>
     </div>
   </div>
 
   <!-- 返信案内バナー -->
-  <div style="background:#2c1500;color:#f5d06a;text-align:center;padding:8px 16px;font-size:12px;line-height:1.6;border-bottom:1px solid #5a2d00">
-    担当者からの返信は数時間かかることもあります。<br>新着メッセージの確認は、時間を置いてチャットを開きなおしてください。
+  <div style="background:#2c1500;color:#f5d06a;text-align:center;padding:5px 12px;font-size:11px;line-height:1.5;border-bottom:1px solid #5a2d00">
+    返信は数時間かかる場合があります。時間を置いて開きなおしてご確認ください。
   </div>
 
   <!-- お知らせバナー -->
-  <div class="notice-bar" style="display:flex;align-items:center;justify-content:space-between">
-    <div style="display:flex;flex-direction:column;gap:2px">
-      <span>☕ Kotobuki焙煎の担当者がお返事します</span>
+  <div class="notice-bar" style="display:flex;align-items:center;justify-content:space-between;padding:6px 12px;font-size:12px">
+    <div style="display:flex;align-items:center;gap:8px">
+      <span>☕ 担当者がお返事します</span>
       <span id="currentUserName" style="font-size:11px;color:rgba(245,230,200,0.7)"></span>
     </div>
-    <button id="changeNameBtn" style="background:none;border:1px solid rgba(245,230,200,0.3);color:rgba(245,230,200,0.6);border-radius:12px;padding:3px 10px;font-size:11px;cursor:pointer;white-space:nowrap">名前を変更</button>
+    <button id="changeNameBtn" style="background:none;border:1px solid rgba(245,230,200,0.3);color:rgba(245,230,200,0.6);border-radius:12px;padding:2px 8px;font-size:11px;cursor:pointer;white-space:nowrap">名前変更</button>
   </div>
 
   <!-- SP会員バッジ -->
-  <div id="spBadge">
-    <div class="badge-row">
-      <div class="badge-icon">👑</div>
+  <div id="spBadge" style="margin:6px 12px 0;padding:8px 12px">
+    <div class="badge-row" style="gap:8px">
+      <div class="badge-icon" style="font-size:20px">👑</div>
       <div class="badge-info">
-        <div class="badge-title">✦ SPECIAL MEMBER ✦</div>
-        <div class="badge-name" id="badgeName"></div>
-        <div class="badge-expiry" id="badgeExpiry"></div>
+        <div class="badge-title" style="font-size:11px">✦ SPECIAL MEMBER ✦</div>
+        <div class="badge-name" id="badgeName" style="font-size:14px"></div>
+        <div class="badge-expiry" id="badgeExpiry" style="font-size:11px"></div>
       </div>
-      <div class="badge-stars">★★★</div>
+      <div class="badge-stars" style="font-size:13px">★★★</div>
     </div>
   </div>
 
