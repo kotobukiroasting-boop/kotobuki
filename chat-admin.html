@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>管理者画面</title>
+  <link rel="manifest" href="admin-manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="K-Admin">
+  <link rel="apple-touch-icon" href="https://kotobukiroasting-boop.github.io/kotobuki/icon-192.png">
+  <meta name="theme-color" content="#1a1a2e">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -311,6 +317,17 @@
   </style>
 </head>
 <body>
+
+  <!-- PWAインストールモーダル -->
+  <div id="adminInstallModal">
+    <div class="admin-install-box">
+      <h3>📱 管理者画面をアプリに追加</h3>
+      <p>ホーム画面に追加するとすぐにアクセスできます</p>
+      <div class="steps" id="adminInstallSteps"></div>
+      <button class="btn-ok" id="adminInstallBtn">ホーム画面に追加する</button>
+      <button class="btn-skip" id="adminInstallSkip">今はしない</button>
+    </div>
+  </div>
 
   <div class="modal" id="passwordModal">
     <div class="modal-box">
@@ -1207,6 +1224,63 @@
 
   // ログイン後に定期通知を開始
   startPeriodicNotify();
+
+  // ===== PWAインストール促進 =====
+  let adminDeferredPrompt = null;
+
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    adminDeferredPrompt = e;
+    showAdminInstallModal();
+  });
+
+  function showAdminInstallModal() {
+    if (localStorage.getItem("adminInstallDismissed")) return;
+    if (window.matchMedia("(display-mode: standalone)").matches) return;
+
+    const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+    const stepsEl = document.getElementById("adminInstallSteps");
+    const installBtn = document.getElementById("adminInstallBtn");
+
+    if (isIOS) {
+      stepsEl.innerHTML = `
+        1. 画面下の <strong>共有ボタン（□↑）</strong> をタップ<br>
+        2. <strong>「ホーム画面に追加」</strong> をタップ<br>
+        3. 右上の <strong>「追加」</strong> をタップ
+      `;
+      installBtn.textContent = "わかりました！";
+      installBtn.onclick = () => {
+        localStorage.setItem("adminInstallDismissed", "1");
+        document.getElementById("adminInstallModal").classList.remove("show");
+      };
+      setTimeout(() => {
+        document.getElementById("adminInstallModal").classList.add("show");
+      }, 3000);
+    } else if (adminDeferredPrompt) {
+      stepsEl.innerHTML = `管理者画面をホーム画面に追加して、すぐにアクセスできます。`;
+      installBtn.textContent = "ホーム画面に追加する";
+      installBtn.onclick = async () => {
+        adminDeferredPrompt.prompt();
+        await adminDeferredPrompt.userChoice;
+        adminDeferredPrompt = null;
+        localStorage.setItem("adminInstallDismissed", "1");
+        document.getElementById("adminInstallModal").classList.remove("show");
+      };
+      document.getElementById("adminInstallModal").classList.add("show");
+    }
+  }
+
+  document.getElementById("adminInstallSkip").addEventListener("click", () => {
+    localStorage.setItem("adminInstallDismissed", "1");
+    document.getElementById("adminInstallModal").classList.remove("show");
+  });
+
+  // iOSは3秒後に表示
+  if (/iPhone|iPad|iPod/.test(navigator.userAgent) &&
+      !window.matchMedia("(display-mode: standalone)").matches &&
+      !localStorage.getItem("adminInstallDismissed")) {
+    setTimeout(showAdminInstallModal, 3000);
+  }
 
   function nl2br(text) {
     return text.replace(/\n/g, '<br>');
