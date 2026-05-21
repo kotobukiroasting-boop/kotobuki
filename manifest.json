@@ -1,0 +1,22 @@
+{
+  "name": "Kotobuki焙煎チャット",
+  "short_name": "Kotobuki",
+  "description": "Kotobuki焙煎のサポートチャット",
+  "start_url": "./chat.html",
+  "display": "standalone",
+  "background_color": "#1a0e05",
+  "theme_color": "#1a0a00",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://kotobukiroasting-boop.github.io/kotobuki/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://kotobukiroasting-boop.github.io/kotobuki/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

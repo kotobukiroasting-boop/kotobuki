@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kotobuki焙煎チャット</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Kotobuki焙煎">
+  <link rel="apple-touch-icon" href="https://kotobukiroasting-boop.github.io/kotobuki/icon-192.png">
+  <meta name="theme-color" content="#1a0a00">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -264,6 +270,74 @@
     #imagePreview span { font-size: 13px; color: #666; flex: 1; }
     #imagePreview button { background: none; border: none; font-size: 20px; cursor: pointer; color: #e74c3c; }
 
+    /* ホーム画面追加モーダル */
+    #installModal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 150;
+    }
+
+    #installModal.show { display: flex; }
+
+    .install-box {
+      background: white;
+      border-radius: 20px 20px 0 0;
+      padding: 24px 20px;
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    .install-box h3 {
+      font-size: 17px;
+      color: #1a0a00;
+      margin-bottom: 8px;
+    }
+
+    .install-box p {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .install-box .install-steps {
+      background: #f9f5f0;
+      border-radius: 12px;
+      padding: 12px;
+      text-align: left;
+      font-size: 13px;
+      color: #444;
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+
+    .install-box button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+
+    .install-box .btn-primary {
+      background: linear-gradient(135deg, #3d1a00, #7a3b00);
+      color: white;
+    }
+
+    .install-box .btn-skip {
+      background: #f0f0f0;
+      color: #888;
+      font-size: 13px;
+      padding: 8px;
+    }
+
     /* 名前入力モーダル */
     .modal {
       position: fixed;
@@ -325,6 +399,17 @@
   </style>
 </head>
 <body>
+
+  <!-- ホーム画面追加モーダル -->
+  <div id="installModal">
+    <div class="install-box">
+      <h3>📱 ホーム画面に追加しませんか？</h3>
+      <p>アプリのように素早くアクセスできます</p>
+      <div class="install-steps" id="installSteps"></div>
+      <button class="btn-primary" id="installBtn">ホーム画面に追加する</button>
+      <button class="btn-skip" id="installSkip">今はしない</button>
+    </div>
+  </div>
 
   <!-- 名前入力モーダル -->
   <div class="modal" id="nameModal">
@@ -716,6 +801,66 @@
   }
 
   requestChatNotification();
+
+  // ===== ホーム画面追加（PWA） =====
+  let deferredPrompt = null;
+
+  function showInstallModal() {
+    // 既に追加済みかチェック
+    if (localStorage.getItem("installDismissed")) return;
+    if (window.matchMedia("(display-mode: standalone)").matches) return;
+
+    const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+    const isAndroid = /Android/.test(navigator.userAgent);
+    const stepsEl = document.getElementById("installSteps");
+    const installBtn = document.getElementById("installBtn");
+
+    if (isIOS) {
+      stepsEl.innerHTML = `
+        1. 画面下の <strong>共有ボタン（□↑）</strong> をタップ<br>
+        2. <strong>「ホーム画面に追加」</strong> をタップ<br>
+        3. 右上の <strong>「追加」</strong> をタップ
+      `;
+      installBtn.textContent = "わかりました！";
+      installBtn.addEventListener("click", () => {
+        localStorage.setItem("installDismissed", "1");
+        document.getElementById("installModal").classList.remove("show");
+      });
+    } else if (isAndroid && deferredPrompt) {
+      stepsEl.innerHTML = `Androidのホーム画面にショートカットを追加できます。`;
+      installBtn.textContent = "ホーム画面に追加する";
+      installBtn.addEventListener("click", async () => {
+        deferredPrompt.prompt();
+        const result = await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        localStorage.setItem("installDismissed", "1");
+        document.getElementById("installModal").classList.remove("show");
+      });
+    } else {
+      return; // 対応外は表示しない
+    }
+
+    document.getElementById("installModal").classList.add("show");
+  }
+
+  // Androidのインストールバナーを保存
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    setTimeout(showInstallModal, 2000);
+  });
+
+  // iOSは2秒後に表示
+  if (/iPhone|iPad|iPod/.test(navigator.userAgent) &&
+      !window.matchMedia("(display-mode: standalone)").matches &&
+      !localStorage.getItem("installDismissed")) {
+    setTimeout(showInstallModal, 2000);
+  }
+
+  document.getElementById("installSkip").addEventListener("click", () => {
+    localStorage.setItem("installDismissed", "1");
+    document.getElementById("installModal").classList.remove("show");
+  });
 
   function nl2br(text) { return text.replace(/\n/g, '<br>'); }
   function linkify(text) { return text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>'); }
