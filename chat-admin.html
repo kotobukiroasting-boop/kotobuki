@@ -513,6 +513,18 @@
     );
     document.getElementById("emptyList").style.display = names.length === 0 ? "block" : "none";
 
+    // 未読件数をタイトルに表示
+    const unreadCount = names.filter(name => {
+      const lastSeen = lastSeenTimes[name] || 0;
+      return (customers[name].lastTimestamp || 0) > lastSeen && name !== selectedCustomer;
+    }).length;
+
+    if (unreadCount > 0) {
+      document.title = `(${unreadCount}件) 🛠️ 管理者画面`;
+    } else {
+      document.title = "🛠️ 管理者画面";
+    }
+
     function normN(n) { return String(n).replace(/\s/g, "").replace(/　/g, "").toLowerCase(); }
 
     names.forEach(name => {
@@ -743,6 +755,13 @@
         roomId: selectedCustomer,
         timestamp: serverTimestamp()
       });
+      // FCM通知送信
+      await addDoc(collection(db, "fcmQueue"), {
+        customerName: selectedCustomer,
+        title: "☕ Kotobuki焙煎からメッセージ",
+        body: "📷 画像が届きました",
+        sentAt: serverTimestamp()
+      });
     } else if (text) {
       input.value = "";
       await addDoc(collection(db, "messages"), {
@@ -752,6 +771,13 @@
         role: "admin",
         roomId: selectedCustomer,
         timestamp: serverTimestamp()
+      });
+      // FCM通知送信
+      await addDoc(collection(db, "fcmQueue"), {
+        customerName: selectedCustomer,
+        title: "☕ Kotobuki焙煎からメッセージ",
+        body: text.substring(0, 50),
+        sentAt: serverTimestamp()
       });
     }
   }
@@ -1041,6 +1067,29 @@
     renderCouponHistory();
   };
 
+  // ===== FCMプッシュ通知送信（お客さまへ） =====
+  async function sendFCMToCustomer(customerName, message) {
+    try {
+      // そのお客さまのトークンを取得
+      const { getDocs: getDocsF, query: queryF, where: whereF, collection: colF } = 
+        await import("https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js");
+      const q = queryF(collection(db, "fcmTokens"), whereF("name", "==", customerName));
+      const snap = await getDocs(q);
+      snap.forEach(async (d) => {
+        const token = d.data().token;
+        // Firestoreにキューとして保存（送信はService Workerが担当）
+        await addDoc(collection(db, "fcmQueue"), {
+          token,
+          title: "☕ Kotobuki焙煎からメッセージ",
+          body: message.substring(0, 50),
+          sentAt: serverTimestamp()
+        });
+      });
+    } catch(e) {
+      console.log("FCM送信エラー:", e);
+    }
+  }
+
   // ===== ブラウザ通知（新着チャット） =====
   function updateNotifyBtn() {
     const btn = document.getElementById("notifyBtn");
@@ -1111,6 +1160,53 @@
 
   requestNotificationPermission();
   updateNotifyBtn();
+
+  // ===== 定期通知（3分ごとに未読チェック） =====
+  let periodicNotifyInterval = null;
+
+  function startPeriodicNotify() {
+    if (periodicNotifyInterval) clearInterval(periodicNotifyInterval);
+    periodicNotifyInterval = setInterval(() => {
+      if (Notification.permission !== "granted") return;
+      const lastSeenTimes = JSON.parse(localStorage.getItem("lastSeenTimes") || "{}");
+      const unread = allMessages.filter(msg => {
+        if (msg.role !== "customer") return false;
+        const lastSeen = lastSeenTimes[msg.name] || 0;
+        return (msg.timestamp?.seconds || 0) > lastSeen && msg.name !== selectedCustomer;
+      });
+
+      if (unread.length > 0) {
+        // 名前の重複を除去
+        const names = [...new Set(unread.map(m => m.name))];
+        sendNotification(
+          `💬 未読メッセージ ${names.length}件`,
+          names.join("、") + " からメッセージがあります"
+        );
+      }
+    }, 3 * 60 * 1000); // 3分ごと
+  }
+
+  // ページが見えるようになったときも通知チェック
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) {
+      const lastSeenTimes = JSON.parse(localStorage.getItem("lastSeenTimes") || "{}");
+      const unread = allMessages.filter(msg => {
+        if (msg.role !== "customer") return false;
+        const lastSeen = lastSeenTimes[msg.name] || 0;
+        return (msg.timestamp?.seconds || 0) > lastSeen && msg.name !== selectedCustomer;
+      });
+      if (unread.length > 0 && Notification.permission === "granted") {
+        const names = [...new Set(unread.map(m => m.name))];
+        sendNotification(
+          `💬 未読メッセージ ${names.length}件`,
+          names.join("、") + " からメッセージがあります"
+        );
+      }
+    }
+  });
+
+  // ログイン後に定期通知を開始
+  startPeriodicNotify();
 
   function nl2br(text) {
     return text.replace(/\n/g, '<br>');
