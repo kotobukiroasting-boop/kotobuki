@@ -8,161 +8,150 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --cream: #F5F0E8;
-  --warm-white: #FAF8F4;
-  --dark: #1A1612;
-  --brown: #3D2B1A;
-  --roast: #7C4A1E;
-  --gold: #C8952A;
-  --muted: #8A7F74;
-  --border: #DDD5C8;
-  --card-bg: #FFFDF9;
-  --tag-bg: #EDE6DA;
+  --cream:#F5F0E8;--warm-white:#FAF8F4;--dark:#1A1612;--brown:#3D2B1A;
+  --roast:#7C4A1E;--gold:#C8952A;--muted:#8A7F74;--border:#DDD5C8;
+  --card-bg:#FFFDF9;--tag-bg:#EDE6DA;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Noto Sans JP', sans-serif; background: var(--cream); color: var(--dark); min-height: 100vh; font-weight: 300; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--cream);color:var(--dark);min-height:100vh;font-weight:300}
 
-/* ── LOADING ── */
-#loading-screen {
-  position: fixed; inset: 0; background: var(--cream);
-  display: flex; align-items: center; justify-content: center;
-  flex-direction: column; gap: 1rem; z-index: 9999;
-  transition: opacity .4s;
-}
-#loading-screen.hide { opacity: 0; pointer-events: none; }
-.loading-logo { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; letter-spacing: .18em; color: var(--brown); }
-.loading-dots { display: flex; gap: 6px; }
-.loading-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); animation: dotpulse 1.2s ease-in-out infinite; }
-.loading-dot:nth-child(2) { animation-delay: .2s; }
-.loading-dot:nth-child(3) { animation-delay: .4s; }
-@keyframes dotpulse { 0%,80%,100%{opacity:.2;transform:scale(.8)} 40%{opacity:1;transform:scale(1)} }
+/* loading */
+#loading-screen{position:fixed;inset:0;background:var(--cream);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1rem;z-index:9999;transition:opacity .4s}
+#loading-screen.hide{opacity:0;pointer-events:none}
+.loading-logo{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;letter-spacing:.18em;color:var(--brown)}
+.loading-dots{display:flex;gap:6px}
+.loading-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:dotpulse 1.2s ease-in-out infinite}
+.loading-dot:nth-child(2){animation-delay:.2s}.loading-dot:nth-child(3){animation-delay:.4s}
+@keyframes dotpulse{0%,80%,100%{opacity:.2;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
 
-/* ── ONBOARDING ── */
-#screen-ob { min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
-#screen-ob::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 80% at 20% 50%, rgba(124,74,30,.08) 0%, transparent 70%), radial-gradient(ellipse 50% 60% at 80% 30%, rgba(200,149,42,.06) 0%, transparent 60%); }
-.ob-inner { position: relative; text-align: center; padding: 2.5rem 2rem; max-width: 400px; width: 100%; }
-.ob-wordmark { font-family: 'Cormorant Garamond', serif; font-size: clamp(36px,8vw,52px); font-weight: 300; letter-spacing: .18em; color: var(--brown); line-height: 1; }
-.ob-sub { font-size: 10px; letter-spacing: .35em; color: var(--muted); margin-top: 6px; text-transform: uppercase; }
-.ob-rule { width: 40px; height: 1px; background: var(--gold); margin: 1.8rem auto; }
-.ob-tagline { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-style: italic; color: var(--muted); margin-bottom: 2rem; line-height: 1.7; }
-.ob-label { font-size: 11px; letter-spacing: .15em; color: var(--muted); text-transform: uppercase; margin-bottom: .6rem; text-align: left; }
-.ob-input { width: 100%; padding: 12px 0; border: none; border-bottom: 1px solid var(--border); background: transparent; font-family: 'Noto Sans JP', sans-serif; font-size: 16px; color: var(--dark); outline: none; transition: border-color .2s; }
-.ob-input:focus { border-bottom-color: var(--roast); }
-.ob-btn { margin-top: 1.8rem; width: 100%; padding: 13px; background: var(--brown); color: var(--cream); border: none; font-family: 'Noto Sans JP', sans-serif; font-size: 13px; letter-spacing: .12em; cursor: pointer; transition: background .2s; }
-.ob-btn:hover { background: var(--roast); }
-.ob-error { font-size: 12px; color: #B84040; margin-top: .75rem; min-height: 18px; }
+/* onboarding */
+#screen-ob{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+#screen-ob::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 20% 50%,rgba(124,74,30,.08) 0%,transparent 70%),radial-gradient(ellipse 50% 60% at 80% 30%,rgba(200,149,42,.06) 0%,transparent 60%)}
+.ob-inner{position:relative;text-align:center;padding:2.5rem 2rem;max-width:400px;width:100%}
+.ob-wordmark{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,8vw,52px);font-weight:300;letter-spacing:.18em;color:var(--brown);line-height:1}
+.ob-sub{font-size:10px;letter-spacing:.35em;color:var(--muted);margin-top:6px;text-transform:uppercase}
+.ob-rule{width:40px;height:1px;background:var(--gold);margin:1.8rem auto}
+.ob-tagline{font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;color:var(--muted);margin-bottom:2rem;line-height:1.7}
+.ob-label{font-size:11px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-bottom:.6rem;text-align:left}
+.ob-input{width:100%;padding:12px 0;border:none;border-bottom:1px solid var(--border);background:transparent;font-family:'Noto Sans JP',sans-serif;font-size:16px;color:var(--dark);outline:none;transition:border-color .2s}
+.ob-input:focus{border-bottom-color:var(--roast)}
+.ob-btn{margin-top:1.8rem;width:100%;padding:13px;background:var(--brown);color:var(--cream);border:none;font-family:'Noto Sans JP',sans-serif;font-size:13px;letter-spacing:.12em;cursor:pointer;transition:background .2s}
+.ob-btn:hover{background:var(--roast)}
+.ob-btn:disabled{opacity:.6;cursor:not-allowed}
+.ob-error{font-size:12px;color:#B84040;margin-top:.75rem;min-height:18px}
 
-/* ── HEADER ── */
-.header { position: sticky; top: 0; z-index: 50; background: rgba(245,240,232,.92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: .85rem 1.25rem; }
-.header-logo { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; letter-spacing: .14em; color: var(--brown); }
-.header-logo span { font-size: 10px; font-family: 'Noto Sans JP', sans-serif; letter-spacing: .2em; color: var(--muted); display: block; margin-top: 1px; }
-.header-user { display: flex; align-items: center; gap: 8px; }
-.avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--brown); color: var(--cream); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; }
+/* header */
+.header{position:sticky;top:0;z-index:50;background:rgba(245,240,232,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.25rem}
+.header-logo{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;letter-spacing:.14em;color:var(--brown)}
+.header-logo span{font-size:10px;font-family:'Noto Sans JP',sans-serif;letter-spacing:.2em;color:var(--muted);display:block;margin-top:1px}
+.header-user{display:flex;align-items:center;gap:8px}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--brown);color:var(--cream);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0}
 
-/* ── TABS ── */
-.tabs { display: flex; border-bottom: 1px solid var(--border); background: var(--warm-white); padding: 0 1.25rem; }
-.tab-btn { padding: 14px 0; margin-right: 2rem; font-size: 12px; letter-spacing: .1em; color: var(--muted); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; transition: color .15s, border-color .15s; font-family: 'Noto Sans JP', sans-serif; font-weight: 300; }
-.tab-btn.active { color: var(--brown); border-bottom-color: var(--roast); font-weight: 500; }
+/* tabs */
+.tabs{display:flex;border-bottom:1px solid var(--border);background:var(--warm-white);padding:0 1.25rem}
+.tab-btn{padding:14px 0;margin-right:2rem;font-size:12px;letter-spacing:.1em;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color .15s,border-color .15s;font-family:'Noto Sans JP',sans-serif;font-weight:300}
+.tab-btn.active{color:var(--brown);border-bottom-color:var(--roast);font-weight:500}
 
-/* ── MAIN ── */
-.main { padding: 1.25rem; max-width: 660px; margin: 0 auto; }
+/* main */
+.main{padding:1.25rem;max-width:660px;margin:0 auto}
 
-/* ── CARDS ── */
-.card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 2px; padding: 1.25rem; margin-bottom: .75rem; position: relative; transition: box-shadow .15s; animation: fadeUp .3s ease; }
-@keyframes fadeUp { from { opacity:0; transform:translateY(8px); } }
-.card:hover { box-shadow: 0 2px 12px rgba(61,43,26,.06); }
-.card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: .75rem; }
-.card-bean-name { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 400; color: var(--brown); line-height: 1.2; }
-.badge-row { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: .75rem; }
-.badge { font-size: 10px; letter-spacing: .06em; padding: 3px 9px; border-radius: 1px; font-weight: 400; }
-.badge-origin { background: #EAF4EF; color: #2A6B50; border: 1px solid #B5D9C8; }
-.badge-roast  { background: #FAF0E2; color: #8A4A12; border: 1px solid #E8C898; }
-.badge-tool   { background: var(--tag-bg); color: var(--muted); border: 1px solid var(--border); }
-.flavor-row { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: .75rem; }
-.flavor-tag { font-size: 10px; padding: 2px 8px; background: #EDE8FA; color: #4A3A8A; border: 1px solid #C5BAEE; border-radius: 10px; }
-.recipe-bar { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; margin: .75rem 0; }
-.recipe-cell { background: var(--cream); border: 1px solid var(--border); border-radius: 2px; padding: .5rem; text-align: center; }
-.recipe-val { font-size: 15px; font-weight: 500; color: var(--dark); }
-.recipe-unit { font-size: 10px; color: var(--muted); margin-top: 2px; letter-spacing: .05em; }
-.tasting { font-size: 13px; color: var(--muted); line-height: 1.75; padding-left: 10px; border-left: 2px solid var(--border); margin-top: .75rem; }
-.stars-row { display: flex; gap: 2px; }
-.star-glyph { font-size: 14px; }
-.star-filled { color: var(--gold); }
-.star-empty  { color: var(--border); }
-.shared-badge { font-size: 10px; letter-spacing: .08em; color: var(--gold); border: 1px solid var(--gold); padding: 2px 7px; border-radius: 1px; }
-.author-row { display: flex; align-items: center; gap: 8px; margin-bottom: .75rem; padding-bottom: .75rem; border-bottom: 1px solid var(--border); }
-.author-name { font-size: 13px; font-weight: 500; color: var(--dark); }
-.author-date { font-size: 11px; color: var(--muted); }
+/* cards */
+.card{background:var(--card-bg);border:1px solid var(--border);border-radius:2px;padding:1.25rem;margin-bottom:.75rem;position:relative;transition:box-shadow .15s;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}}
+.card:hover{box-shadow:0 2px 12px rgba(61,43,26,.06)}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:.75rem}
+.card-bean-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;color:var(--brown);line-height:1.2}
+.badge-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:.75rem}
+.badge{font-size:10px;letter-spacing:.06em;padding:3px 9px;border-radius:1px;font-weight:400}
+.badge-light{background:#EAF4EF;color:#2A6B50;border:1px solid #B5D9C8}
+.badge-medium{background:#FAF0E2;color:#8A4A12;border:1px solid #E8C898}
+.badge-dark{background:#2A1A0E;color:#D4A96A;border:1px solid #5A3A1A}
+.badge-tool{background:var(--tag-bg);color:var(--muted);border:1px solid var(--border)}
+.flavor-row{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:.75rem}
+.flavor-tag{font-size:10px;padding:2px 8px;background:#EDE8FA;color:#4A3A8A;border:1px solid #C5BAEE;border-radius:10px}
+.recipe-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:.75rem 0}
+.recipe-cell{background:var(--cream);border:1px solid var(--border);border-radius:2px;padding:.5rem;text-align:center}
+.recipe-val{font-size:15px;font-weight:500;color:var(--dark)}
+.recipe-unit{font-size:10px;color:var(--muted);margin-top:2px;letter-spacing:.05em}
+.tasting{font-size:13px;color:var(--muted);line-height:1.75;padding-left:10px;border-left:2px solid var(--border);margin-top:.75rem}
+.stars-row{display:flex;gap:2px}
+.star-glyph{font-size:14px}
+.star-filled{color:var(--gold)}
+.star-empty{color:var(--border)}
+.shared-badge{font-size:10px;letter-spacing:.08em;color:var(--gold);border:1px solid var(--gold);padding:2px 7px;border-radius:1px}
+.author-row{display:flex;align-items:center;gap:8px;margin-bottom:.75rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.author-name{font-size:13px;font-weight:500;color:var(--dark)}
+.author-date{font-size:11px;color:var(--muted)}
 
-/* ── EMPTY / STATUS ── */
-.empty { padding: 4rem 1rem; text-align: center; }
-.empty-icon { font-family: 'Cormorant Garamond', serif; font-size: 42px; color: var(--border); margin-bottom: 1rem; }
-.empty-text { font-size: 14px; color: var(--muted); line-height: 1.8; }
-.sync-indicator { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); padding: .5rem 0 1rem; }
-.sync-dot { width: 6px; height: 6px; border-radius: 50%; background: #4CAF50; }
-.sync-dot.syncing { background: var(--gold); animation: dotpulse 1s infinite; }
-.sync-dot.error { background: #B84040; }
+/* empty/sync */
+.empty{padding:4rem 1rem;text-align:center}
+.empty-icon{font-family:'Cormorant Garamond',serif;font-size:42px;color:var(--border);margin-bottom:1rem}
+.empty-text{font-size:14px;color:var(--muted);line-height:1.8}
+.sync-indicator{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);padding:.5rem 0 1rem}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:#4CAF50}
+.sync-dot.syncing{background:var(--gold);animation:dotpulse 1s infinite}
+.sync-dot.error{background:#B84040}
 
-/* ── FAB ── */
-.fab { position: fixed; bottom: 1.75rem; right: 1.75rem; width: 50px; height: 50px; border-radius: 50%; background: var(--brown); color: var(--cream); font-size: 26px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 14px rgba(61,43,26,.25); transition: background .15s, transform .1s; z-index: 40; }
-.fab:hover { background: var(--roast); transform: scale(1.04); }
+/* fab */
+.fab{position:fixed;bottom:1.75rem;right:1.75rem;width:50px;height:50px;border-radius:50%;background:var(--brown);color:var(--cream);font-size:26px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 14px rgba(61,43,26,.25);transition:background .15s,transform .1s;z-index:40}
+.fab:hover{background:var(--roast);transform:scale(1.04)}
 
-/* ── MODAL ── */
-.overlay { display: none; position: fixed; inset: 0; background: rgba(26,22,18,.5); z-index: 200; align-items: flex-end; justify-content: center; }
-.overlay.open { display: flex; }
-@media (min-width: 520px) { .overlay { align-items: center; padding: 1rem; } .modal { border-radius: 2px; max-height: 90vh; } }
-.modal { background: var(--warm-white); width: 100%; max-width: 520px; max-height: 94vh; overflow-y: auto; border-radius: 8px 8px 0 0; padding: 1.5rem 1.25rem 2rem; animation: slideUp .22s ease; }
-@keyframes slideUp { from { transform:translateY(30px); opacity:0; } }
-.modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
-.modal-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; color: var(--brown); }
-.modal-close { width: 28px; height: 28px; background: none; border: 1px solid var(--border); border-radius: 50%; font-size: 16px; cursor: pointer; color: var(--muted); display: flex; align-items: center; justify-content: center; transition: background .15s; }
-.modal-close:hover { background: var(--tag-bg); }
-.f-group { margin-bottom: 1.1rem; }
-.f-label { display: block; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: .45rem; }
-.f-input { width: 100%; padding: 9px 10px; border: 1px solid var(--border); background: var(--cream); font-family: 'Noto Sans JP', sans-serif; font-size: 14px; font-weight: 300; color: var(--dark); outline: none; border-radius: 1px; transition: border-color .15s; -webkit-appearance: none; }
-.f-input:focus { border-color: var(--roast); }
-textarea.f-input { resize: vertical; min-height: 80px; line-height: 1.7; }
-select.f-input { cursor: pointer; }
-.bean-preview { background: var(--cream); border: 1px solid var(--border); border-radius: 1px; padding: .85rem 1rem; margin-bottom: 1.1rem; display: none; }
-.bean-preview-name { font-family: 'Cormorant Garamond', serif; font-size: 16px; color: var(--brown); margin-bottom: .4rem; }
-.recipe-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: .6rem; margin-bottom: .6rem; }
-.recipe-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin-bottom: .6rem; }
-.recipe-field .f-input { text-align: center; }
-.recipe-hint { font-size: 10px; color: var(--muted); text-align: center; margin-top: 3px; }
-.section-label { font-size: 11px; letter-spacing: .15em; text-transform: uppercase; color: var(--roast); margin: 1.25rem 0 .75rem; display: flex; align-items: center; gap: 8px; }
-.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-.star-selector { display: flex; gap: 6px; }
-.star-sel { font-size: 24px; cursor: pointer; color: var(--border); transition: color .1s, transform .1s; user-select: none; line-height: 1; }
-.star-sel.on { color: var(--gold); }
-.star-sel:hover { transform: scale(1.15); }
-.share-row { display: flex; align-items: center; gap: 10px; padding: .85rem 1rem; background: #FFF8EE; border: 1px solid #EDD9AA; border-radius: 1px; cursor: pointer; margin-top: 1rem; }
-.share-row input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--roast); cursor: pointer; }
-.share-label { font-size: 13px; color: var(--brown); flex: 1; }
-.share-hint { font-size: 11px; color: var(--muted); }
-.modal-actions { display: flex; gap: .75rem; margin-top: 1.5rem; }
-.btn-cancel { flex: 1; padding: 11px; background: none; border: 1px solid var(--border); font-family: 'Noto Sans JP', sans-serif; font-size: 13px; letter-spacing: .08em; color: var(--muted); cursor: pointer; transition: background .15s; }
-.btn-cancel:hover { background: var(--tag-bg); }
-.btn-save { flex: 2; padding: 11px; background: var(--brown); border: none; font-family: 'Noto Sans JP', sans-serif; font-size: 13px; letter-spacing: .12em; color: var(--cream); cursor: pointer; transition: background .15s; position: relative; }
-.btn-save:hover { background: var(--roast); }
-.btn-save:disabled { opacity: .6; cursor: not-allowed; }
-.screen { display: none; }
-.screen.active { display: block; }
-#panel-community { display: none; }
+/* modal */
+.overlay{display:none;position:fixed;inset:0;background:rgba(26,22,18,.5);z-index:200;align-items:flex-end;justify-content:center}
+.overlay.open{display:flex}
+@media(min-width:520px){.overlay{align-items:center;padding:1rem}.modal{border-radius:2px;max-height:90vh}}
+.modal{background:var(--warm-white);width:100%;max-width:520px;max-height:94vh;overflow-y:auto;border-radius:8px 8px 0 0;padding:1.5rem 1.25rem 2rem;animation:slideUp .22s ease}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--brown)}
+.modal-close{width:28px;height:28px;background:none;border:1px solid var(--border);border-radius:50%;font-size:16px;cursor:pointer;color:var(--muted);display:flex;align-items:center;justify-content:center;transition:background .15s}
+.modal-close:hover{background:var(--tag-bg)}
+.f-group{margin-bottom:1.1rem}
+.f-label{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.45rem}
+.f-input{width:100%;padding:9px 10px;border:1px solid var(--border);background:var(--cream);font-family:'Noto Sans JP',sans-serif;font-size:14px;font-weight:300;color:var(--dark);outline:none;border-radius:1px;transition:border-color .15s;-webkit-appearance:none}
+.f-input:focus{border-color:var(--roast)}
+textarea.f-input{resize:vertical;min-height:80px;line-height:1.7}
+select.f-input{cursor:pointer}
+.bean-source-toggle{display:flex;gap:0;margin-bottom:.75rem;border:1px solid var(--border);border-radius:2px;overflow:hidden}
+.bst-btn{flex:1;padding:8px;font-size:12px;font-family:'Noto Sans JP',sans-serif;border:none;background:var(--cream);color:var(--muted);cursor:pointer;transition:background .15s,color .15s;letter-spacing:.06em}
+.bst-btn.active{background:var(--brown);color:var(--cream)}
+.roast-group-label{font-size:10px;letter-spacing:.1em;color:var(--muted);padding:4px 10px;background:var(--tag-bg);pointer-events:none}
+.bean-preview{background:var(--cream);border:1px solid var(--border);border-radius:1px;padding:.85rem 1rem;margin-bottom:1.1rem;display:none}
+.bean-preview-name{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--brown);margin-bottom:.4rem}
+.recipe-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.6rem;margin-bottom:.6rem}
+.recipe-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.6rem}
+.recipe-field .f-input{text-align:center}
+.recipe-hint{font-size:10px;color:var(--muted);text-align:center;margin-top:3px}
+.section-label{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--roast);margin:1.25rem 0 .75rem;display:flex;align-items:center;gap:8px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.star-selector{display:flex;gap:6px}
+.star-sel{font-size:24px;cursor:pointer;color:var(--border);transition:color .1s,transform .1s;user-select:none;line-height:1}
+.star-sel.on{color:var(--gold)}
+.star-sel:hover{transform:scale(1.15)}
+.share-row{display:flex;align-items:center;gap:10px;padding:.85rem 1rem;background:#FFF8EE;border:1px solid #EDD9AA;border-radius:1px;cursor:pointer;margin-top:1rem}
+.share-row input[type=checkbox]{width:16px;height:16px;accent-color:var(--roast);cursor:pointer}
+.share-label{font-size:13px;color:var(--brown);flex:1}
+.share-hint{font-size:11px;color:var(--muted)}
+.modal-actions{display:flex;gap:.75rem;margin-top:1.5rem}
+.btn-cancel{flex:1;padding:11px;background:none;border:1px solid var(--border);font-family:'Noto Sans JP',sans-serif;font-size:13px;letter-spacing:.08em;color:var(--muted);cursor:pointer;transition:background .15s}
+.btn-cancel:hover{background:var(--tag-bg)}
+.btn-save{flex:2;padding:11px;background:var(--brown);border:none;font-family:'Noto Sans JP',sans-serif;font-size:13px;letter-spacing:.12em;color:var(--cream);cursor:pointer;transition:background .15s}
+.btn-save:hover{background:var(--roast)}
+.btn-save:disabled{opacity:.6;cursor:not-allowed}
+.screen{display:none}
+.screen.active{display:block}
+#panel-community{display:none}
 </style>
 </head>
 <body>
 
-<!-- Loading -->
 <div id="loading-screen">
   <div class="loading-logo">KOTOBUKI</div>
   <div class="loading-dots">
-    <div class="loading-dot"></div>
-    <div class="loading-dot"></div>
-    <div class="loading-dot"></div>
+    <div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div>
   </div>
 </div>
 
-<!-- Onboarding -->
 <div id="screen-ob" class="screen active">
   <div class="ob-inner">
     <div class="ob-wordmark">KOTOBUKI</div>
@@ -176,7 +165,6 @@ select.f-input { cursor: pointer; }
   </div>
 </div>
 
-<!-- Main -->
 <div id="screen-main" class="screen">
   <div class="header">
     <div class="header-logo">KOTOBUKI <span>COFFEE NOTE</span></div>
@@ -200,22 +188,52 @@ select.f-input { cursor: pointer; }
   <button class="fab" id="fab-btn" onclick="openModal()">＋</button>
 </div>
 
-<!-- Modal -->
 <div class="overlay" id="modal-overlay" onclick="overlayClick(event)">
   <div class="modal" id="modal-box">
     <div class="modal-header">
       <div class="modal-title">新しいノート</div>
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
-    <div class="f-group">
-      <label class="f-label">コーヒー豆</label>
-      <select class="f-input" id="bean-select"><option value="">— 豆を選んでください —</option></select>
+
+    <!-- 豆選択モード切替 -->
+    <div class="bean-source-toggle">
+      <button class="bst-btn active" id="bst-list" onclick="setBeanMode('list')">リストから選ぶ</button>
+      <button class="bst-btn" id="bst-custom" onclick="setBeanMode('custom')">カスタム入力</button>
     </div>
+
+    <!-- リスト選択 -->
+    <div id="bean-list-area" class="f-group">
+      <label class="f-label">コーヒー豆</label>
+      <select class="f-input" id="bean-select"></select>
+    </div>
+
+    <!-- カスタム入力 -->
+    <div id="bean-custom-area" style="display:none">
+      <div class="f-group">
+        <label class="f-label">豆の名前</label>
+        <input type="text" class="f-input" id="custom-bean-name" placeholder="豆の名前を入力">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem">
+        <div class="f-group">
+          <label class="f-label">産地</label>
+          <input type="text" class="f-input" id="custom-origin" placeholder="例：エチオピア">
+        </div>
+        <div class="f-group">
+          <label class="f-label">焙煎度</label>
+          <select class="f-input" id="custom-roast">
+            <option value="">選択</option>
+            <option>浅煎り</option><option>中煎り</option><option>深煎り</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- 豆プレビュー -->
     <div class="bean-preview" id="bean-preview">
       <div class="bean-preview-name" id="bp-name"></div>
       <div class="badge-row" id="bp-badges"></div>
-      <div class="flavor-row" id="bp-flavors"></div>
     </div>
+
     <div class="section-label">ドリップレシピ</div>
     <div class="recipe-grid">
       <div class="recipe-field f-group" style="margin:0">
@@ -247,10 +265,11 @@ select.f-input { cursor: pointer; }
         </select>
       </div>
     </div>
+
     <div class="section-label">テイスティング</div>
     <div class="f-group">
       <label class="f-label">評価</label>
-      <div class="star-selector" id="star-selector">
+      <div class="star-selector">
         <span class="star-sel" data-v="1" onclick="setStar(1)">★</span>
         <span class="star-sel" data-v="2" onclick="setStar(2)">★</span>
         <span class="star-sel" data-v="3" onclick="setStar(3)">★</span>
@@ -276,13 +295,11 @@ select.f-input { cursor: pointer; }
   </div>
 </div>
 
-<!-- Firebase SDK -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, serverTimestamp }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// ── Firebase init ──────────────────────────
 const firebaseConfig = {
   apiKey: "AIzaSyA1Tc_SecQx_EyTM1VJucUmfYy6o7nINKc",
   authDomain: "kotobuki-coffee-note.firebaseapp.com",
@@ -294,62 +311,111 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db  = getFirestore(app);
 
-// ── State ──────────────────────────────────
-let currentUser = '';
-let currentStar = 0;
-let allBeans    = [];
-let myUnsubscribe        = null;
-let communityUnsubscribe = null;
-
-// ── Fallback beans ─────────────────────────
-const FALLBACK_BEANS = [
-  { id:'b1', name:'エチオピア イルガチェフェ',   origin:'エチオピア',  roast:'ライト',          process:'ウォッシュト', flavors:['ジャスミン','ベルガモット','ピーチ'] },
-  { id:'b2', name:'グアテマラ アンティグア',      origin:'グアテマラ',  roast:'ミディアム',       process:'ウォッシュト', flavors:['チョコレート','キャラメル','オレンジ'] },
-  { id:'b3', name:'コロンビア ウィラ',            origin:'コロンビア',  roast:'ミディアム',       process:'ウォッシュト', flavors:['アプリコット','パネラ','ナッツ'] },
-  { id:'b4', name:'ケニア AA',                    origin:'ケニア',      roast:'ミディアムライト',  process:'ウォッシュト', flavors:['ブラックカラント','トマト','グレープフルーツ'] },
-  { id:'b5', name:'ブラジル セラード',            origin:'ブラジル',    roast:'ミディアムダーク',  process:'ナチュラル',   flavors:['ヘーゼルナッツ','ミルクチョコ','バニラ'] },
-  { id:'b6', name:'パナマ ゲイシャ',              origin:'パナマ',      roast:'ライト',           process:'ウォッシュト', flavors:['ジャスミン','桃','マスカット'] },
+// ── 豆データ（全品目） ─────────────────────
+const BEANS = [
+  // 浅煎り
+  {id:'l01',name:'WUSH WUSH カッファG1 ウォッシュド',roast:'浅煎り',origin:'エチオピア'},
+  {id:'l02',name:'エチオピア アナソラ アナエロビック',roast:'浅煎り',origin:'エチオピア'},
+  {id:'l03',name:'モカ・ヘレフG１「ナチュラル精製」',roast:'浅煎り',origin:'エチオピア'},
+  {id:'l04',name:'コロンビア ゲイシャ サーマルショック',roast:'浅煎り',origin:'コロンビア'},
+  {id:'l05',name:'コロンビア アプリコットパンチ',roast:'浅煎り',origin:'コロンビア'},
+  {id:'l06',name:'COLOMBIA Uba NITRO-WASH',roast:'浅煎り',origin:'コロンビア'},
+  {id:'l07',name:'エルディビソ サーマルショック',roast:'浅煎り',origin:'コロンビア'},
+  {id:'l08',name:'ラス・アギラス SIDRA WASHED',roast:'浅煎り',origin:'コロンビア'},
+  {id:'l09',name:'コロンビア ジューシーグレープ',roast:'浅煎り',origin:'コロンビア'},
+  {id:'l10',name:'アカシアヒルズ パカマラ',roast:'浅煎り',origin:''},
+  {id:'l11',name:'シナモン ラ・ピラグア コロンビア',roast:'浅煎り',origin:'コロンビア'},
+  {id:'l12',name:'コロンビア ゲイシャ ピーチ',roast:'浅煎り',origin:'コロンビア'},
+  {id:'l13',name:'日本初登場 ワイニーフラワー',roast:'浅煎り',origin:''},
+  {id:'l14',name:'ペルラ・デ・オトゥン SUDAN RUMME',roast:'浅煎り',origin:'コロンビア'},
+  {id:'l15',name:'コロンビア スイートベリー',roast:'浅煎り',origin:'コロンビア'},
+  {id:'l16',name:'ブラジル ゲイシャ カーボニックマセレーション',roast:'浅煎り',origin:'ブラジル'},
+  {id:'l17',name:'Brazil コヘゴ・ダ・リベルダージ COE2023 第5位',roast:'浅煎り',origin:'ブラジル'},
+  {id:'l18',name:'オーロヴェルデ ナチュラル COE2022 第3位',roast:'浅煎り',origin:''},
+  {id:'l19',name:'ルワンダ ニャマシェケ レッドブルボン',roast:'浅煎り',origin:'ルワンダ'},
+  {id:'l20',name:'パナマ グラン・デル・バル',roast:'浅煎り',origin:'パナマ'},
+  {id:'l21',name:'ウガンダ ニャビロンゴ アナエロビック',roast:'浅煎り',origin:'ウガンダ'},
+  {id:'l22',name:'雲南 レモン＆ベルガモット アナエロビックハニー',roast:'浅煎り',origin:'中国雲南'},
+  {id:'l23',name:'グアテマラ COE2024 ロス・コネホス #5',roast:'浅煎り',origin:'グアテマラ'},
+  {id:'l24',name:'ゲイシャ ナチュラル エドウィンファンカ ボリビア',roast:'浅煎り',origin:'ボリビア'},
+  {id:'l25',name:'グアテマラ ウエウエテナンゴ',roast:'浅煎り',origin:'グアテマラ'},
+  {id:'l26',name:'寿ブレンド＿華',roast:'浅煎り',origin:'ブレンド'},
+  {id:'l27',name:'寿ブレンド＿姫',roast:'浅煎り',origin:'ブレンド'},
+  {id:'l28',name:'モカ・ヘレフG１「ウォッシュド精製」',roast:'浅煎り',origin:'エチオピア'},
+  // 中煎り
+  {id:'m01',name:'ブラジル セーハ・ド・ボネ',roast:'中煎り',origin:'ブラジル'},
+  {id:'m02',name:'ブラジル カルモエステート',roast:'中煎り',origin:'ブラジル'},
+  {id:'m03',name:'ハワイ コナ',roast:'中煎り',origin:'ハワイ'},
+  {id:'m04',name:'ブルーマウンテン',roast:'中煎り',origin:'ジャマイカ'},
+  {id:'m05',name:'稀少天然 コピルアク ジャコウネコ',roast:'中煎り',origin:'インドネシア'},
+  {id:'m06',name:'デイリーブレンド',roast:'中煎り',origin:'ブレンド'},
+  {id:'m07',name:'フォレストマウンテン',roast:'中煎り',origin:''},
+  // 深煎り
+  {id:'d01',name:'ブラジル ロブスタ コニロン',roast:'深煎り',origin:'ブラジル'},
+  {id:'d02',name:'タイ OMKOI オムコイ オーガニック',roast:'深煎り',origin:'タイ'},
+  {id:'d03',name:'日本初輸入 ラヒャン インドネシア',roast:'深煎り',origin:'インドネシア'},
+  {id:'d04',name:'ペルー マチュピチュ',roast:'深煎り',origin:'ペルー'},
+  {id:'d05',name:'タンザニア ンゴロンゴロ',roast:'深煎り',origin:'タンザニア'},
+  {id:'d06',name:'インド ファインロブスタ パパクチ',roast:'深煎り',origin:'インド'},
+  {id:'d07',name:'インドネシア マンデリン',roast:'深煎り',origin:'インドネシア'},
+  {id:'d08',name:'グアテマラ アンティグア',roast:'深煎り',origin:'グアテマラ'},
+  {id:'d09',name:'ケニア ニエリ ファクトリー ウォッシュド',roast:'深煎り',origin:'ケニア'},
+  {id:'d10',name:'寿ブレンド＿殿',roast:'深煎り',origin:'ブレンド'},
+  {id:'d11',name:'アイスブレンド',roast:'深煎り',origin:'ブレンド'},
+  {id:'d12',name:'水出しコーヒー「コールドブリュー」２ℓ対応',roast:'深煎り',origin:''},
+  {id:'d13',name:'フルッタメルカドン デカフェ',roast:'深煎り',origin:''},
+  {id:'d14',name:'ドン・ラファ デカフェ',roast:'深煎り',origin:''},
 ];
 
-// ── Load beans ─────────────────────────────
-async function loadBeans() {
-  try {
-    const res  = await fetch('https://kotobukiroasting-boop.github.io/kotobuki/kotobuki_flavor_guide.html');
-    const html = await res.text();
-    const m    = html.match(/(?:const|let|var)\s+(?:beans|coffeeData|products|BEANS|items)\s*=\s*(\[[\s\S]*?\]);/);
-    if (m) {
-      const raw    = JSON.parse(m[1]);
-      const parsed = raw.map((b,i) => ({
-        id: b.id||'b'+i, name: b.name||b.title||'', origin: b.origin||b.country||'',
-        roast: b.roast||b.roastLevel||'', process: b.process||'', flavors: b.flavors||b.flavorNotes||[],
-      })).filter(b => b.name);
-      allBeans = parsed.length ? parsed : FALLBACK_BEANS;
-    } else { allBeans = FALLBACK_BEANS; }
-  } catch { allBeans = FALLBACK_BEANS; }
-  populateBeanSelect();
-}
+// ── State ──────────────────────────────────
+let currentUser  = '';
+let currentStar  = 0;
+let beanMode     = 'list'; // 'list' | 'custom'
+let myUnsub      = null;
+let communityUnsub = null;
 
+// ── Populate bean select ───────────────────
 function populateBeanSelect() {
   const sel = document.getElementById('bean-select');
-  sel.innerHTML = '<option value="">— 豆を選んでください —</option>' +
-    allBeans.map(b => `<option value="${b.id}">${b.name}${b.origin?' ('+b.origin+')':''}</option>`).join('');
+  const groups = {'浅煎り':[],'中煎り':[],'深煎り':[]};
+  BEANS.forEach(b => { if(groups[b.roast]) groups[b.roast].push(b); });
+  sel.innerHTML = '<option value="">— 豆を選んでください —</option>';
+  Object.entries(groups).forEach(([label, items]) => {
+    const og = document.createElement('optgroup');
+    og.label = `── ${label} (${items.length}品) ──`;
+    items.forEach(b => {
+      const o = document.createElement('option');
+      o.value = b.id;
+      o.textContent = b.name;
+      og.appendChild(o);
+    });
+    sel.appendChild(og);
+  });
   sel.onchange = () => showBeanPreview(sel.value);
 }
 
 function showBeanPreview(id) {
   const area = document.getElementById('bean-preview');
   if (!id) { area.style.display='none'; return; }
-  const b = allBeans.find(x => x.id===id);
+  const b = BEANS.find(x => x.id===id);
   if (!b) { area.style.display='none'; return; }
   document.getElementById('bp-name').textContent = b.name;
+  const roastClass = b.roast==='浅煎り'?'badge-light':b.roast==='中煎り'?'badge-medium':'badge-dark';
   document.getElementById('bp-badges').innerHTML =
-    (b.origin  ? `<span class="badge badge-origin">${b.origin}</span>` : '') +
-    (b.roast   ? `<span class="badge badge-roast">${b.roast}</span>`   : '') +
-    (b.process ? `<span class="badge badge-tool">${b.process}</span>`  : '');
-  document.getElementById('bp-flavors').innerHTML =
-    (b.flavors||[]).map(f => `<span class="flavor-tag">${f}</span>`).join('');
+    (b.origin ? `<span class="badge badge-tool">${b.origin}</span>` : '') +
+    `<span class="badge ${roastClass}">${b.roast}</span>`;
   area.style.display = 'block';
 }
+
+// ── Bean mode toggle ───────────────────────
+window.setBeanMode = function(mode) {
+  beanMode = mode;
+  document.getElementById('bst-list').classList.toggle('active', mode==='list');
+  document.getElementById('bst-custom').classList.toggle('active', mode==='custom');
+  document.getElementById('bean-list-area').style.display   = mode==='list'   ? 'block' : 'none';
+  document.getElementById('bean-custom-area').style.display = mode==='custom' ? 'block' : 'none';
+  document.getElementById('bean-preview').style.display = 'none';
+};
 
 // ── Stars ──────────────────────────────────
 window.setStar = function(v) {
@@ -359,57 +425,68 @@ window.setStar = function(v) {
 
 // ── Save ───────────────────────────────────
 window.saveNote = async function() {
-  const beanId = document.getElementById('bean-select').value;
-  const bean   = allBeans.find(b => b.id===beanId);
-  if (!bean) { alert('豆を選んでください'); return; }
+  let beanName='', beanOrigin='', beanRoast='', beanId='custom';
 
-  const saveBtn = document.getElementById('save-btn');
-  saveBtn.disabled = true;
-  saveBtn.textContent = '保存中...';
+  if (beanMode==='list') {
+    const id = document.getElementById('bean-select').value;
+    const b  = BEANS.find(x => x.id===id);
+    if (!b) { alert('豆を選んでください'); return; }
+    beanId=b.id; beanName=b.name; beanOrigin=b.origin; beanRoast=b.roast;
+  } else {
+    beanName = document.getElementById('custom-bean-name').value.trim();
+    if (!beanName) { alert('豆の名前を入力してください'); return; }
+    beanOrigin = document.getElementById('custom-origin').value.trim();
+    beanRoast  = document.getElementById('custom-roast').value;
+  }
 
-  const shared = document.getElementById('share-check').checked;
+  const btn = document.getElementById('save-btn');
+  btn.disabled=true; btn.textContent='保存中...';
+
   const note = {
-    user:        currentUser,
-    date:        new Date().toLocaleDateString('ja-JP'),
-    createdAt:   serverTimestamp(),
-    beanId,
-    beanName:    bean.name,
-    beanOrigin:  bean.origin,
-    beanRoast:   bean.roast,
-    beanFlavors: bean.flavors||[],
-    recipe: {
+    user: currentUser,
+    date: new Date().toLocaleDateString('ja-JP'),
+    createdAt: serverTimestamp(),
+    beanId, beanName, beanOrigin, beanRoast,
+    recipe:{
       beans:  document.getElementById('r-beans').value,
       water:  document.getElementById('r-water').value,
       temp:   document.getElementById('r-temp').value,
       time:   document.getElementById('r-time').value,
       brewer: document.getElementById('r-brewer').value,
     },
-    stars:   currentStar,
-    memo:    document.getElementById('r-memo').value,
-    shared,
+    stars:  currentStar,
+    memo:   document.getElementById('r-memo').value,
+    shared: document.getElementById('share-check').checked,
   };
 
   try {
-    await addDoc(collection(db, 'notes'), note);
+    await addDoc(collection(db,'notes'), note);
     closeModal();
   } catch(e) {
-    alert('保存に失敗しました: ' + e.message);
+    alert('保存に失敗しました: '+e.message);
   } finally {
-    saveBtn.disabled = false;
-    saveBtn.textContent = '保存する';
+    btn.disabled=false; btn.textContent='保存する';
   }
 };
 
 // ── Render card ────────────────────────────
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function roastBadgeClass(r){
+  if(r==='浅煎り') return 'badge-light';
+  if(r==='中煎り') return 'badge-medium';
+  if(r==='深煎り') return 'badge-dark';
+  return 'badge-tool';
+}
+
 function noteCard(data, isMine) {
-  const r = data.recipe || {};
-  const hasRecipe = r.beans || r.water || r.temp;
-  const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const r = data.recipe||{};
+  const hasRecipe = r.beans||r.water||r.temp;
 
   const recipeHtml = hasRecipe ? `<div class="recipe-bar">
-    ${r.beans ? `<div class="recipe-cell"><div class="recipe-val">${esc(r.beans)}</div><div class="recipe-unit">g · 豆</div></div>` : ''}
-    ${r.water ? `<div class="recipe-cell"><div class="recipe-val">${esc(r.water)}</div><div class="recipe-unit">ml · 湯量</div></div>` : ''}
-    ${r.temp  ? `<div class="recipe-cell"><div class="recipe-val">${esc(r.temp)}</div><div class="recipe-unit">℃ · 湯温</div></div>` : ''}
+    ${r.beans?`<div class="recipe-cell"><div class="recipe-val">${esc(r.beans)}</div><div class="recipe-unit">g · 豆</div></div>`:''}
+    ${r.water?`<div class="recipe-cell"><div class="recipe-val">${esc(r.water)}</div><div class="recipe-unit">ml · 湯量</div></div>`:''}
+    ${r.temp ?`<div class="recipe-cell"><div class="recipe-val">${esc(r.temp)}</div><div class="recipe-unit">℃ · 湯温</div></div>`:''}
   </div>` : '';
 
   const authorHtml = !isMine ? `<div class="author-row">
@@ -419,7 +496,7 @@ function noteCard(data, isMine) {
 
   const footerHtml = isMine ? `<div style="display:flex;align-items:center;justify-content:space-between;margin-top:.75rem;padding-top:.6rem;border-top:1px solid var(--border)">
     <div style="font-size:11px;color:var(--muted)">${data.date}</div>
-    ${data.shared ? '<span class="shared-badge">SHARED</span>' : ''}
+    ${data.shared?'<span class="shared-badge">SHARED</span>':''}
   </div>` : '';
 
   return `<div class="card">
@@ -428,121 +505,117 @@ function noteCard(data, isMine) {
       <div>
         <div class="card-bean-name">${esc(data.beanName)}</div>
         <div class="badge-row" style="margin-top:6px;margin-bottom:0">
-          ${data.beanOrigin ? `<span class="badge badge-origin">${esc(data.beanOrigin)}</span>` : ''}
-          ${data.beanRoast  ? `<span class="badge badge-roast">${esc(data.beanRoast)}</span>`   : ''}
-          ${r.brewer ? `<span class="badge badge-tool">${esc(r.brewer)}</span>` : ''}
-          ${r.time   ? `<span class="badge badge-tool">${esc(r.time)}</span>`   : ''}
+          ${data.beanOrigin?`<span class="badge badge-tool">${esc(data.beanOrigin)}</span>`:''}
+          ${data.beanRoast?`<span class="badge ${roastBadgeClass(data.beanRoast)}">${esc(data.beanRoast)}</span>`:''}
+          ${r.brewer?`<span class="badge badge-tool">${esc(r.brewer)}</span>`:''}
+          ${r.time?`<span class="badge badge-tool">${esc(r.time)}</span>`:''}
         </div>
       </div>
       <div class="stars-row" style="flex-shrink:0;padding-top:4px">
         ${Array.from({length:5},(_,i)=>`<span class="star-glyph ${i<(data.stars||0)?'star-filled':'star-empty'}">★</span>`).join('')}
       </div>
     </div>
-    ${(data.beanFlavors||[]).length ? `<div class="flavor-row">${data.beanFlavors.map(f=>`<span class="flavor-tag">${esc(f)}</span>`).join('')}</div>` : ''}
+    ${data.memo?`<div class="tasting">${esc(data.memo)}</div>`:''}
     ${recipeHtml}
-    ${data.memo ? `<div class="tasting">${esc(data.memo)}</div>` : ''}
     ${footerHtml}
   </div>`;
 }
 
-// ── Realtime listeners ─────────────────────
+// ── Firestore listeners（インデックス不要な方法） ─
 function subscribeMyNotes() {
-  if (myUnsubscribe) myUnsubscribe();
-  const q = query(
-    collection(db, 'notes'),
-    where('user', '==', currentUser),
-    orderBy('createdAt', 'desc')
-  );
-  myUnsubscribe = onSnapshot(q, snap => {
+  if(myUnsub) myUnsub();
+  // user絞り込みのみ（orderByなし）→クライアント側でソート
+  const q = query(collection(db,'notes'), where('user','==',currentUser));
+  myUnsub = onSnapshot(q, snap => {
+    const docs = snap.docs.map(d=>d.data()).sort((a,b)=>{
+      const ta = a.createdAt?.seconds||0;
+      const tb = b.createdAt?.seconds||0;
+      return tb-ta;
+    });
     const el = document.getElementById('panel-mine');
-    if (snap.empty) {
-      el.innerHTML = `<div class="empty"><div class="empty-icon">☕</div><div class="empty-text">まだノートがありません。<br>＋ボタンから最初の記録をつけましょう。</div></div>`;
-    } else {
-      el.innerHTML = snap.docs.map(d => noteCard(d.data(), true)).join('');
-    }
+    el.innerHTML = docs.length
+      ? docs.map(d=>noteCard(d,true)).join('')
+      : `<div class="empty"><div class="empty-icon">☕</div><div class="empty-text">まだノートがありません。<br>＋ボタンから最初の記録をつけましょう。</div></div>`;
     setSyncStatus(true);
-  }, err => { console.error(err); setSyncStatus(false); });
+  }, err=>{ console.error(err); setSyncStatus(false); });
 }
 
 function subscribeCommunity() {
-  if (communityUnsubscribe) communityUnsubscribe();
-  const q = query(
-    collection(db, 'notes'),
-    where('shared', '==', true),
-    orderBy('createdAt', 'desc')
-  );
-  communityUnsubscribe = onSnapshot(q, snap => {
+  if(communityUnsub) communityUnsub();
+  // shared絞り込みのみ（orderByなし）→クライアント側でソート
+  const q = query(collection(db,'notes'), where('shared','==',true));
+  communityUnsub = onSnapshot(q, snap => {
+    const docs = snap.docs
+      .map(d=>d.data())
+      .filter(d=>d.user!==currentUser)
+      .sort((a,b)=>{
+        const ta = a.createdAt?.seconds||0;
+        const tb = b.createdAt?.seconds||0;
+        return tb-ta;
+      });
     const el = document.getElementById('panel-community');
-    const others = snap.docs.filter(d => d.data().user !== currentUser);
-    if (!others.length) {
-      el.innerHTML = `<div class="empty"><div class="empty-icon">☕</div><div class="empty-text">まだシェアされたレシピがありません。<br>ノートをシェアして最初の一人になりましょう。</div></div>`;
-    } else {
-      el.innerHTML = others.map(d => noteCard(d.data(), false)).join('');
-    }
+    el.innerHTML = docs.length
+      ? docs.map(d=>noteCard(d,false)).join('')
+      : `<div class="empty"><div class="empty-icon">☕</div><div class="empty-text">まだシェアされたレシピがありません。<br>ノートをシェアして最初の一人になりましょう。</div></div>`;
   });
 }
 
-function setSyncStatus(ok) {
-  const dot  = document.getElementById('sync-dot');
-  const text = document.getElementById('sync-text');
-  dot.className  = 'sync-dot' + (ok ? '' : ' error');
-  text.textContent = ok ? 'リアルタイム同期中' : '接続エラー';
+function setSyncStatus(ok){
+  document.getElementById('sync-dot').className = 'sync-dot'+(ok?'':' error');
+  document.getElementById('sync-text').textContent = ok?'リアルタイム同期中':'接続エラー';
 }
 
 // ── Modal ──────────────────────────────────
-window.openModal = function() {
-  currentStar = 0;
-  document.querySelectorAll('.star-sel').forEach(s => s.classList.remove('on'));
-  document.getElementById('bean-select').value = '';
-  document.getElementById('bean-preview').style.display = 'none';
-  ['r-beans','r-water','r-temp','r-time','r-memo'].forEach(id => { document.getElementById(id).value = ''; });
-  document.getElementById('share-check').checked = false;
+window.openModal = function(){
+  currentStar=0;
+  document.querySelectorAll('.star-sel').forEach(s=>s.classList.remove('on'));
+  document.getElementById('bean-select').value='';
+  document.getElementById('bean-preview').style.display='none';
+  document.getElementById('custom-bean-name').value='';
+  document.getElementById('custom-origin').value='';
+  document.getElementById('custom-roast').value='';
+  ['r-beans','r-water','r-temp','r-time','r-memo'].forEach(id=>{document.getElementById(id).value='';});
+  document.getElementById('share-check').checked=false;
+  setBeanMode('list');
   document.getElementById('modal-overlay').classList.add('open');
 };
-window.closeModal = function() { document.getElementById('modal-overlay').classList.remove('open'); };
-window.overlayClick = function(e) { if (e.target===document.getElementById('modal-overlay')) closeModal(); };
+window.closeModal = function(){ document.getElementById('modal-overlay').classList.remove('open'); };
+window.overlayClick = function(e){ if(e.target===document.getElementById('modal-overlay')) closeModal(); };
 
 // ── Tabs ───────────────────────────────────
-window.switchTab = function(tab) {
-  ['mine','community'].forEach(t => {
-    document.getElementById('tab-'+t).classList.toggle('active', t===tab);
-    document.getElementById('panel-'+t).style.display = t===tab ? 'block' : 'none';
+window.switchTab = function(tab){
+  ['mine','community'].forEach(t=>{
+    document.getElementById('tab-'+t).classList.toggle('active',t===tab);
+    document.getElementById('panel-'+t).style.display=t===tab?'block':'none';
   });
-  document.getElementById('fab-btn').style.display = tab==='mine' ? 'flex' : 'none';
+  document.getElementById('fab-btn').style.display=tab==='mine'?'flex':'none';
 };
 
 // ── Start ──────────────────────────────────
-window.startApp = async function() {
+window.startApp = async function(){
   const name = document.getElementById('name-input').value.trim();
-  if (!name) { document.getElementById('ob-error').textContent = 'ニックネームを入力してください'; return; }
-  document.getElementById('ob-error').textContent = '';
-
+  if(!name){ document.getElementById('ob-error').textContent='ニックネームを入力してください'; return; }
+  document.getElementById('ob-error').textContent='';
   const btn = document.getElementById('start-btn');
-  btn.textContent = '接続中...'; btn.disabled = true;
-
-  currentUser = name;
-  localStorage.setItem('ktb_user', name);
-
-  document.getElementById('nav-name-disp').textContent = name;
-  document.getElementById('nav-avatar').textContent    = name.slice(0,2);
+  btn.textContent='接続中...'; btn.disabled=true;
+  currentUser=name;
+  localStorage.setItem('ktb_user',name);
+  document.getElementById('nav-name-disp').textContent=name;
+  document.getElementById('nav-avatar').textContent=name.slice(0,2);
   document.getElementById('screen-ob').classList.remove('active');
   document.getElementById('screen-main').classList.add('active');
-
   subscribeMyNotes();
   subscribeCommunity();
-
-  btn.textContent = 'はじめる'; btn.disabled = false;
+  btn.textContent='はじめる'; btn.disabled=false;
 };
 
 // ── Init ───────────────────────────────────
-(async () => {
-  const ls = document.getElementById('loading-screen');
-  await loadBeans();
-  const saved = localStorage.getItem('ktb_user');
-  if (saved) document.getElementById('name-input').value = saved;
-  document.getElementById('name-input').addEventListener('keydown', e => { if(e.key==='Enter') startApp(); });
-  setTimeout(() => { ls.classList.add('hide'); setTimeout(()=>ls.remove(),400); }, 600);
-})();
+populateBeanSelect();
+const saved = localStorage.getItem('ktb_user');
+if(saved) document.getElementById('name-input').value=saved;
+document.getElementById('name-input').addEventListener('keydown',e=>{ if(e.key==='Enter') startApp(); });
+const ls = document.getElementById('loading-screen');
+setTimeout(()=>{ ls.classList.add('hide'); setTimeout(()=>ls.remove(),400); },500);
 </script>
 </body>
 </html>
