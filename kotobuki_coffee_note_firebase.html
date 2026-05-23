@@ -138,13 +138,29 @@ select.f-input{cursor:pointer}
 .btn-save{flex:2;padding:11px;background:var(--brown);border:none;font-family:'Noto Sans JP',sans-serif;font-size:13px;letter-spacing:.12em;color:var(--cream);cursor:pointer;transition:background .15s}
 .btn-save:hover{background:var(--roast)}
 .btn-save:disabled{opacity:.6;cursor:not-allowed}
-.fav-btn{
-  background:none;border:none;cursor:pointer;font-size:18px;
-  color:var(--border);transition:color .15s, transform .12s;
-  padding:2px 4px;line-height:1;
-}
-.fav-btn.on{color:var(--gold);}
-.fav-btn:hover{transform:scale(1.2);}
+/* filter bar */
+.filter-bar{margin-bottom:1rem}
+.search-wrap{position:relative;margin-bottom:.6rem}
+.search-input{width:100%;padding:9px 12px 9px 36px;border:1px solid var(--border);background:var(--card-bg);font-family:'Noto Sans JP',sans-serif;font-size:13px;color:var(--dark);outline:none;border-radius:2px;transition:border-color .15s}
+.search-input:focus{border-color:var(--roast)}
+.search-wrap::before{content:'🔍';position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:12px;pointer-events:none;opacity:.5}
+.filter-row{display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+.filter-chips{display:flex;gap:4px;flex-wrap:wrap}
+.chip{padding:5px 12px;font-size:11px;font-family:'Noto Sans JP',sans-serif;border:1px solid var(--border);background:var(--card-bg);color:var(--muted);border-radius:20px;cursor:pointer;transition:all .15s;letter-spacing:.04em}
+.chip.active{background:var(--brown);color:var(--cream);border-color:var(--brown)}
+.sort-select{padding:5px 8px;font-size:11px;font-family:'Noto Sans JP',sans-serif;border:1px solid var(--border);background:var(--card-bg);color:var(--muted);border-radius:2px;cursor:pointer;outline:none;flex-shrink:0}
+
+/* rank badge */
+.rank-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:500;letter-spacing:.04em}
+.rank-0{background:#F0ECE6;color:var(--muted);border:1px solid var(--border)}
+.rank-1{background:#EAF4EF;color:#2A6B50;border:1px solid #B5D9C8}
+.rank-2{background:#FAF0E2;color:#8A4A12;border:1px solid #E8C898}
+.rank-3{background:#FAEEDA;color:#7A3F00;border:1px solid #E8B860}
+.rank-4{background:#2A1A0E;color:#D4A96A;border:1px solid #7C5030}
+
+.fav-btn{background:none;border:none;cursor:pointer;font-size:18px;color:var(--border);transition:color .15s,transform .12s;padding:2px 4px;line-height:1}
+.fav-btn.on{color:#E05577}
+.fav-btn:hover{transform:scale(1.2)}
 .screen{display:none;opacity:0}
 .screen.active{display:block;animation:screenIn .55s ease forwards}
 @keyframes screenIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
@@ -192,7 +208,10 @@ select.f-input{cursor:pointer}
     <div class="header-logo">KOTOBUKI <span>COFFEE NOTE</span></div>
     <div class="header-user">
       <div class="avatar" id="nav-avatar"></div>
-      <div style="font-size:13px;color:var(--muted)" id="nav-name-disp"></div>
+      <div>
+        <div style="font-size:13px;color:var(--muted)" id="nav-name-disp"></div>
+        <div id="nav-rank" style="font-size:10px;color:var(--gold);letter-spacing:.06em;margin-top:1px"></div>
+      </div>
     </div>
   </div>
   <div class="tabs">
@@ -205,6 +224,26 @@ select.f-input{cursor:pointer}
       <div class="sync-dot syncing" id="sync-dot"></div>
       <span id="sync-text">接続中...</span>
     </div>
+
+    <!-- フィルターバー（mine / community / favorites 共通） -->
+    <div class="filter-bar" id="filter-bar">
+      <div class="search-wrap">
+        <input type="text" class="search-input" id="search-input" placeholder="豆名・メモで検索..." oninput="applyFilters()">
+      </div>
+      <div class="filter-row">
+        <div class="filter-chips" id="roast-chips">
+          <button class="chip active" data-roast="" onclick="setRoastFilter(this,'')">すべて</button>
+          <button class="chip" data-roast="浅煎り" onclick="setRoastFilter(this,'浅煎り')">浅煎り</button>
+          <button class="chip" data-roast="中煎り" onclick="setRoastFilter(this,'中煎り')">中煎り</button>
+          <button class="chip" data-roast="深煎り" onclick="setRoastFilter(this,'深煎り')">深煎り</button>
+        </div>
+        <select class="sort-select" id="sort-select" onchange="applyFilters()">
+          <option value="new">新しい順</option>
+          <option value="stars">評価が高い順</option>
+        </select>
+      </div>
+    </div>
+
     <div id="panel-mine"></div>
     <div id="panel-community"></div>
     <div id="panel-favorites" style="display:none"></div>
@@ -410,7 +449,43 @@ let currentStar  = 0;
 let beanMode     = 'list';
 let myUnsub      = null;
 let communityUnsub = null;
-let favorites    = {}; // { docId: noteData }
+let favorites    = {};
+let currentTab   = 'mine';
+let filterRoast  = '';
+
+// ── Rank system ────────────────────────────
+const RANKS = [
+  { min:0,  label:'Beginner',   icon:'☕',     cls:'rank-0' },
+  { min:3,  label:'Regular',    icon:'☕☕',    cls:'rank-1' },
+  { min:10, label:'Enthusiast', icon:'☕☕☕',  cls:'rank-2' },
+  { min:20, label:'Expert',     icon:'✦',      cls:'rank-3' },
+  { min:50, label:'Master',     icon:'✦✦',     cls:'rank-4' },
+];
+function getRank(shareCount) {
+  let rank = RANKS[0];
+  for (const r of RANKS) { if (shareCount >= r.min) rank = r; }
+  return rank;
+}
+function updateRankDisplay(shareCount) {
+  const rank = getRank(shareCount);
+  const el = document.getElementById('nav-rank');
+  if (el) el.innerHTML = `<span class="rank-badge ${rank.cls}">${rank.icon} ${rank.label}</span>`;
+}
+
+// ── Filter helpers ─────────────────────────
+window.setRoastFilter = function(btn, roast) {
+  filterRoast = roast;
+  document.querySelectorAll('#roast-chips .chip').forEach(c => c.classList.toggle('active', c.dataset.roast === roast));
+  applyFilters();
+};
+
+window.applyFilters = function() {
+  const keyword = (document.getElementById('search-input')?.value || '').trim().toLowerCase();
+  const sort    = document.getElementById('sort-select')?.value || 'new';
+  if (currentTab === 'mine')      renderMyNotes(keyword, sort);
+  if (currentTab === 'community') renderCommunity(keyword, sort);
+  if (currentTab === 'favorites') renderFavorites(keyword, sort);
+}; // { docId: noteData }
 
 // ── Populate bean select ───────────────────
 function populateBeanSelect() {
@@ -613,14 +688,52 @@ window.toggleFavorite = function(docId){
   });
 };
 
-function renderFavorites(){
-  const el = document.getElementById('panel-favorites');
-  const list = Object.values(favorites);
-  if (!list.length) {
-    el.innerHTML = `<div class="empty"><div class="empty-icon">♥</div><div class="empty-text">お気に入りがありません。<br>みんなのレシピの ♥ を押して登録しましょう。</div></div>`;
-  } else {
-    el.innerHTML = list.map(d => noteCard(d, false)).join('');
-  }
+// ── Filter / sort helper ───────────────────
+function filterAndSort(docs, keyword, sort) {
+  let list = [...docs];
+  if (filterRoast) list = list.filter(d => d.beanRoast === filterRoast);
+  if (keyword) list = list.filter(d =>
+    (d.beanName||'').toLowerCase().includes(keyword) ||
+    (d.memo||'').toLowerCase().includes(keyword) ||
+    (d.beanOrigin||'').toLowerCase().includes(keyword)
+  );
+  if (sort === 'stars') list.sort((a,b) => (b.stars||0)-(a.stars||0) || (b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+  else list.sort((a,b) => (b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+  return list;
+}
+
+// ── Render helpers ─────────────────────────
+function renderMyNotes(keyword='', sort='new') {
+  const el  = document.getElementById('panel-mine');
+  const all = window._myDocs || [];
+  const filtered = filterAndSort(all, keyword, sort);
+  el.innerHTML = filtered.length
+    ? filtered.map(d=>noteCard(d,true)).join('')
+    : all.length
+      ? `<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">条件に一致するノートがありません。</div></div>`
+      : `<div class="empty"><div class="empty-icon">☕</div><div class="empty-text">まだノートがありません。<br>＋ボタンから最初の記録をつけましょう。</div></div>`;
+}
+
+function renderCommunity(keyword='', sort='new') {
+  const el  = document.getElementById('panel-community');
+  const all = window._communityDocs || [];
+  const filtered = filterAndSort(all, keyword, sort);
+  el.innerHTML = filtered.length
+    ? filtered.map(d=>noteCard(d,false)).join('')
+    : all.length
+      ? `<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">条件に一致するレシピがありません。</div></div>`
+      : `<div class="empty"><div class="empty-icon">☕</div><div class="empty-text">まだシェアされたレシピがありません。<br>ノートをシェアして最初の一人になりましょう。</div></div>`;
+}
+
+function renderFavorites(keyword='', sort='new') {
+  const el  = document.getElementById('panel-favorites');
+  const all = Object.values(favorites);
+  const filtered = filterAndSort(all, keyword, sort);
+  el.innerHTML = filtered.length
+    ? filtered.map(d=>noteCard(d,false)).join('')
+    : all.length
+      ? `<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">条件に一致するお気に入りがありません。</div></div>`
+      : `<div class="empty"><div class="empty-icon">♥</div><div class="empty-text">お気に入りがありません。<br>みんなのレシピの ♥ を押して登録しましょう。</div></div>`;
 }
 
 // ── Delete ─────────────────────────────────
@@ -633,44 +746,38 @@ window.deleteNote = async function(docId) {
   }
 };
 
-// ── Firestore listeners（インデックス不要な方法） ─
+// ── Firestore listeners ────────────────────
 function subscribeMyNotes() {
   if(myUnsub) myUnsub();
-  // user絞り込みのみ（orderByなし）→クライアント側でソート
   const q = query(collection(db,'notes'), where('user','==',currentUser));
   myUnsub = onSnapshot(q, snap => {
-    const docs = snap.docs.map(d=>({...d.data(), _docId: d.id})).sort((a,b)=>{
-      const ta = a.createdAt?.seconds||0;
-      const tb = b.createdAt?.seconds||0;
-      return tb-ta;
-    });
-    const el = document.getElementById('panel-mine');
-    el.innerHTML = docs.length
-      ? docs.map(d=>noteCard(d,true)).join('')
-      : `<div class="empty"><div class="empty-icon">☕</div><div class="empty-text">まだノートがありません。<br>＋ボタンから最初の記録をつけましょう。</div></div>`;
+    window._myDocs = snap.docs.map(d=>({...d.data(), _docId: d.id}));
+    // ランク：自分のシェア済み件数でランクを計算
+    const shareCount = window._myDocs.filter(d=>d.shared).length;
+    updateRankDisplay(shareCount);
+    renderMyNotes(
+      document.getElementById('search-input')?.value.trim().toLowerCase()||'',
+      document.getElementById('sort-select')?.value||'new'
+    );
     setSyncStatus(true);
   }, err=>{ console.error(err); setSyncStatus(false); });
 }
 
 function subscribeCommunity() {
   if(communityUnsub) communityUnsub();
-  // shared絞り込みのみ（orderByなし）→クライアント側でソート
   const q = query(collection(db,'notes'), where('shared','==',true));
   communityUnsub = onSnapshot(q, snap => {
-    const docs = snap.docs
+    window._communityDocs = snap.docs
       .map(d=>({...d.data(), _docId: d.id}))
-      .filter(d=>d.user!==currentUser)
-      .sort((a,b)=>{
-        const ta = a.createdAt?.seconds||0;
-        const tb = b.createdAt?.seconds||0;
-        return tb-ta;
-      });
-    window._communityDocs = docs;
-    const el = document.getElementById('panel-community');
-    el.innerHTML = docs.length
-      ? docs.map(d=>noteCard(d,false)).join('')
-      : `<div class="empty"><div class="empty-icon">☕</div><div class="empty-text">まだシェアされたレシピがありません。<br>ノートをシェアして最初の一人になりましょう。</div></div>`;
-    renderFavorites();
+      .filter(d=>d.user!==currentUser);
+    renderCommunity(
+      document.getElementById('search-input')?.value.trim().toLowerCase()||'',
+      document.getElementById('sort-select')?.value||'new'
+    );
+    renderFavorites(
+      document.getElementById('search-input')?.value.trim().toLowerCase()||'',
+      document.getElementById('sort-select')?.value||'new'
+    );
   });
 }
 
@@ -700,11 +807,17 @@ window.overlayClick = function(e){ if(e.target===document.getElementById('modal-
 
 // ── Tabs ───────────────────────────────────
 window.switchTab = function(tab){
+  currentTab = tab;
   ['mine','community','favorites'].forEach(t=>{
     document.getElementById('tab-'+t).classList.toggle('active',t===tab);
     document.getElementById('panel-'+t).style.display=t===tab?'block':'none';
   });
   document.getElementById('fab-btn').style.display=tab==='mine'?'flex':'none';
+  // フィルターリセット
+  filterRoast='';
+  document.querySelectorAll('#roast-chips .chip').forEach(c=>c.classList.toggle('active',c.dataset.roast===''));
+  document.getElementById('search-input').value='';
+  applyFilters();
 };
 
 // ── Start ──────────────────────────────────
@@ -719,7 +832,6 @@ window.startApp = async function(){
   document.getElementById('nav-name-disp').textContent=name;
   document.getElementById('nav-avatar').textContent=name.slice(0,2);
 
-  // 画面フェードアウト → メイン画面へ
   const obScreen = document.getElementById('screen-ob');
   obScreen.style.transition='opacity .4s ease';
   obScreen.style.opacity='0';
@@ -732,7 +844,6 @@ window.startApp = async function(){
   loadFavorites();
   renderFavorites();
 
-  // ウェルカムトースト
   const toast = document.getElementById('welcome-toast');
   toast.textContent = `ようこそ、${name} さん ☕`;
   toast.classList.add('show');
