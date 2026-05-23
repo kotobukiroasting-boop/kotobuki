@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>営業カレンダー</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600&family=Shippori+Mincho:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --kotobuki-bg: #0a0a0a;
+    --kotobuki-gold: #c9a84c;
+    --kotobuki-gold-light: #e8c97a;
+    --kotobuki-text: #f0ead8;
+    --kotobuki-muted: #6a6355;
+    --kotobuki-border: #2a2518;
+    --kotobuki-closed: #3a2020;
+    --kotobuki-closed-text: #8a5050;
+    --kotobuki-special: #7a6030;
+    --hub-bg: #f9f7f2;
+    --hub-accent1: #e85d3a;
+    --hub-accent2: #3a7bd5;
+    --hub-accent3: #f0c040;
+    --hub-accent4: #4caf82;
+    --hub-text: #1a1a1a;
+    --hub-muted: #888;
+    --hub-border: #e8e0d0;
+    --hub-open: #4caf82;
+    --hub-closed: #f8ece8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', 'Noto Serif JP', sans-serif; background: #111; min-height: 100vh; }
+
+  /* TAB */
+  .store-tabs {
+    display: flex; position: sticky; top: 0; z-index: 100;
+    background: #0a0a0a; border-bottom: 1px solid #222;
+  }
+  .tab-btn {
+    flex: 1; padding: 18px 20px; border: none; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+    letter-spacing: 0.05em; transition: all 0.3s ease; position: relative; overflow: hidden;
+  }
+  .tab-btn::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+    height: 2px; transform: scaleX(0); transition: transform 0.3s ease;
+  }
+  .tab-btn.kotobuki { background: #0a0a0a; color: #555; }
+  .tab-btn.kotobuki.active { background: #0a0a0a; color: var(--kotobuki-gold); }
+  .tab-btn.kotobuki.active::after { background: var(--kotobuki-gold); transform: scaleX(1); }
+  .tab-btn.hub { background: #0a0a0a; color: #555; }
+  .tab-btn.hub.active { background: #0a0a0a; color: #f9f7f2; }
+  .tab-btn.hub.active::after {
+    background: linear-gradient(90deg, var(--hub-accent1), var(--hub-accent2), var(--hub-accent4));
+    transform: scaleX(1);
+  }
+  .tab-label-jp { display: block; font-family: 'Noto Serif JP', serif; font-size: 12px; margin-bottom: 2px; opacity: 0.7; }
+  .tab-label-en { display: block; font-size: 15px; font-weight: 500; }
+
+  .calendar-panel { display: none; }
+  .calendar-panel.active { display: block; }
+
+  /* ═══ KOTOBUKI ═══ */
+  .panel-kotobuki { background: var(--kotobuki-bg); min-height: 100vh; padding: 40px 20px 60px; }
+  .kotobuki-header { text-align: center; margin-bottom: 40px; padding-bottom: 30px; border-bottom: 1px solid var(--kotobuki-border); }
+  .kotobuki-header .store-name { font-family: 'Shippori Mincho', serif; font-size: clamp(22px, 5vw, 36px); color: var(--kotobuki-gold); letter-spacing: 0.2em; margin-bottom: 6px; }
+  .kotobuki-header .store-sub { font-size: 11px; color: var(--kotobuki-muted); letter-spacing: 0.3em; text-transform: uppercase; }
+  .kotobuki-header .hours-note { margin-top: 12px; font-size: 12px; color: var(--kotobuki-muted); letter-spacing: 0.1em; }
+  .k-nav { display: flex; align-items: center; justify-content: center; gap: 24px; margin-bottom: 28px; }
+  .k-nav button {
+    background: none; border: 1px solid var(--kotobuki-border); color: var(--kotobuki-gold);
+    width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 16px;
+    transition: all 0.2s; display: flex; align-items: center; justify-content: center;
+  }
+  .k-nav button:hover { background: var(--kotobuki-gold); color: #000; }
+  .k-nav .month-label { font-family: 'Shippori Mincho', serif; font-size: 20px; color: var(--kotobuki-text); letter-spacing: 0.15em; min-width: 140px; text-align: center; }
+  .k-calendar { max-width: 640px; margin: 0 auto; }
+  .k-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); margin-bottom: 4px; }
+  .k-weekday { text-align: center; font-size: 10px; color: var(--kotobuki-muted); letter-spacing: 0.15em; padding: 8px 0; }
+  .k-weekday:first-child { color: #a04040; }
+  .k-weekday:last-child { color: #405080; }
+  .k-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+  .k-day {
+    aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    position: relative; cursor: default; transition: all 0.15s; min-height: 48px; border-radius: 4px;
+  }
+  .k-day.empty { background: transparent; }
+  .k-day.open { background: #111; border: 1px solid #1e1c17; }
+  .k-day.open:hover { background: #191714; border-color: var(--kotobuki-border); }
+  .k-day.closed { background: var(--kotobuki-closed); border: 1px solid #2a1818; }
+  .k-day.special { background: #1a1508; border: 1px solid var(--kotobuki-special); }
+  .k-day.today .k-num::after {
+    content: ''; position: absolute; bottom: -3px; left: 50%; transform: translateX(-50%);
+    width: 4px; height: 4px; background: var(--kotobuki-gold); border-radius: 50%;
+  }
+  .k-num { font-family: 'DM Sans', sans-serif; font-size: clamp(12px, 2.5vw, 16px); font-weight: 300; position: relative; line-height: 1; margin-bottom: 4px; }
+  .k-day.open .k-num { color: var(--kotobuki-text); }
+  .k-day.closed .k-num { color: var(--kotobuki-closed-text); }
+  .k-day.special .k-num { color: var(--kotobuki-gold-light); }
+  .k-day.today .k-num { color: var(--kotobuki-gold); font-weight: 500; }
+  .k-status { font-size: 8px; letter-spacing: 0.05em; text-transform: uppercase; }
+  .k-day.open .k-status { color: #3a3528; }
+  .k-day.closed .k-status { color: var(--kotobuki-closed-text); }
+  .k-day.special .k-status { color: var(--kotobuki-gold); font-size: 7px; }
+  .k-legend { display: flex; justify-content: center; gap: 20px; margin-top: 24px; flex-wrap: wrap; }
+  .k-legend-item { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--kotobuki-muted); letter-spacing: 0.08em; }
+  .k-legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+  .k-loading-dot { display: inline-block; width: 4px; height: 4px; background: var(--kotobuki-gold); border-radius: 50%; margin: 0 3px; animation: blink 1.2s infinite; }
+  .k-loading-dot:nth-child(2) { animation-delay: 0.2s; }
+  .k-loading-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes blink { 0%,80%,100%{opacity:0.2} 40%{opacity:1} }
+
+  /* ═══ HUB ═══ */
+  .panel-hub { background: var(--hub-bg); min-height: 100vh; padding: 40px 20px 60px; }
+  .hub-header { text-align: center; margin-bottom: 36px; }
+  .hub-logo-band { display: inline-flex; gap: 3px; margin-bottom: 12px; }
+  .hub-logo-band span { width: 8px; height: 8px; border-radius: 50%; }
+  .hub-header .store-name { font-family: 'DM Sans', sans-serif; font-size: clamp(20px, 5vw, 32px); font-weight: 500; color: var(--hub-text); letter-spacing: -0.01em; margin-bottom: 4px; }
+  .hub-header .store-sub { font-size: 11px; color: var(--hub-muted); letter-spacing: 0.2em; text-transform: uppercase; }
+  .hub-header .hours-note { margin-top: 10px; font-size: 12px; color: var(--hub-muted); }
+  .h-nav { display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 24px; }
+  .h-nav button {
+    background: none; border: 2px solid var(--hub-border); color: var(--hub-text);
+    width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 16px;
+    transition: all 0.2s; display: flex; align-items: center; justify-content: center;
+  }
+  .h-nav button:hover { border-color: var(--hub-accent2); color: var(--hub-accent2); background: #eef3fc; }
+  .h-nav .month-label { font-family: 'DM Sans', sans-serif; font-size: 20px; font-weight: 500; color: var(--hub-text); min-width: 140px; text-align: center; }
+  .h-calendar { max-width: 720px; margin: 0 auto; }
+  .h-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); margin-bottom: 6px; }
+  .h-weekday { text-align: center; font-size: 11px; font-weight: 500; color: var(--hub-muted); letter-spacing: 0.1em; padding: 8px 0; text-transform: uppercase; }
+  .h-weekday:first-child { color: var(--hub-accent1); }
+  .h-weekday:last-child { color: var(--hub-accent2); }
+  .h-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+
+  /* HUBセル — ブランド表示対応 */
+  .h-day {
+    display: flex; flex-direction: column; align-items: stretch;
+    border-radius: 8px; position: relative; cursor: default;
+    transition: transform 0.15s, box-shadow 0.15s;
+    min-height: 80px; border: 2px solid transparent; overflow: hidden;
+  }
+  .h-day.empty { background: transparent; border-color: transparent; }
+  .h-day.open { background: white; border-color: #e8e0d0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .h-day.open:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+  .h-day.closed { background: var(--hub-closed); border-color: #f0d8d0; justify-content: center; align-items: center; }
+  .h-day.today { border-color: var(--hub-accent1) !important; }
+
+  /* セル内レイアウト */
+  .h-day-inner { display: flex; flex-direction: column; padding: 5px 5px 4px; flex: 1; }
+  .h-num {
+    font-family: 'DM Sans', sans-serif; font-size: clamp(11px, 1.8vw, 14px);
+    font-weight: 500; color: var(--hub-text); line-height: 1; margin-bottom: 4px;
+  }
+  .h-day.closed .h-num { color: #c09090; }
+  .h-day.today .h-num { color: var(--hub-accent1); font-weight: 700; }
+
+  /* 休マーク */
+  .h-closed-mark {
+    font-size: clamp(20px, 3.5vw, 28px); color: var(--hub-accent1);
+    font-weight: 700; line-height: 1;
+  }
+  .h-closed-num {
+    position: absolute; top: 5px; left: 5px;
+    font-family: 'DM Sans', sans-serif; font-size: clamp(11px, 1.8vw, 14px);
+    font-weight: 500; color: #c09090; line-height: 1;
+  }
+
+  /* 営業時間 */
+  .h-hours {
+    font-size: clamp(7px, 1.1vw, 9px); color: #777; line-height: 1.3;
+    margin-bottom: 3px; white-space: nowrap;
+  }
+  /* ブランド名 */
+  .h-brand {
+    font-size: clamp(6.5px, 1vw, 9px); font-weight: 700; color: #222;
+    line-height: 1.25; word-break: break-word; flex: 1;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  /* ブランドカラーバー（下部） */
+  .h-brand-bar { height: 3px; width: 100%; margin-top: auto; border-radius: 0 0 6px 6px; }
+
+  .h-legend { display: flex; justify-content: center; gap: 16px; margin-top: 24px; flex-wrap: wrap; }
+  .h-legend-item { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--hub-muted); }
+  .h-legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+
+  @media (max-width: 600px) {
+    .panel-kotobuki, .panel-hub { padding: 24px 8px 50px; }
+    .k-day { min-height: 36px; }
+    .k-status { display: none; }
+    .h-day { min-height: 62px; }
+    .h-hours { display: none; }
+    .h-brand { font-size: 6px; -webkit-line-clamp: 2; }
+    .h-brand-bar { height: 2px; }
+  }
+  @media (max-width: 400px) {
+    .h-day { min-height: 52px; }
+    .h-brand { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="store-tabs">
+  <button class="tab-btn kotobuki active" onclick="switchTab('kotobuki')">
+    <span class="tab-label-jp">寿珈琲焙煎所</span>
+    <span class="tab-label-en">Kotobuki Roasters</span>
+  </button>
+  <button class="tab-btn hub" onclick="switchTab('hub')">
+    <span class="tab-label-jp">焙煎所ハブ</span>
+    <span class="tab-label-en">CoffeeRoasters HUB</span>
+  </button>
+</div>
+
+<!-- KOTOBUKI -->
+<div id="panel-kotobuki" class="calendar-panel active">
+  <div class="panel-kotobuki">
+    <div class="kotobuki-header">
+      <div class="store-name">寿珈琲焙煎所</div>
+      <div class="store-sub">Kotobuki Coffee Roasters</div>
+      <div class="hours-note">営業時間：午前10時〜</div>
+    </div>
+    <div class="k-nav">
+      <button onclick="changeMonth('k', -1)">&#8249;</button>
+      <div class="month-label" id="k-month-label"></div>
+      <button onclick="changeMonth('k', 1)">&#8250;</button>
+    </div>
+    <div class="k-calendar">
+      <div class="k-weekdays">
+        <div class="k-weekday">日</div><div class="k-weekday">月</div><div class="k-weekday">火</div>
+        <div class="k-weekday">水</div><div class="k-weekday">木</div><div class="k-weekday">金</div><div class="k-weekday">土</div>
+      </div>
+      <div class="k-grid" id="k-grid"></div>
+    </div>
+    <div class="k-legend">
+      <div class="k-legend-item"><div class="k-legend-dot" style="background:#1e1c17; border:1px solid #2a2518;"></div> 営業日</div>
+      <div class="k-legend-item"><div class="k-legend-dot" style="background:#3a2020;"></div> 休業日</div>
+      <div class="k-legend-item"><div class="k-legend-dot" style="background:#1a1508; border:1px solid #7a6030;"></div> イベント</div>
+    </div>
+  </div>
+</div>
+
+<!-- HUB -->
+<div id="panel-hub" class="calendar-panel">
+  <div class="panel-hub">
+    <div class="hub-header">
+      <div class="hub-logo-band">
+        <span style="background:var(--hub-accent1)"></span>
+        <span style="background:var(--hub-accent3)"></span>
+        <span style="background:var(--hub-accent4)"></span>
+        <span style="background:var(--hub-accent2)"></span>
+      </div>
+      <div class="store-name">CoffeeRoasters HUB</div>
+      <div class="store-sub">出店ブランド・営業カレンダー</div>
+    </div>
+    <div class="h-nav">
+      <button onclick="changeMonth('h', -1)">&#8249;</button>
+      <div class="month-label" id="h-month-label"></div>
+      <button onclick="changeMonth('h', 1)">&#8250;</button>
+    </div>
+    <div class="h-calendar">
+      <div class="h-weekdays">
+        <div class="h-weekday">Sun</div><div class="h-weekday">Mon</div><div class="h-weekday">Tue</div>
+        <div class="h-weekday">Wed</div><div class="h-weekday">Thu</div><div class="h-weekday">Fri</div><div class="h-weekday">Sat</div>
+      </div>
+      <div class="h-grid" id="h-grid"></div>
+    </div>
+    <div class="h-legend">
+      <div class="h-legend-item"><div class="h-legend-dot" style="background:var(--hub-open);"></div> 営業日</div>
+      <div class="h-legend-item"><div class="h-legend-dot" style="background:#e8b0a0;"></div> 休業日</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+//  Kotobuki: GoogleカレンダーiCal
+// ══════════════════════════════════════════════
+const KOTOBUKI_ICAL_URL = 'https://calendar.google.com/calendar/ical/kotobuki.roasting%40gmail.com/public/basic.ics';
+
+// ══════════════════════════════════════════════
+//  HUB: 出店データ
+//  形式: "YYYY-MM-DD": { brand: "ブランド名", hours: "11〜18時", color: "#hex" }
+//  休業日: "YYYY-MM-DD": "closed"
+// ══════════════════════════════════════════════
+const HUB_DATA = {
+  "2026-05-01": "closed",
+  "2026-05-02": { brand: "Aim's Drop",              hours: "11〜18時", color: "#2d6e5a" },
+  "2026-05-03": { brand: "Kazuma",                  hours: "10〜19時", color: "#b8976a" },
+  "2026-05-04": { brand: "KYONO COFFEE",            hours: "13〜19時", color: "#4a7c9e" },
+  "2026-05-05": "closed",
+  "2026-05-06": { brand: "Yoruno Coffee Roastery",  hours: "13〜20時", color: "#3a5a7a" },
+  "2026-05-07": "closed",
+  "2026-05-08": { brand: "Jiina",                   hours: "11〜21時", color: "#c8a84a" },
+  "2026-05-09": { brand: "Aim's Drop",              hours: "11〜18時", color: "#2d6e5a" },
+  "2026-05-10": { brand: "Kazuma",                  hours: "10〜19時", color: "#b8976a" },
+  "2026-05-11": { brand: "KYONO COFFEE",            hours: "10〜19時", color: "#4a7c9e" },
+  "2026-05-12": { brand: "SUP COFFEE",              hours: "12〜20時", color: "#5aabcc" },
+  "2026-05-13": { brand: "Yoruno Coffee Roastery",  hours: "13〜20時", color: "#3a5a7a" },
+  "2026-05-14": { brand: "TOMO COFFEE",             hours: "13〜18時", color: "#7a5a3a" },
+  "2026-05-15": { brand: "KOTOBUKI ROASTERS",       hours: "11〜20時", color: "#c9a84c" },
+  "2026-05-16": { brand: "Aim's Drop",              hours: "11〜18時", color: "#2d6e5a" },
+  "2026-05-17": { brand: "ヒイラギコーヒー",         hours: "12〜18時", color: "#6a8a4a" },
+  "2026-05-18": { brand: "KYONO COFFEE",            hours: "10〜19時", color: "#4a7c9e" },
+  "2026-05-19": { brand: "SUP COFFEE",              hours: "12〜20時", color: "#5aabcc" },
+  "2026-05-20": { brand: "Yoruno Coffee Roastery",  hours: "13〜20時", color: "#3a5a7a" },
+  "2026-05-21": { brand: "TOMO COFFEE",             hours: "13〜18時", color: "#7a5a3a" },
+  "2026-05-22": { brand: "Jiina",                   hours: "11〜21時", color: "#c8a84a" },
+  "2026-05-23": { brand: "Aim's Drop",              hours: "11〜18時", color: "#2d6e5a" },
+  "2026-05-24": "closed",
+  "2026-05-25": { brand: "KYONO COFFEE",            hours: "10〜19時", color: "#4a7c9e" },
+  "2026-05-26": { brand: "SUP COFFEE",              hours: "12〜20時", color: "#5aabcc" },
+  "2026-05-27": { brand: "Yoruno Coffee Roastery",  hours: "13〜20時", color: "#3a5a7a" },
+  "2026-05-28": { brand: "TOMO COFFEE",             hours: "13〜18時", color: "#7a5a3a" },
+  "2026-05-29": { brand: "Jiina",                   hours: "11〜21時", color: "#c8a84a" },
+  "2026-05-30": { brand: "Aim's Drop",              hours: "11〜18時", color: "#2d6e5a" },
+  "2026-05-31": { brand: "ヒイラギコーヒー",         hours: "12〜18時", color: "#6a8a4a" },
+};
+
+// ══════════════════════════════════════════════
+//  iCal パーサー
+// ══════════════════════════════════════════════
+function parseIcal(text) {
+  const events = {};
+  const lines = text.replace(/\r\n[ \t]/g, '').split(/\r\n|\n|\r/);
+  let current = null;
+  for (const line of lines) {
+    if (line === 'BEGIN:VEVENT') {
+      current = {};
+    } else if (line === 'END:VEVENT' && current) {
+      const dtstart = current['DTSTART'] || current['DTSTART;VALUE=DATE'] || '';
+      const summary = current['SUMMARY'] || '';
+      if (dtstart) {
+        const dateStr = dtstart.replace(/T.*$/, '').replace(/;.*$/, '');
+        if (dateStr.length >= 8) {
+          const key = `${dateStr.slice(0,4)}-${dateStr.slice(4,6)}-${dateStr.slice(6,8)}`;
+          if (summary.includes('休業') || summary.includes('定休') || summary.includes('臨時休')) {
+            events[key] = 'closed';
+          } else if (summary.includes('営業')) {
+            if (!events[key]) events[key] = 'open';
+          } else if (summary) {
+            events[key] = `special:${summary}`;
+          }
+        }
+      }
+      current = null;
+    } else if (current !== null) {
+      const colonIdx = line.indexOf(':');
+      if (colonIdx > -1) current[line.slice(0,colonIdx)] = line.slice(colonIdx+1);
+    }
+  }
+  return events;
+}
+
+// ══════════════════════════════════════════════
+//  状態管理
+// ══════════════════════════════════════════════
+const state = {
+  k: { year: new Date().getFullYear(), month: new Date().getMonth(), icalDates: null, loading: true, error: false },
+  h: { year: new Date().getFullYear(), month: new Date().getMonth() },
+};
+
+function getHubEntry(year, month, day) {
+  const key = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+  return HUB_DATA[key] || null;
+}
+
+// ══════════════════════════════════════════════
+//  レンダリング: Kotobuki
+// ══════════════════════════════════════════════
+function renderKotobuki() {
+  const { year, month, icalDates, loading, error } = state.k;
+  document.getElementById('k-month-label').textContent = `${year}年 ${month+1}月`;
+  const grid = document.getElementById('k-grid');
+
+  if (loading) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px 0;color:#6a6355;font-size:12px;letter-spacing:0.15em;">
+      読み込み中
+      <span class="k-loading-dot"></span><span class="k-loading-dot"></span><span class="k-loading-dot"></span>
+    </div>`;
+    return;
+  }
+
+  const firstDow = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const today = new Date();
+  grid.innerHTML = '';
+
+  for (let i = 0; i < firstDow; i++) {
+    const el = document.createElement('div'); el.className = 'k-day empty'; grid.appendChild(el);
+  }
+  for (let d = 1; d <= daysInMonth; d++) {
+    const key = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const status = icalDates ? (icalDates[key] || 'open') : 'open';
+    const isToday = today.getFullYear()===year && today.getMonth()===month && today.getDate()===d;
+    const el = document.createElement('div');
+    const baseClass = status.startsWith('special') ? 'special' : status;
+    el.className = `k-day ${baseClass}${isToday ? ' today' : ''}`;
+    let statusLabel = status === 'open' ? '●' : status === 'closed' ? '休' : status.startsWith('special:') ? status.split(':')[1].slice(0,4) : '';
+    el.innerHTML = `<span class="k-num">${d}</span><span class="k-status">${statusLabel}</span>`;
+    grid.appendChild(el);
+  }
+
+  if (error) {
+    const note = document.createElement('div');
+    note.style.cssText = 'grid-column:1/-1;text-align:center;padding:12px;font-size:11px;color:#8a5050;';
+    note.textContent = 'カレンダーの取得に失敗しました。公開設定を確認してください。';
+    grid.appendChild(note);
+  }
+}
+
+// ══════════════════════════════════════════════
+//  レンダリング: HUB
+// ══════════════════════════════════════════════
+function renderHub() {
+  const { year, month } = state.h;
+  document.getElementById('h-month-label').textContent = `${year} / ${month+1}`;
+  const firstDow = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const today = new Date();
+  const grid = document.getElementById('h-grid');
+  grid.innerHTML = '';
+
+  for (let i = 0; i < firstDow; i++) {
+    const el = document.createElement('div'); el.className = 'h-day empty'; grid.appendChild(el);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const entry = getHubEntry(year, month, d);
+    const isToday = today.getFullYear()===year && today.getMonth()===month && today.getDate()===d;
+    const el = document.createElement('div');
+
+    if (entry === 'closed') {
+      el.className = `h-day closed${isToday ? ' today' : ''}`;
+      el.innerHTML = `<span class="h-closed-num">${d}</span><span class="h-closed-mark">休</span>`;
+    } else if (entry && typeof entry === 'object') {
+      el.className = `h-day open${isToday ? ' today' : ''}`;
+      el.innerHTML = `
+        <div class="h-day-inner">
+          <span class="h-num">${d}</span>
+          <span class="h-hours">${entry.hours}</span>
+          <span class="h-brand">${entry.brand}</span>
+        </div>
+        <div class="h-brand-bar" style="background:${entry.color};"></div>`;
+    } else {
+      // データなし = その月のデータ未登録（グレーアウト）
+      el.className = `h-day${isToday ? ' today' : ''}`;
+      el.style.cssText = 'background:#f0ede8; border-color:#e0dbd0;';
+      el.innerHTML = `<div class="h-day-inner"><span class="h-num" style="color:#bbb;">${d}</span></div>`;
+    }
+    grid.appendChild(el);
+  }
+}
+
+function changeMonth(store, delta) {
+  state[store].month += delta;
+  if (state[store].month > 11) { state[store].month = 0; state[store].year++; }
+  if (state[store].month < 0)  { state[store].month = 11; state[store].year--; }
+  store === 'k' ? renderKotobuki() : renderHub();
+}
+
+function switchTab(store) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.calendar-panel').forEach(p => p.classList.remove('active'));
+  document.querySelector(`.tab-btn.${store}`).classList.add('active');
+  document.getElementById(`panel-${store}`).classList.add('active');
+}
+
+// ══════════════════════════════════════════════
+//  iCal取得
+// ══════════════════════════════════════════════
+async function fetchKotobukiIcal() {
+  const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(KOTOBUKI_ICAL_URL)}`;
+  try {
+    const res = await fetch(proxyUrl);
+    const json = await res.json();
+    if (json.contents) {
+      state.k.icalDates = parseIcal(json.contents);
+      state.k.loading = false; state.k.error = false;
+    } else throw new Error('empty');
+  } catch(e) {
+    state.k.loading = false; state.k.error = true; state.k.icalDates = {};
+  }
+  renderKotobuki();
+}
+
+renderKotobuki();
+renderHub();
+fetchKotobukiIcal();
+</script>
+</body>
+</html>
