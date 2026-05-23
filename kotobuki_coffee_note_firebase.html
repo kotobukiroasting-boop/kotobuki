@@ -138,6 +138,13 @@ select.f-input{cursor:pointer}
 .btn-save{flex:2;padding:11px;background:var(--brown);border:none;font-family:'Noto Sans JP',sans-serif;font-size:13px;letter-spacing:.12em;color:var(--cream);cursor:pointer;transition:background .15s}
 .btn-save:hover{background:var(--roast)}
 .btn-save:disabled{opacity:.6;cursor:not-allowed}
+.fav-btn{
+  background:none;border:none;cursor:pointer;font-size:18px;
+  color:var(--border);transition:color .15s, transform .12s;
+  padding:2px 4px;line-height:1;
+}
+.fav-btn.on{color:var(--gold);}
+.fav-btn:hover{transform:scale(1.2);}
 .screen{display:none;opacity:0}
 .screen.active{display:block;animation:screenIn .55s ease forwards}
 @keyframes screenIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
@@ -191,6 +198,7 @@ select.f-input{cursor:pointer}
   <div class="tabs">
     <button class="tab-btn active" id="tab-mine" onclick="switchTab('mine')">マイノート</button>
     <button class="tab-btn" id="tab-community" onclick="switchTab('community')">みんなのレシピ</button>
+    <button class="tab-btn" id="tab-favorites" onclick="switchTab('favorites')">お気に入り</button>
   </div>
   <div class="main">
     <div id="sync-status" class="sync-indicator">
@@ -199,6 +207,7 @@ select.f-input{cursor:pointer}
     </div>
     <div id="panel-mine"></div>
     <div id="panel-community"></div>
+    <div id="panel-favorites" style="display:none"></div>
   </div>
   <button class="fab" id="fab-btn" onclick="openModal()">＋</button>
 </div>
@@ -325,7 +334,7 @@ select.f-input{cursor:pointer}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, serverTimestamp }
+import { getFirestore, collection, addDoc, deleteDoc, doc, query, where, orderBy, onSnapshot, serverTimestamp }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -398,9 +407,10 @@ const BEANS = [
 // ── State ──────────────────────────────────
 let currentUser  = '';
 let currentStar  = 0;
-let beanMode     = 'list'; // 'list' | 'custom'
+let beanMode     = 'list';
 let myUnsub      = null;
 let communityUnsub = null;
+let favorites    = {}; // { docId: noteData }
 
 // ── Populate bean select ───────────────────
 function populateBeanSelect() {
@@ -528,13 +538,21 @@ function noteCard(data, isMine) {
   </div>` : '';
 
   const authorHtml = !isMine ? `<div class="author-row">
-    <div class="avatar" style="width:26px;height:26px;font-size:10px">${esc(data.user).slice(0,2)}</div>
-    <div><div class="author-name">${esc(data.user)}</div><div class="author-date">${data.date}</div></div>
+    <div style="display:flex;align-items:center;gap:8px;flex:1">
+      <div class="avatar" style="width:26px;height:26px;font-size:10px">${esc(data.user).slice(0,2)}</div>
+      <div><div class="author-name">${esc(data.user)}</div><div class="author-date">${data.date}</div></div>
+    </div>
+    <button class="fav-btn ${favorites[data._docId]?'on':''}"
+      onclick="toggleFavorite('${data._docId}')"
+      title="${favorites[data._docId]?'お気に入り解除':'お気に入りに追加'}">♥</button>
   </div>` : '';
 
   const footerHtml = isMine ? `<div style="display:flex;align-items:center;justify-content:space-between;margin-top:.75rem;padding-top:.6rem;border-top:1px solid var(--border)">
     <div style="font-size:11px;color:var(--muted)">${data.date}</div>
-    ${data.shared?'<span class="shared-badge">SHARED</span>':''}
+    <div style="display:flex;align-items:center;gap:.6rem">
+      ${data.shared?'<span class="shared-badge">SHARED</span>':''}
+      <button onclick="deleteNote('${data._docId}')" style="font-size:11px;color:#B84040;background:none;border:1px solid #E0B0B0;border-radius:1px;padding:2px 10px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;letter-spacing:.04em;transition:background .15s" onmouseover="this.style.background='#FDF0F0'" onmouseout="this.style.background='none'">削除</button>
+    </div>
   </div>` : '';
 
   return `<div class="card">
@@ -559,13 +577,69 @@ function noteCard(data, isMine) {
   </div>`;
 }
 
+// ── Favorites ──────────────────────────────
+function favKey(){ return 'ktb_fav_' + currentUser; }
+
+function loadFavorites(){
+  try { favorites = JSON.parse(localStorage.getItem(favKey())) || {}; } catch { favorites = {}; }
+}
+
+function saveFavorites(){
+  localStorage.setItem(favKey(), JSON.stringify(favorites));
+}
+
+window.toggleFavorite = function(docId){
+  if (!docId) return;
+  // お気に入りデータはcommunityパネルから取得
+  const cards = document.querySelectorAll('#panel-community .card, #panel-favorites .card');
+  // docIdはボタンのonclick引数から来るので、favoritesにデータを保存する必要がある
+  // communityパネルの最新データからnoteを探す
+  if (favorites[docId]) {
+    delete favorites[docId];
+  } else {
+    // currentCommunityDocsからデータを取得
+    const note = window._communityDocs && window._communityDocs.find(d=>d._docId===docId);
+    if (note) favorites[docId] = note;
+  }
+  saveFavorites();
+  renderFavorites();
+  // ハートボタンの状態を即時更新
+  document.querySelectorAll(`.fav-btn`).forEach(btn => {
+    const id = btn.getAttribute('onclick').match(/'([^']+)'/)?.[1];
+    if (id === docId) {
+      btn.classList.toggle('on', !!favorites[docId]);
+      btn.title = favorites[docId] ? 'お気に入り解除' : 'お気に入りに追加';
+    }
+  });
+};
+
+function renderFavorites(){
+  const el = document.getElementById('panel-favorites');
+  const list = Object.values(favorites);
+  if (!list.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">♥</div><div class="empty-text">お気に入りがありません。<br>みんなのレシピの ♥ を押して登録しましょう。</div></div>`;
+  } else {
+    el.innerHTML = list.map(d => noteCard(d, false)).join('');
+  }
+}
+
+// ── Delete ─────────────────────────────────
+window.deleteNote = async function(docId) {
+  if (!docId || !confirm('このノートを削除しますか？')) return;
+  try {
+    await deleteDoc(doc(db, 'notes', docId));
+  } catch(e) {
+    alert('削除に失敗しました: ' + e.message);
+  }
+};
+
 // ── Firestore listeners（インデックス不要な方法） ─
 function subscribeMyNotes() {
   if(myUnsub) myUnsub();
   // user絞り込みのみ（orderByなし）→クライアント側でソート
   const q = query(collection(db,'notes'), where('user','==',currentUser));
   myUnsub = onSnapshot(q, snap => {
-    const docs = snap.docs.map(d=>d.data()).sort((a,b)=>{
+    const docs = snap.docs.map(d=>({...d.data(), _docId: d.id})).sort((a,b)=>{
       const ta = a.createdAt?.seconds||0;
       const tb = b.createdAt?.seconds||0;
       return tb-ta;
@@ -584,17 +658,19 @@ function subscribeCommunity() {
   const q = query(collection(db,'notes'), where('shared','==',true));
   communityUnsub = onSnapshot(q, snap => {
     const docs = snap.docs
-      .map(d=>d.data())
+      .map(d=>({...d.data(), _docId: d.id}))
       .filter(d=>d.user!==currentUser)
       .sort((a,b)=>{
         const ta = a.createdAt?.seconds||0;
         const tb = b.createdAt?.seconds||0;
         return tb-ta;
       });
+    window._communityDocs = docs;
     const el = document.getElementById('panel-community');
     el.innerHTML = docs.length
       ? docs.map(d=>noteCard(d,false)).join('')
       : `<div class="empty"><div class="empty-icon">☕</div><div class="empty-text">まだシェアされたレシピがありません。<br>ノートをシェアして最初の一人になりましょう。</div></div>`;
+    renderFavorites();
   });
 }
 
@@ -624,7 +700,7 @@ window.overlayClick = function(e){ if(e.target===document.getElementById('modal-
 
 // ── Tabs ───────────────────────────────────
 window.switchTab = function(tab){
-  ['mine','community'].forEach(t=>{
+  ['mine','community','favorites'].forEach(t=>{
     document.getElementById('tab-'+t).classList.toggle('active',t===tab);
     document.getElementById('panel-'+t).style.display=t===tab?'block':'none';
   });
@@ -653,6 +729,8 @@ window.startApp = async function(){
   obScreen.style.transition='';
 
   document.getElementById('screen-main').classList.add('active');
+  loadFavorites();
+  renderFavorites();
 
   // ウェルカムトースト
   const toast = document.getElementById('welcome-toast');
