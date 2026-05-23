@@ -760,7 +760,15 @@
   });
 
   document.getElementById("messageInput").addEventListener("keydown", e => {
-    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); } 
+    if (e.key === "Enter" && !e.shiftKey) {
+      // PCはShift+Enterで改行、Enterで送信
+      // スマホはEnterキー送信を無効化（送信ボタンのみ）
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if (!isMobile) {
+        e.preventDefault();
+        sendMessage();
+      }
+    } 
   });
 
   async function sendMessage() {
