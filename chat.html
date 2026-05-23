@@ -488,7 +488,7 @@
       <button class="icon-btn" id="imageBtn">📎</button>
       <input type="file" id="fileInput" accept="image/*" style="display:none">
       <button class="icon-btn" id="linkBtn">🔗</button>
-      <input type="text" id="messageInput" placeholder="メッセージを入力...">
+      <textarea id="messageInput" placeholder="メッセージを入力..." rows="1" style="resize:none;overflow-y:hidden;line-height:1.4;padding-top:10px;padding-bottom:10px;font-family:inherit"></textarea>
       <button id="sendBtn">➤</button>
     </div>
   </div>
@@ -633,13 +633,25 @@
     }
   }
 
-  function startChat(name) {
+  async function startChat(name) {
     userName = name;
     document.getElementById("nameModal").style.display = "none";
     document.getElementById("currentUserName").textContent = name + " さん";
     if (spDataLoaded) {
       checkSpMember(userName);
     }
+
+    // Firestoreにユーザー登録（メッセージなしでも一斉配信対象に）
+    try {
+      await setDoc(doc(db, "users", name), {
+        name: name,
+        registeredAt: serverTimestamp(),
+        lastSeenAt: serverTimestamp()
+      }, { merge: true });
+    } catch(e) {
+      console.log("ユーザー登録エラー:", e);
+    }
+
     startListening();
     listenFCMQueue(name);
     // FCM通知を初期化
@@ -742,8 +754,13 @@
 
   // ===== テキスト・画像送信 =====
   document.getElementById("sendBtn").addEventListener("click", sendMessage);
+  document.getElementById("messageInput").addEventListener("input", function() {
+    this.style.height = "auto";
+    this.style.height = Math.min(this.scrollHeight, 120) + "px";
+  });
+
   document.getElementById("messageInput").addEventListener("keydown", e => {
-    if (e.key === "Enter") sendMessage();
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); } 
   });
 
   async function sendMessage() {

@@ -441,7 +441,7 @@
           <button class="icon-btn" id="imageBtn">📎</button>
           <input type="file" id="fileInput" accept="image/*" style="display:none">
           <button class="icon-btn" id="linkBtn">🔗</button>
-          <input type="text" id="messageInput" placeholder="返信を入力...">
+          <textarea id="messageInput" placeholder="返信を入力..." rows="1" style="resize:none;overflow-y:hidden;line-height:1.4;padding-top:10px;padding-bottom:10px;font-family:inherit"></textarea>
           <button id="sendBtn">➤</button>
         </div>
       </div>
@@ -491,7 +491,10 @@
   });
 
   // ===== 全メッセージ監視 =====
+  let registeredUsers = []; // チャット登録済みユーザー
+
   function startListening() {
+    // メッセージ監視
     const q = query(collection(db, "messages"), orderBy("timestamp"));
     onSnapshot(q, (snapshot) => {
       allMessages = [];
@@ -499,6 +502,12 @@
       checkNewMessages(allMessages);
       renderCustomerList();
       if (selectedCustomer) renderChat(selectedCustomer);
+    });
+
+    // 登録ユーザー監視
+    onSnapshot(collection(db, "users"), (snapshot) => {
+      registeredUsers = [];
+      snapshot.forEach(doc => registeredUsers.push(doc.data().name));
     });
   }
 
@@ -748,8 +757,13 @@
 
   // ===== テキスト・画像送信 =====
   document.getElementById("sendBtn").addEventListener("click", sendMessage);
+  document.getElementById("messageInput").addEventListener("input", function() {
+    this.style.height = "auto";
+    this.style.height = Math.min(this.scrollHeight, 120) + "px";
+  });
+
   document.getElementById("messageInput").addEventListener("keydown", e => {
-    if (e.key === "Enter") sendMessage();
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); } 
   });
 
   async function sendMessage() {
@@ -825,7 +839,16 @@
 
     document.getElementById("broadcastModal").style.display = "none";
     document.getElementById("broadcastInput").value = "";
-    alert("✅ 全員に送信しました！");
+
+    // 登録済みユーザー数を表示
+    const total = new Set([
+      ...Object.keys(
+        allMessages.filter(m => m.role === "customer").reduce((acc, m) => { acc[m.name] = true; return acc; }, {})
+      ),
+      ...registeredUsers
+    ]).size;
+
+    alert(`✅ ${total}名に送信しました！`);
   });
 
   // ===== SP会員管理 =====
