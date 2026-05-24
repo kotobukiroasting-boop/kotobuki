@@ -8,16 +8,16 @@
 <style>
 :root{
   --bg:    #070604;
-  --s1:    #111009;
-  --s2:    #1c1a12;
-  --s3:    #272418;
-  --border:#2e2a1c;
-  --gold:  #c8922a;
-  --gold2: #f0b840;
+  --s1:    #141210;
+  --s2:    #1e1c14;
+  --s3:    #282618;
+  --border:#3a3422;
+  --gold:  #d4a040;
+  --gold2: #f5c050;
   --gold3: #ffe0a0;
-  --cream: #f2ead8;
-  --muted: #8a7758;
-  --dim:   #4a3e2c;
+  --cream: #f8f2e4;
+  --muted: #b09878;
+  --dim:   #6a5a42;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -48,9 +48,9 @@ body{background:var(--bg);color:var(--cream);font-family:"Noto Sans JP",sans-ser
 /* NAV */
 nav{position:sticky;top:0;z-index:99;background:rgba(7,6,4,.93);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;overflow-x:auto;scrollbar-width:none;padding:0 28px}
 nav::-webkit-scrollbar{display:none}
-.n-logo{font-family:"Cinzel",serif;font-size:.65rem;letter-spacing:.25em;color:var(--gold);white-space:nowrap;padding:14px 20px 14px 0;border-right:1px solid var(--border);margin-right:20px;flex-shrink:0;display:flex;align-items:center;gap:10px}
+.n-logo{font-family:"Cinzel",serif;font-size:.72rem;letter-spacing:.25em;color:var(--gold);white-space:nowrap;padding:14px 20px 14px 0;border-right:1px solid var(--border);margin-right:20px;flex-shrink:0;display:flex;align-items:center;gap:10px}
 .n-logo-mark{width:22px;height:22px;border:1px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.55rem;color:var(--gold);flex-shrink:0}
-.n-link{font-family:"Cinzel",serif;font-size:.55rem;letter-spacing:.15em;color:var(--muted);white-space:nowrap;padding:16px 14px;cursor:pointer;transition:color .2s;flex-shrink:0;display:flex;align-items:center;gap:7px;text-decoration:none;text-transform:uppercase}
+.n-link{font-family:"Cinzel",serif;font-size:.62rem;letter-spacing:.15em;color:var(--muted);white-space:nowrap;padding:16px 14px;cursor:pointer;transition:color .2s;flex-shrink:0;display:flex;align-items:center;gap:7px;text-decoration:none;text-transform:uppercase}
 .n-link:hover{color:var(--gold)}
 .n-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;opacity:.7}
 
@@ -72,9 +72,9 @@ main{max-width:1440px;margin:0 auto;padding:0 32px 140px}
 .og-card:hover::before{opacity:1}
 .og-flag{font-size:1.8rem;margin-bottom:10px;line-height:1}
 .og-code{font-family:"Bebas Neue",sans-serif;font-size:2rem;letter-spacing:.1em;color:var(--gold);line-height:1;margin-bottom:2px}
-.og-country{font-family:"Cinzel",serif;font-size:.58rem;letter-spacing:.15em;color:var(--muted);margin-bottom:8px}
+.og-country{font-family:"Cinzel",serif;font-size:.68rem;letter-spacing:.15em;color:var(--muted);margin-bottom:8px}
 .og-count{font-family:"Bebas Neue",sans-serif;font-size:2.4rem;color:var(--cream);line-height:1}
-.og-label{font-size:.5rem;letter-spacing:.2em;color:var(--dim);margin-top:2px}
+.og-label{font-size:.6rem;letter-spacing:.2em;color:var(--dim);margin-top:2px}
 .og-bar{height:1px;margin-top:14px;background:var(--border)}
 .og-bar-fill{height:100%;background:var(--gold);transition:width 1.4s cubic-bezier(.16,1,.3,1)}
 .og-goto{margin-top:10px;font-family:"Cinzel",serif;font-size:.5rem;letter-spacing:.2em;color:var(--gold);opacity:0;transition:opacity .2s}
@@ -115,7 +115,7 @@ main{max-width:1440px;margin:0 auto;padding:0 32px 140px}
 .s-head{padding-top:100px;margin-bottom:48px;display:grid;grid-template-columns:auto 1fr;gap:0 28px;align-items:end;padding-bottom:20px;border-bottom:1px solid var(--border)}
 .s-num{font-family:"Bebas Neue",sans-serif;font-size:clamp(4rem,8vw,7rem);line-height:1;color:var(--border);letter-spacing:-.02em;user-select:none}
 .s-info{padding-bottom:4px}
-.s-en{font-family:"Cinzel",serif;font-size:.55rem;letter-spacing:.5em;text-transform:uppercase;margin-bottom:6px;opacity:.8}
+.s-en{font-family:"Cinzel",serif;font-size:.65rem;letter-spacing:.4em;text-transform:uppercase;margin-bottom:8px;opacity:.9}
 .s-ja{font-family:"Noto Serif JP",serif;font-weight:300;font-size:clamp(1.4rem,2.8vw,2.1rem);letter-spacing:.15em}
 
 /* CARD GRID */
@@ -128,38 +128,38 @@ main{max-width:1440px;margin:0 auto;padding:0 32px 140px}
 .card:hover::before{transform:scaleX(1)}
 .card-bar{position:absolute;left:0;top:0;bottom:0;width:2px;opacity:.4}
 .card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
-.card-price{font-family:"Bebas Neue",sans-serif;font-size:2.1rem;letter-spacing:.03em;line-height:1}
-.card-unit{font-size:.58rem;letter-spacing:.12em;color:var(--muted);margin-top:3px}
-.card-roast{font-family:"Cinzel",serif;font-size:.5rem;letter-spacing:.18em;padding:5px 10px;border:1px solid var(--border);color:var(--muted);text-transform:uppercase;transition:border-color .2s}
+.card-price{font-family:"Bebas Neue",sans-serif;font-size:2.3rem;letter-spacing:.03em;line-height:1}
+.card-unit{font-size:.68rem;letter-spacing:.12em;color:var(--muted);margin-top:3px}
+.card-roast{font-family:"Cinzel",serif;font-size:.6rem;letter-spacing:.18em;padding:6px 12px;border:1px solid var(--border);color:var(--muted);text-transform:uppercase;transition:border-color .2s}
 .card:hover .card-roast{border-color:var(--card-accent,var(--gold));color:var(--cream)}
-.card-name{font-family:"Noto Serif JP",serif;font-weight:300;font-size:.9rem;line-height:1.7;letter-spacing:.04em;margin-bottom:16px;color:var(--cream)}
+.card-name{font-family:"Noto Serif JP",serif;font-weight:300;font-size:1rem;line-height:1.75;letter-spacing:.04em;margin-bottom:16px;color:var(--cream)}
 .card-origin{display:flex;align-items:center;gap:10px;font-size:.6rem;letter-spacing:.1em;color:var(--muted);margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border)}
 .origin-flag{font-size:1.1rem;line-height:1}
-.origin-name{color:var(--cream);font-size:.68rem;letter-spacing:.06em;margin-bottom:2px}
-.origin-alt{font-size:.56rem;opacity:.55}
+.origin-name{color:var(--cream);font-size:.78rem;letter-spacing:.06em;margin-bottom:2px}
+.origin-alt{font-size:.66rem;opacity:.7}
 .alt-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
-.alt-label{font-size:.55rem;letter-spacing:.12em;color:var(--muted);width:36px;flex-shrink:0}
+.alt-label{font-size:.65rem;letter-spacing:.1em;color:var(--muted);width:40px;flex-shrink:0}
 .alt-bar-wrap{flex:1;height:2px;background:var(--border)}
 .alt-bar{height:100%;transition:width 1.2s cubic-bezier(.16,1,.3,1)}
-.alt-val{font-family:"Bebas Neue",sans-serif;font-size:.85rem;letter-spacing:.05em;color:var(--muted);white-space:nowrap}
+.alt-val{font-family:"Bebas Neue",sans-serif;font-size:.95rem;letter-spacing:.05em;color:var(--muted);white-space:nowrap}
 .flavor-section{margin-bottom:14px}
-.flavor-label{font-family:"Cinzel",serif;font-size:.5rem;letter-spacing:.3em;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
+.flavor-label{font-family:"Cinzel",serif;font-size:.6rem;letter-spacing:.25em;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
 .flavor-tags{display:flex;flex-wrap:wrap;gap:4px}
-.ftag{font-size:.6rem;letter-spacing:.05em;padding:3px 9px;display:flex;align-items:center;gap:4px;transition:opacity .15s}
+.ftag{font-size:.68rem;letter-spacing:.05em;padding:4px 10px;display:flex;align-items:center;gap:4px;transition:opacity .15s}
 .ftag-icon{font-size:.7rem}
 .bitter-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-.bitter-label{font-size:.55rem;letter-spacing:.12em;color:var(--muted);flex-shrink:0;width:26px}
+.bitter-label{font-size:.65rem;letter-spacing:.1em;color:var(--muted);flex-shrink:0;width:32px}
 .bitter-dots{display:flex;gap:4px}
 .bdot{width:8px;height:8px;border-radius:50%;border:1px solid var(--border);transition:background .3s}
 .bdot.on{border-color:transparent}
 .process-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px}
-.proc-badge{font-family:"Cinzel",serif;font-size:.5rem;letter-spacing:.12em;padding:3px 8px;text-transform:uppercase}
-.variety-row{font-size:.6rem;letter-spacing:.06em;color:var(--muted);display:flex;align-items:center;gap:6px}
+.proc-badge{font-family:"Cinzel",serif;font-size:.6rem;letter-spacing:.1em;padding:4px 10px;text-transform:uppercase}
+.variety-row{font-size:.7rem;letter-spacing:.06em;color:var(--muted);display:flex;align-items:center;gap:6px}
 .variety-label{opacity:.5;font-size:.55rem;letter-spacing:.12em}
-.variety-val{color:var(--cream)}
-.card-desc{font-size:.7rem;line-height:1.8;color:var(--muted);margin-top:14px;padding-top:14px;border-top:1px solid var(--border);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;transition:-webkit-line-clamp .3s}
+.variety-val{color:var(--cream);font-size:.72rem}
+.card-desc{font-size:.78rem;line-height:1.85;color:var(--muted);margin-top:14px;padding-top:14px;border-top:1px solid var(--border);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;transition:-webkit-line-clamp .3s}
 .card:hover .card-desc{-webkit-line-clamp:10}
-.card-shop-btn{margin-top:14px;font-family:"Cinzel",serif;font-size:.55rem;letter-spacing:.22em;text-transform:uppercase;padding:8px 14px;border:1px solid;display:inline-flex;align-items:center;gap:6px;transition:background .2s,color .2s,border-color .2s}
+.card-shop-btn{margin-top:14px;font-family:"Cinzel",serif;font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;padding:9px 16px;border:1px solid;display:inline-flex;align-items:center;gap:6px;transition:background .2s,color .2s,border-color .2s}
 .card:hover .card-shop-btn{background:var(--card-accent,var(--gold));color:#000 !important;border-color:transparent}
 .sp-badges{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px}
 .sp-badge{font-family:"Cinzel",serif;font-size:.48rem;letter-spacing:.15em;padding:2px 7px;text-transform:uppercase}
@@ -172,7 +172,7 @@ main{max-width:1440px;margin:0 auto;padding:0 32px 140px}
 /* TASTE METERS */
 .taste-section{margin-bottom:14px}
 .taste-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
-.taste-label{font-size:.52rem;letter-spacing:.1em;color:var(--muted);width:26px;flex-shrink:0;text-align:right}
+.taste-label{font-size:.62rem;letter-spacing:.08em;color:var(--muted);width:32px;flex-shrink:0;text-align:right}
 .taste-dots{display:flex;gap:3px}
 .tdot{width:8px;height:8px;border-radius:50%;border:1px solid var(--border);transition:background .3s}
 .tdot.on{border-color:transparent}
@@ -189,9 +189,9 @@ main{max-width:1440px;margin:0 auto;padding:0 32px 140px}
   padding:8px 32px;
   display:flex;align-items:center;gap:8px;flex-wrap:wrap;
 }
-.sort-label{font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.25em;color:var(--muted);white-space:nowrap}
+.sort-label{font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.25em;color:var(--muted);white-space:nowrap}
 .sort-btn{
-  font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.15em;
+  font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.15em;
   padding:5px 12px;border:1px solid var(--border);
   background:transparent;color:var(--muted);cursor:pointer;
   transition:border-color .2s,color .2s,background .2s;
