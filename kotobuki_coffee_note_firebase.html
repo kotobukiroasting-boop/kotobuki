@@ -254,7 +254,7 @@ select.f-input{cursor:pointer}
 <div class="overlay" id="modal-overlay" onclick="overlayClick(event)">
   <div class="modal" id="modal-box">
     <div class="modal-header">
-      <div class="modal-title">新しいノート</div>
+      <div class="modal-title" id="modal-title">新しいノート</div>
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
 
@@ -342,6 +342,33 @@ select.f-input{cursor:pointer}
       </div>
     </div>
 
+    <!-- グラインド -->
+    <div class="f-group">
+      <label class="f-label">グラインド（挽き目）</label>
+      <select class="f-input" id="r-grind">
+        <option value="">— 選択してください —</option>
+        <option value="極細挽き（200〜400µm）">極細挽き（200〜400µm）― エスプレッソ向け</option>
+        <option value="細挽き（400〜500µm）">細挽き（400〜500µm）― モカポット・エアロプレス向け</option>
+        <option value="やや細挽き（500〜600µm）">やや細挽き（500〜600µm）― ペーパードリップ（濃いめ）向け</option>
+        <option value="中細挽き（600〜700µm）">中細挽き（600〜700µm）― ペーパードリップ標準</option>
+        <option value="中挽き（700〜900µm）">中挽き（700〜900µm）― ドリップ全般・サイフォン向け</option>
+        <option value="やや粗挽き（900〜1100µm）">やや粗挽き（900〜1100µm）― フレンチプレス向け</option>
+        <option value="粗挽き（1100〜1400µm）">粗挽き（1100〜1400µm）― フレンチプレス・水出し向け</option>
+      </select>
+    </div>
+
+    <!-- TDS（オプション） -->
+    <div class="f-group">
+      <label class="f-label" style="display:flex;align-items:center;gap:6px">
+        TDS
+        <span style="font-size:10px;color:var(--muted);font-weight:300;letter-spacing:0;text-transform:none">（オプション・濃度計をお持ちの方）</span>
+      </label>
+      <div style="display:flex;align-items:center;gap:8px">
+        <input type="number" class="f-input" id="r-tds" placeholder="例：1.35" step="0.01" min="0" max="5" style="max-width:120px">
+        <span style="font-size:12px;color:var(--muted);white-space:nowrap">% （目安：1.15〜1.45%）</span>
+      </div>
+    </div>
+
     <div class="section-label">テイスティング</div>
     <div class="f-group">
       <label class="f-label">評価</label>
@@ -373,7 +400,7 @@ select.f-input{cursor:pointer}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc, deleteDoc, doc, query, where, orderBy, onSnapshot, serverTimestamp }
+import { getFirestore, collection, addDoc, deleteDoc, updateDoc, doc, query, where, orderBy, onSnapshot, serverTimestamp }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -544,7 +571,9 @@ window.setStar = function(v) {
   document.querySelectorAll('.star-sel').forEach(s => s.classList.toggle('on', parseInt(s.dataset.v)<=v));
 };
 
-// ── Save ───────────────────────────────────
+// ── Save / Update ──────────────────────────
+let editingDocId = null; // null=新規, string=編集中
+
 window.saveNote = async function() {
   let beanName='', beanOrigin='', beanRoast='', beanId='custom';
 
@@ -561,12 +590,10 @@ window.saveNote = async function() {
   }
 
   const btn = document.getElementById('save-btn');
-  btn.disabled=true; btn.textContent='保存中...';
+  btn.disabled=true; btn.textContent = editingDocId ? '更新中...' : '保存中...';
 
-  const note = {
-    user: currentUser,
-    date: new Date().toLocaleDateString('ja-JP'),
-    createdAt: serverTimestamp(),
+  const tdsRaw = document.getElementById('r-tds').value.trim();
+  const noteData = {
     beanId, beanName, beanOrigin, beanRoast,
     recipe:{
       beans:  document.getElementById('r-beans').value,
@@ -576,6 +603,8 @@ window.saveNote = async function() {
       brewer: document.getElementById('r-brewer').value === 'その他'
         ? (document.getElementById('r-brewer-custom').value.trim() || 'その他')
         : document.getElementById('r-brewer').value,
+      grind:  document.getElementById('r-grind').value,
+      tds:    tdsRaw || '',
     },
     stars:  currentStar,
     memo:   document.getElementById('r-memo').value,
@@ -583,7 +612,18 @@ window.saveNote = async function() {
   };
 
   try {
-    await addDoc(collection(db,'notes'), note);
+    if (editingDocId) {
+      // 編集：updatedAt を追加、createdAt は触らない
+      await updateDoc(doc(db,'notes',editingDocId), { ...noteData, updatedAt: serverTimestamp() });
+    } else {
+      // 新規
+      await addDoc(collection(db,'notes'), {
+        ...noteData,
+        user: currentUser,
+        date: new Date().toLocaleDateString('ja-JP'),
+        createdAt: serverTimestamp(),
+      });
+    }
     closeModal();
   } catch(e) {
     alert('保存に失敗しました: '+e.message);
@@ -610,7 +650,10 @@ function noteCard(data, isMine) {
     ${r.beans?`<div class="recipe-cell"><div class="recipe-val">${esc(r.beans)}</div><div class="recipe-unit">g · 豆</div></div>`:''}
     ${r.water?`<div class="recipe-cell"><div class="recipe-val">${esc(r.water)}</div><div class="recipe-unit">ml · 湯量</div></div>`:''}
     ${r.temp ?`<div class="recipe-cell"><div class="recipe-val">${esc(r.temp)}</div><div class="recipe-unit">℃ · 湯温</div></div>`:''}
-  </div>` : '';
+  </div>
+  ${r.grind?`<div style="font-size:11px;color:var(--muted);margin:.25rem 0 .5rem;padding:4px 8px;background:var(--cream);border-radius:2px;border:1px solid var(--border)">⚙ ${esc(r.grind)}</div>`:''}
+  ${r.tds?`<div style="font-size:11px;color:var(--muted);margin-bottom:.5rem"><span style="color:var(--roast);font-weight:500">TDS ${esc(r.tds)}%</span></div>`:''}
+  ` : '';
 
   const authorHtml = !isMine ? `<div class="author-row">
     <div style="display:flex;align-items:center;gap:8px;flex:1">
@@ -623,9 +666,10 @@ function noteCard(data, isMine) {
   </div>` : '';
 
   const footerHtml = isMine ? `<div style="display:flex;align-items:center;justify-content:space-between;margin-top:.75rem;padding-top:.6rem;border-top:1px solid var(--border)">
-    <div style="font-size:11px;color:var(--muted)">${data.date}</div>
-    <div style="display:flex;align-items:center;gap:.6rem">
+    <div style="font-size:11px;color:var(--muted)">${data.date}${data.updatedAt?' · 編集済':''}</div>
+    <div style="display:flex;align-items:center;gap:.5rem">
       ${data.shared?'<span class="shared-badge">SHARED</span>':''}
+      <button onclick="openEditModal('${data._docId}')" style="font-size:11px;color:var(--roast);background:none;border:1px solid #E8C898;border-radius:1px;padding:2px 10px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;letter-spacing:.04em;transition:background .15s" onmouseover="this.style.background='#FAF0E2'" onmouseout="this.style.background='none'">編集</button>
       <button onclick="deleteNote('${data._docId}')" style="font-size:11px;color:#B84040;background:none;border:1px solid #E0B0B0;border-radius:1px;padding:2px 10px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;letter-spacing:.04em;transition:background .15s" onmouseover="this.style.background='#FDF0F0'" onmouseout="this.style.background='none'">削除</button>
     </div>
   </div>` : '';
@@ -787,22 +831,81 @@ function setSyncStatus(ok){
 }
 
 // ── Modal ──────────────────────────────────
-window.openModal = function(){
-  currentStar=0;
+function resetModal() {
+  editingDocId = null;
+  currentStar  = 0;
+  document.getElementById('modal-title').textContent = '新しいノート';
+  document.getElementById('save-btn').textContent    = '保存する';
   document.querySelectorAll('.star-sel').forEach(s=>s.classList.remove('on'));
-  document.getElementById('bean-select').value='';
-  document.getElementById('bean-preview').style.display='none';
-  document.getElementById('custom-bean-name').value='';
-  document.getElementById('custom-origin').value='';
-  document.getElementById('custom-roast').value='';
-  ['r-beans','r-water','r-temp','r-time','r-memo'].forEach(id=>{document.getElementById(id).value='';});
-  document.getElementById('r-brewer-custom').value='';
-  document.getElementById('r-brewer-custom').style.display='none';
-  document.getElementById('share-check').checked=false;
+  document.getElementById('bean-select').value = '';
+  document.getElementById('bean-preview').style.display = 'none';
+  document.getElementById('custom-bean-name').value = '';
+  document.getElementById('custom-origin').value = '';
+  document.getElementById('custom-roast').value  = '';
+  ['r-beans','r-water','r-temp','r-time','r-memo','r-tds'].forEach(id=>{document.getElementById(id).value='';});
+  document.getElementById('r-grind').value = '';
+  document.getElementById('r-brewer').selectedIndex = 0;
+  document.getElementById('r-brewer-custom').value = '';
+  document.getElementById('r-brewer-custom').style.display = 'none';
+  document.getElementById('share-check').checked = false;
   setBeanMode('list');
+}
+
+window.openModal = function(){
+  resetModal();
   document.getElementById('modal-overlay').classList.add('open');
 };
-window.closeModal = function(){ document.getElementById('modal-overlay').classList.remove('open'); };
+
+window.openEditModal = function(docId) {
+  const note = (window._myDocs||[]).find(d=>d._docId===docId);
+  if (!note) return;
+  resetModal();
+  editingDocId = docId;
+  document.getElementById('modal-title').textContent = 'レシピを編集';
+  document.getElementById('save-btn').textContent    = '更新する';
+
+  // 豆をセット
+  const beanInList = BEANS.find(b=>b.id===note.beanId);
+  if (beanInList) {
+    setBeanMode('list');
+    document.getElementById('bean-select').value = note.beanId;
+    showBeanPreview(note.beanId);
+  } else {
+    setBeanMode('custom');
+    document.getElementById('custom-bean-name').value = note.beanName||'';
+    document.getElementById('custom-origin').value    = note.beanOrigin||'';
+    document.getElementById('custom-roast').value     = note.beanRoast||'';
+  }
+
+  // レシピをセット
+  const r = note.recipe||{};
+  document.getElementById('r-beans').value = r.beans||'';
+  document.getElementById('r-water').value = r.water||'';
+  document.getElementById('r-temp').value  = r.temp||'';
+  document.getElementById('r-time').value  = r.time||'';
+  document.getElementById('r-grind').value = r.grind||'';
+  document.getElementById('r-tds').value   = r.tds||'';
+
+  // 器具
+  const brewerSel = document.getElementById('r-brewer');
+  const found = Array.from(brewerSel.options).find(o=>o.value===r.brewer);
+  if (found) {
+    brewerSel.value = r.brewer;
+  } else if (r.brewer) {
+    brewerSel.value = 'その他';
+    document.getElementById('r-brewer-custom').value   = r.brewer;
+    document.getElementById('r-brewer-custom').style.display = 'block';
+  }
+
+  // 星・メモ・シェア
+  if (note.stars) setStar(note.stars);
+  document.getElementById('r-memo').value = note.memo||'';
+  document.getElementById('share-check').checked = !!note.shared;
+
+  document.getElementById('modal-overlay').classList.add('open');
+};
+
+window.closeModal = function(){ document.getElementById('modal-overlay').classList.remove('open'); editingDocId=null; };
 window.overlayClick = function(e){ if(e.target===document.getElementById('modal-overlay')) closeModal(); };
 
 // ── Tabs ───────────────────────────────────
