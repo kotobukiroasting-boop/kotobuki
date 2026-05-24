@@ -138,6 +138,20 @@ select.f-input{cursor:pointer}
 .btn-save{flex:2;padding:11px;background:var(--brown);border:none;font-family:'Noto Sans JP',sans-serif;font-size:13px;letter-spacing:.12em;color:var(--cream);cursor:pointer;transition:background .15s}
 .btn-save:hover{background:var(--roast)}
 .btn-save:disabled{opacity:.6;cursor:not-allowed}
+/* pour steps */
+.pour-step{background:var(--cream);border:1px solid var(--border);border-radius:2px;padding:.75rem;margin-bottom:.6rem;position:relative}
+.pour-step-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem}
+.pour-step-label{font-size:12px;font-weight:500;color:var(--brown);letter-spacing:.06em}
+.pour-step-inputs{display:flex;gap:.5rem;align-items:flex-start}
+.pour-visual-wrap{display:flex;justify-content:center;margin-top:.6rem}
+.pour-canvas{border-radius:50%;cursor:pointer;display:block}
+.pour-range-btns{display:flex;gap:4px;flex-wrap:wrap;margin-top:.4rem}
+.pour-range-btn{font-size:10px;padding:3px 8px;border:1px solid var(--border);background:var(--card-bg);color:var(--muted);border-radius:10px;cursor:pointer;transition:all .12s;font-family:'Noto Sans JP',sans-serif}
+.pour-range-btn.active{background:var(--brown);color:var(--cream);border-color:var(--brown)}
+.remove-step-btn{width:22px;height:22px;border-radius:50%;background:none;border:1px solid #E0B0B0;color:#B84040;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.add-step-btn{width:100%;padding:9px;background:none;border:1px dashed var(--border);color:var(--muted);font-family:'Noto Sans JP',sans-serif;font-size:13px;cursor:pointer;border-radius:2px;transition:background .15s;margin-bottom:1rem;letter-spacing:.06em}
+.add-step-btn:hover{background:var(--tag-bg)}
+
 /* filter bar */
 .filter-bar{margin-bottom:1rem}
 .search-wrap{position:relative;margin-bottom:.6rem}
@@ -369,7 +383,40 @@ select.f-input{cursor:pointer}
       </div>
     </div>
 
-    <div class="section-label">テイスティング</div>
+    <!-- 注湯ステップ -->
+    <div class="section-label">注湯ステップ</div>
+    <div id="pour-steps">
+      <!-- 蒸らし（固定） -->
+      <div class="pour-step" data-index="0">
+        <div class="pour-step-header">
+          <div class="pour-step-label">蒸らし</div>
+        </div>
+        <div class="pour-step-inputs">
+          <div style="flex:1">
+            <div class="recipe-hint" style="margin-bottom:3px">湯量 (ml)</div>
+            <input type="number" class="f-input pour-ml" placeholder="30" min="0">
+          </div>
+          <div style="flex:1">
+            <div class="recipe-hint" style="margin-bottom:3px">時間 (秒)</div>
+            <input type="number" class="f-input pour-sec" placeholder="30" min="0">
+          </div>
+          <div style="flex:1.4">
+            <div class="recipe-hint" style="margin-bottom:3px">お湯の範囲</div>
+            <select class="f-input pour-range" style="font-size:12px">
+              <option value="">選択</option>
+              <option value="center">1点のみ（中心）</option>
+              <option value="coin">500円玉くらい</option>
+              <option value="half">半分くらい</option>
+              <option value="full">全体的に</option>
+            </select>
+          </div>
+        </div>
+        <div class="pour-visual-wrap">
+          <canvas class="pour-canvas" width="200" height="200" data-index="0"></canvas>
+        </div>
+      </div>
+    </div>
+    <button class="add-step-btn" onclick="addPourStep()" id="add-step-btn">＋ 投目を追加</button>
     <div class="f-group">
       <label class="f-label">評価</label>
       <div class="star-selector">
@@ -571,6 +618,190 @@ window.setStar = function(v) {
   document.querySelectorAll('.star-sel').forEach(s => s.classList.toggle('on', parseInt(s.dataset.v)<=v));
 };
 
+// ── Pour steps ─────────────────────────────
+const POUR_RANGES = {
+  center: { label:'1点のみ（中心）', r: 0.08 },
+  coin:   { label:'500円玉くらい',   r: 0.22 },
+  half:   { label:'半分くらい',       r: 0.45 },
+  full:   { label:'全体的に',         r: 0.78 },
+};
+
+function drawPourCanvas(canvas, rangeKey) {
+  const ctx  = canvas.getContext('2d');
+  const W    = canvas.width;
+  const H    = canvas.height;
+  const cx   = W / 2;
+  const cy   = H / 2;
+  const R    = W / 2 - 2; // ドリッパー外周
+  ctx.clearRect(0, 0, W, H);
+
+  // ドリッパー背景（コーヒー粉のイメージ）
+  const gnd = ctx.createRadialGradient(cx, cy, 0, cx, cy, R);
+  gnd.addColorStop(0,   '#C8A882');
+  gnd.addColorStop(0.7, '#B08050');
+  gnd.addColorStop(1,   '#8A6038');
+  ctx.beginPath();
+  ctx.arc(cx, cy, R, 0, Math.PI*2);
+  ctx.fillStyle = gnd;
+  ctx.fill();
+
+  // ドリッパー枠
+  ctx.beginPath();
+  ctx.arc(cx, cy, R, 0, Math.PI*2);
+  ctx.strokeStyle = '#7C5030';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  if (!rangeKey || !POUR_RANGES[rangeKey]) {
+    // 未選択: 点線でガイドだけ
+    ctx.setLineDash([3,3]);
+    ctx.beginPath();
+    ctx.arc(cx, cy, R*0.5, 0, Math.PI*2);
+    ctx.strokeStyle = 'rgba(255,255,255,.3)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.setLineDash([]);
+    return;
+  }
+
+  const pR = POUR_RANGES[rangeKey].r * R * 2;
+
+  // お湯の広がりグラデーション
+  const waterGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, pR);
+  waterGrad.addColorStop(0,   'rgba(180,220,255,0.92)');
+  waterGrad.addColorStop(0.5, 'rgba(100,170,240,0.75)');
+  waterGrad.addColorStop(1,   'rgba(60,130,210,0.0)');
+  ctx.beginPath();
+  ctx.arc(cx, cy, pR, 0, Math.PI*2);
+  ctx.fillStyle = waterGrad;
+  ctx.fill();
+
+  // 中心の落下点
+  const dropGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, R*0.06);
+  dropGrad.addColorStop(0, 'rgba(255,255,255,0.95)');
+  dropGrad.addColorStop(1, 'rgba(180,220,255,0)');
+  ctx.beginPath();
+  ctx.arc(cx, cy, R*0.06, 0, Math.PI*2);
+  ctx.fillStyle = dropGrad;
+  ctx.fill();
+
+  // ラベル
+  ctx.font = `bold ${W*0.09}px 'Noto Sans JP', sans-serif`;
+  ctx.fillStyle = 'rgba(255,255,255,0.9)';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'bottom';
+  ctx.fillText(POUR_RANGES[rangeKey].label, cx, H - 6);
+}
+
+function initPourCanvas(canvas) {
+  const sel = canvas.closest('.pour-step').querySelector('.pour-range');
+  drawPourCanvas(canvas, sel?.value || '');
+  sel?.addEventListener('change', () => drawPourCanvas(canvas, sel.value));
+}
+
+let pourStepCount = 1; // 蒸らしで1
+
+window.addPourStep = function() {
+  if (pourStepCount >= 6) return; // 蒸らし+5投まで
+  pourStepCount++;
+  const idx   = pourStepCount - 1;
+  const label = `第${idx}投`;
+  const wrap  = document.getElementById('pour-steps');
+  const div   = document.createElement('div');
+  div.className   = 'pour-step';
+  div.dataset.index = idx;
+  div.innerHTML = `
+    <div class="pour-step-header">
+      <div class="pour-step-label">${label}</div>
+      <button class="remove-step-btn" onclick="removePourStep(this)" title="削除">✕</button>
+    </div>
+    <div class="pour-step-inputs">
+      <div style="flex:1">
+        <div class="recipe-hint" style="margin-bottom:3px">湯量 (ml)</div>
+        <input type="number" class="f-input pour-ml" placeholder="60" min="0">
+      </div>
+      <div style="flex:1">
+        <div class="recipe-hint" style="margin-bottom:3px">時間 (秒)</div>
+        <input type="number" class="f-input pour-sec" placeholder="30" min="0">
+      </div>
+      <div style="flex:1.4">
+        <div class="recipe-hint" style="margin-bottom:3px">お湯の範囲</div>
+        <select class="f-input pour-range" style="font-size:12px">
+          <option value="">選択</option>
+          <option value="center">1点のみ（中心）</option>
+          <option value="coin">500円玉くらい</option>
+          <option value="half">半分くらい</option>
+          <option value="full">全体的に</option>
+        </select>
+      </div>
+    </div>
+    <div class="pour-visual-wrap">
+      <canvas class="pour-canvas" width="200" height="200" data-index="${idx}"></canvas>
+    </div>`;
+  wrap.appendChild(div);
+  const canvas = div.querySelector('canvas');
+  initPourCanvas(canvas);
+  if (pourStepCount >= 6) document.getElementById('add-step-btn').style.display='none';
+};
+
+window.removePourStep = function(btn) {
+  btn.closest('.pour-step').remove();
+  pourStepCount--;
+  // ラベルを振り直し
+  document.querySelectorAll('#pour-steps .pour-step').forEach((el, i) => {
+    if (i === 0) return; // 蒸らしはスキップ
+    el.querySelector('.pour-step-label').textContent = `第${i}投`;
+  });
+  document.getElementById('add-step-btn').style.display='';
+};
+
+function getPourStepsData() {
+  return Array.from(document.querySelectorAll('#pour-steps .pour-step')).map((el, i) => ({
+    label:  i===0 ? '蒸らし' : `第${i}投`,
+    ml:     el.querySelector('.pour-ml')?.value  || '',
+    sec:    el.querySelector('.pour-sec')?.value || '',
+    range:  el.querySelector('.pour-range')?.value || '',
+  }));
+}
+
+function setPourStepsData(steps) {
+  if (!steps || !steps.length) return;
+  // 蒸らし（index 0）をセット
+  const wrap = document.getElementById('pour-steps');
+  const step0 = wrap.querySelector('.pour-step[data-index="0"]');
+  if (step0 && steps[0]) {
+    step0.querySelector('.pour-ml').value  = steps[0].ml  || '';
+    step0.querySelector('.pour-sec').value = steps[0].sec || '';
+    step0.querySelector('.pour-range').value = steps[0].range || '';
+    drawPourCanvas(step0.querySelector('canvas'), steps[0].range||'');
+  }
+  // 2投目以降を追加
+  for (let i=1; i<steps.length; i++) {
+    addPourStep();
+    const newStep = wrap.querySelectorAll('.pour-step')[i];
+    if (!newStep) continue;
+    newStep.querySelector('.pour-ml').value    = steps[i].ml    || '';
+    newStep.querySelector('.pour-sec').value   = steps[i].sec   || '';
+    newStep.querySelector('.pour-range').value = steps[i].range || '';
+    drawPourCanvas(newStep.querySelector('canvas'), steps[i].range||'');
+  }
+}
+
+function resetPourSteps() {
+  pourStepCount = 1;
+  const wrap = document.getElementById('pour-steps');
+  // 蒸らし以外削除
+  wrap.querySelectorAll('.pour-step:not([data-index="0"])').forEach(el=>el.remove());
+  const step0 = wrap.querySelector('.pour-step[data-index="0"]');
+  if (step0) {
+    step0.querySelector('.pour-ml').value  = '';
+    step0.querySelector('.pour-sec').value = '';
+    step0.querySelector('.pour-range').value = '';
+    drawPourCanvas(step0.querySelector('canvas'), '');
+  }
+  document.getElementById('add-step-btn').style.display='';
+}
+
 // ── Save / Update ──────────────────────────
 let editingDocId = null; // null=新規, string=編集中
 
@@ -605,6 +836,7 @@ window.saveNote = async function() {
         : document.getElementById('r-brewer').value,
       grind:  document.getElementById('r-grind').value,
       tds:    tdsRaw || '',
+      pourSteps: getPourStepsData(),
     },
     stars:  currentStar,
     memo:   document.getElementById('r-memo').value,
@@ -674,6 +906,47 @@ function noteCard(data, isMine) {
     </div>
   </div>` : '';
 
+  // 注湯ステップ表示（HTMLで再描画できないのでSVGで代替）
+  const pourHtml = (r.pourSteps && r.pourSteps.length) ? (() => {
+    const steps = r.pourSteps.filter(s => s.ml || s.sec || s.range);
+    if (!steps.length) return '';
+    const RANGE_R = { center:0.08, coin:0.22, half:0.45, full:0.78 };
+    const svgStep = (s, i) => {
+      const rk  = s.range || '';
+      const pr  = (RANGE_R[rk] || 0) * 44;
+      const waterCircle = rk ? `
+        <defs>
+          <radialGradient id="wg${i}" cx="50%" cy="50%" r="50%">
+            <stop offset="0%"   stop-color="#B4DCFF" stop-opacity="0.92"/>
+            <stop offset="50%"  stop-color="#64AAEE" stop-opacity="0.75"/>
+            <stop offset="100%" stop-color="#3C82D2" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <circle cx="50" cy="50" r="${pr}" fill="url(#wg${i})"/>
+        <circle cx="50" cy="50" r="4" fill="rgba(255,255,255,0.9)"/>` : '';
+      return `<div style="text-align:center;flex:1;min-width:72px">
+        <svg width="100" height="100" viewBox="0 0 100 100" style="display:block;margin:0 auto;border-radius:50%">
+          <defs>
+            <radialGradient id="bg${i}" cx="50%" cy="50%" r="50%">
+              <stop offset="0%"   stop-color="#C8A882"/>
+              <stop offset="70%"  stop-color="#B08050"/>
+              <stop offset="100%" stop-color="#8A6038"/>
+            </radialGradient>
+          </defs>
+          <circle cx="50" cy="50" r="48" fill="url(#bg${i})" stroke="#7C5030" stroke-width="2"/>
+          ${waterCircle}
+        </svg>
+        <div style="font-size:11px;font-weight:500;color:var(--brown);margin-top:4px">${esc(s.label)}</div>
+        ${s.ml?`<div style="font-size:10px;color:var(--muted)">${esc(s.ml)} ml</div>`:''}
+        ${s.sec?`<div style="font-size:10px;color:var(--muted)">${esc(s.sec)} 秒</div>`:''}
+      </div>`;
+    };
+    return `<div style="margin:.75rem 0 .5rem">
+      <div style="font-size:10px;letter-spacing:.1em;color:var(--roast);margin-bottom:.5rem;text-transform:uppercase">注湯ステップ</div>
+      <div style="display:flex;flex-wrap:wrap;gap:.5rem">${steps.map((s,i)=>svgStep(s,i)).join('')}</div>
+    </div>`;
+  })() : '';
+
   return `<div class="card">
     ${authorHtml}
     <div class="card-top">
@@ -692,6 +965,7 @@ function noteCard(data, isMine) {
     </div>
     ${data.memo?`<div class="tasting">${esc(data.memo)}</div>`:''}
     ${recipeHtml}
+    ${pourHtml}
     ${footerHtml}
   </div>`;
 }
@@ -849,6 +1123,7 @@ function resetModal() {
   document.getElementById('r-brewer-custom').style.display = 'none';
   document.getElementById('share-check').checked = false;
   setBeanMode('list');
+  resetPourSteps();
 }
 
 window.openModal = function(){
@@ -901,6 +1176,8 @@ window.openEditModal = function(docId) {
   if (note.stars) setStar(note.stars);
   document.getElementById('r-memo').value = note.memo||'';
   document.getElementById('share-check').checked = !!note.shared;
+  // 注湯ステップ
+  if (note.recipe?.pourSteps?.length) setPourStepsData(note.recipe.pourSteps);
 
   document.getElementById('modal-overlay').classList.add('open');
 };
@@ -959,6 +1236,9 @@ window.startApp = async function(){
 
 // ── Init ───────────────────────────────────
 populateBeanSelect();
+// 蒸らしキャンバス初期化
+const initCanvas = document.querySelector('.pour-canvas[data-index="0"]');
+if (initCanvas) initPourCanvas(initCanvas);
 const saved = localStorage.getItem('ktb_user');
 if(saved) document.getElementById('name-input').value=saved;
 document.getElementById('name-input').addEventListener('keydown',e=>{ if(e.key==='Enter') startApp(); });
