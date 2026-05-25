@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BREW COORDINATE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black: #0e0e0e;
+  --white: #f7f5f2;
+  --gray-100: #ebebeb;
+  --gray-300: #c8c8c8;
+  --gray-500: #888;
+  --gray-700: #444;
+  --accent: #0e0e0e;
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-mono: 'DM Mono', monospace;
+  --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--white);
+  color: var(--black);
+  font-family: var(--font-mono);
+  font-weight: 300;
+  font-size: 13px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── NAV ── */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-100);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2.5rem;
+  height: 56px;
+}
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 300;
+  letter-spacing: 0.18em;
+  color: var(--black);
+  text-decoration: none;
+}
+.nav-tag {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--gray-500);
+}
+
+/* ── TABS ── */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--gray-100);
+  padding: 0 2.5rem;
+}
+.tab-btn {
+  background: none; border: none; cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--gray-500);
+  padding: 1rem 0;
+  margin-right: 2.5rem;
+  position: relative;
+  transition: color var(--transition);
+}
+.tab-btn::after {
+  content: '';
+  position: absolute; bottom: -1px; left: 0; right: 0;
+  height: 1px; background: var(--black);
+  transform: scaleX(0);
+  transition: transform var(--transition);
+}
+.tab-btn.active { color: var(--black); }
+.tab-btn.active::after { transform: scaleX(1); }
+
+/* ── PANELS ── */
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* ══════════════════════════
+   SET PANEL
+══════════════════════════ */
+.sets-header {
+  padding: 3rem 2.5rem 2rem;
+  display: flex; align-items: baseline; gap: 1.5rem;
+}
+.sets-header h1 {
+  font-family: var(--font-display);
+  font-size: 48px;
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+.sets-header p {
+  font-size: 11px;
+  color: var(--gray-500);
+  letter-spacing: 0.08em;
+}
+
+.set-nav {
+  display: flex; gap: 0;
+  padding: 0 2.5rem;
+  border-bottom: 1px solid var(--gray-100);
+  margin-bottom: 0;
+}
+.set-nav-btn {
+  background: none; border: none; cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--gray-500);
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid transparent;
+  margin-bottom: -1px;
+  transition: all var(--transition);
+}
+.set-nav-btn.active { color: var(--black); border-bottom-color: var(--black); }
+
+/* Set detail */
+.set-detail {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 520px;
+}
+.set-visual {
+  border-right: 1px solid var(--gray-100);
+  display: flex; align-items: center; justify-content: center;
+  padding: 3rem;
+  background: #f2f0ed;
+  position: relative;
+  overflow: hidden;
+}
+.set-visual::before {
+  content: attr(data-label);
+  position: absolute; top: 1.5rem; left: 2rem;
+  font-size: 9px; letter-spacing: 0.25em; color: var(--gray-500);
+}
+.set-info {
+  padding: 3rem 2.5rem;
+  display: flex; flex-direction: column;
+}
+.set-number {
+  font-size: 9px; letter-spacing: 0.3em; color: var(--gray-500);
+  margin-bottom: 1rem;
+}
+.set-name {
+  font-family: var(--font-display);
+  font-size: 40px; font-weight: 300; font-style: italic;
+  line-height: 1.1; margin-bottom: 1rem;
+}
+.set-concept {
+  font-size: 12px; color: var(--gray-700); line-height: 1.8;
+  margin-bottom: 2rem;
+  max-width: 300px;
+}
+.item-list { flex: 1; margin-bottom: 2rem; }
+.item-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+.item-row:first-child { border-top: 1px solid var(--gray-100); }
+.item-left { display: flex; align-items: baseline; gap: 0.75rem; }
+.item-cat {
+  font-size: 9px; letter-spacing: 0.2em; color: var(--gray-500);
+  min-width: 60px;
+}
+.item-name-s { font-size: 12px; color: var(--black); }
+.item-right { display: flex; align-items: center; gap: 1rem; }
+.item-price-s { font-size: 12px; color: var(--gray-700); }
+.amz-link-s {
+  font-size: 9px; letter-spacing: 0.12em; color: var(--gray-500);
+  text-decoration: none;
+  padding: 3px 8px;
+  border: 1px solid var(--gray-300);
+  border-radius: 2px;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+.amz-link-s:hover { background: var(--black); color: var(--white); border-color: var(--black); }
+
+.set-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--gray-100);
+}
+.set-total-label { font-size: 9px; letter-spacing: 0.2em; color: var(--gray-500); margin-bottom: 4px; }
+.set-total-price {
+  font-family: var(--font-display);
+  font-size: 32px; font-weight: 300;
+}
+.set-cta {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--black); color: var(--white);
+  border: none; cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 10px; letter-spacing: 0.15em;
+  padding: 12px 20px;
+  text-decoration: none;
+  transition: opacity var(--transition);
+}
+.set-cta:hover { opacity: 0.75; }
+
+/* Illustrations */
+.brew-illust { width: 100%; max-width: 260px; }
+
+/* ══════════════════════════
+   CUSTOM PANEL
+══════════════════════════ */
+.custom-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: calc(100vh - 56px - 41px);
+}
+
+/* Steps sidebar */
+.steps-sidebar {
+  border-right: 1px solid var(--gray-100);
+  padding: 2.5rem 2rem;
+  position: sticky; top: 97px;
+  height: fit-content;
+}
+.steps-title {
+  font-size: 9px; letter-spacing: 0.25em; color: var(--gray-500);
+  margin-bottom: 2rem;
+}
+.step-item {
+  display: flex; align-items: flex-start; gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--gray-100);
+  cursor: pointer;
+  transition: opacity var(--transition);
+}
+.step-item:first-of-type { border-top: 1px solid var(--gray-100); }
+.step-num {
+  width: 24px; height: 24px;
+  border: 1px solid var(--gray-300);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  flex-shrink: 0;
+  transition: all var(--transition);
+}
+.step-item.done .step-num { background: var(--black); color: var(--white); border-color: var(--black); }
+.step-item.active .step-num { border-color: var(--black); color: var(--black); font-weight: 400; }
+.step-body {}
+.step-cat { font-size: 9px; letter-spacing: 0.2em; color: var(--gray-500); margin-bottom: 2px; }
+.step-selected { font-size: 12px; color: var(--black); line-height: 1.4; }
+.step-selected.empty { color: var(--gray-300); }
+
+/* Summary */
+.steps-summary {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--gray-100);
+}
+.summary-total-label { font-size: 9px; letter-spacing: 0.2em; color: var(--gray-500); margin-bottom: 4px; }
+.summary-total {
+  font-family: var(--font-display);
+  font-size: 28px; font-weight: 300;
+  margin-bottom: 1.25rem;
+}
+.custom-cta {
+  display: block; width: 100%; text-align: center;
+  background: var(--black); color: var(--white);
+  border: none; cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 10px; letter-spacing: 0.15em;
+  padding: 12px;
+  text-decoration: none;
+  transition: opacity var(--transition);
+  opacity: 0.3;
+  pointer-events: none;
+}
+.custom-cta.ready { opacity: 1; pointer-events: auto; }
+.custom-cta.ready:hover { opacity: 0.75; }
+
+/* Selection area */
+.selection-area { padding: 2.5rem; }
+.sel-header {
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+.sel-step-label { font-size: 9px; letter-spacing: 0.3em; color: var(--gray-500); }
+.sel-step-of { font-size: 9px; color: var(--gray-300); }
+.sel-cat-name {
+  font-family: var(--font-display);
+  font-size: 36px; font-weight: 300; font-style: italic;
+  margin-bottom: 2rem;
+}
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1px;
+  background: var(--gray-100);
+  border: 1px solid var(--gray-100);
+  margin-bottom: 2rem;
+}
+.product-card {
+  background: var(--white);
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: background var(--transition);
+  position: relative;
+}
+.product-card:hover { background: #f5f3f0; }
+.product-card.selected { background: var(--black); }
+.product-card.selected .prod-brand,
+.product-card.selected .prod-name,
+.product-card.selected .prod-price { color: var(--white); }
+.product-card.selected .prod-brand { color: rgba(255,255,255,0.55); }
+.check-mark {
+  position: absolute; top: 1rem; right: 1rem;
+  width: 18px; height: 18px;
+  border: 1px solid var(--gray-300);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  transition: all var(--transition);
+}
+.product-card.selected .check-mark {
+  background: var(--white); border-color: var(--white);
+  color: var(--black);
+}
+.prod-illust {
+  width: 100%; aspect-ratio: 1;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 1rem;
+}
+.prod-brand { font-size: 9px; letter-spacing: 0.15em; color: var(--gray-500); margin-bottom: 3px; }
+.prod-name { font-size: 12px; line-height: 1.4; margin-bottom: 6px; color: var(--black); }
+.prod-price { font-size: 13px; color: var(--black); }
+
+.sel-nav {
+  display: flex; gap: 1rem; align-items: center; justify-content: flex-end;
+}
+.sel-prev, .sel-next {
+  background: none; cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 10px; letter-spacing: 0.15em;
+  padding: 10px 20px;
+  border: 1px solid var(--gray-300);
+  transition: all var(--transition);
+  color: var(--black);
+}
+.sel-prev:hover { background: var(--gray-100); }
+.sel-next {
+  background: var(--black); color: var(--white); border-color: var(--black);
+}
+.sel-next:hover { opacity: 0.75; }
+.sel-next:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--gray-100);
+  padding: 1.5rem 2.5rem;
+  font-size: 10px; color: var(--gray-500); line-height: 1.8;
+}
+
+/* SVG illustrations */
+.svg-product { width: 80px; height: 80px; }
+
+@media (max-width: 700px) {
+  .set-detail { grid-template-columns: 1fr; }
+  .set-visual { min-height: 240px; }
+  .custom-layout { grid-template-columns: 1fr; }
+  .steps-sidebar { position: static; border-right: none; border-bottom: 1px solid var(--gray-100); }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="#" class="nav-logo">Brew Coordinate</a>
+  <span class="nav-tag">COFFEE GEAR CURATION</span>
+</nav>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('sets', this)">CURATED SETS</button>
+  <button class="tab-btn" onclick="switchTab('custom', this)">CUSTOM BUILD</button>
+</div>
+
+<!-- ══ SET PANEL ══ -->
+<div id="panel-sets" class="panel active">
+  <div class="sets-header">
+    <h1>Curated Sets</h1>
+    <p>3 coordinated setups, ready to brew.</p>
+  </div>
+
+  <div class="set-nav">
+    <button class="set-nav-btn active" onclick="showSet(0, this)">01 · MONOCHROME</button>
+    <button class="set-nav-btn" onclick="showSet(1, this)">02 · NATURAL LINEN</button>
+    <button class="set-nav-btn" onclick="showSet(2, this)">03 · URBAN STEEL</button>
+  </div>
+
+  <div id="set-detail" class="set-detail">
+    <!-- injected by JS -->
+  </div>
+</div>
+
+<!-- ══ CUSTOM PANEL ══ -->
+<div id="panel-custom" class="panel">
+  <div class="custom-layout">
+    <aside class="steps-sidebar">
+      <div class="steps-title">YOUR BUILD</div>
+
+      <div class="step-item active" id="step-item-0" onclick="goStep(0)">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-cat">DRIPPER</div>
+          <div class="step-selected empty" id="step-sel-0">— not selected</div>
+        </div>
+      </div>
+      <div class="step-item" id="step-item-1" onclick="goStep(1)">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-cat">SERVER</div>
+          <div class="step-selected empty" id="step-sel-1">— not selected</div>
+        </div>
+      </div>
+      <div class="step-item" id="step-item-2" onclick="goStep(2)">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-cat">KETTLE</div>
+          <div class="step-selected empty" id="step-sel-2">— not selected</div>
+        </div>
+      </div>
+      <div class="step-item" id="step-item-3" onclick="goStep(3)">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-cat">SCALE</div>
+          <div class="step-selected empty" id="step-sel-3">— not selected</div>
+        </div>
+      </div>
+
+      <div class="steps-summary">
+        <div class="summary-total-label">TOTAL</div>
+        <div class="summary-total" id="custom-total">¥ —</div>
+        <button class="custom-cta" id="custom-cta">全品をAmazonで見る →</button>
+      </div>
+    </aside>
+
+    <div class="selection-area">
+      <div class="sel-header">
+        <span class="sel-step-label" id="sel-step-label">STEP 01</span>
+        <span class="sel-step-of" id="sel-step-of">1 / 4</span>
+      </div>
+      <div class="sel-cat-name" id="sel-cat-name">Dripper</div>
+      <div class="products-grid" id="products-grid">
+        <!-- injected by JS -->
+      </div>
+      <div class="sel-nav">
+        <button class="sel-prev" id="btn-prev" onclick="prevStep()">← BACK</button>
+        <button class="sel-next" id="btn-next" onclick="nextStep()">NEXT →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  ※ 本サイトはAmazonアソシエイト・プログラムの参加者です。掲載のリンクからご購入いただいた場合、サイト運営者に紹介料が支払われることがあります。商品価格・在庫は変動する場合があります。
+</footer>
+
+<script>
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   DATA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+const SETS = [
+  {
+    label: "SET 01 · MONOCHROME",
+    name: "Monochrome Pourover",
+    concept: "黒で統一されたミニマルなセット。マットな質感とシャープなフォルムが凛とした朝の空気をつくる。",
+    total: 44550,
+    items: [
+      { cat:"DRIPPER", brand:"HARIO", name:"V60 ドリッパー 02 ブラック", price:1650, url:"#" },
+      { cat:"SERVER",  brand:"HARIO", name:"コーヒーサーバー V60 600ml", price:2200, url:"#" },
+      { cat:"KETTLE",  brand:"Fellow", name:"Stagg EKG ケトル マットブラック", price:22000, url:"#" },
+      { cat:"SCALE",   brand:"ACAIA", name:"Pearl ブラック", price:18700, url:"#" },
+    ]
+  },
+  {
+    label: "SET 02 · NATURAL LINEN",
+    name: "Natural Linen",
+    concept: "陶器の温かみとベージュが織りなす穏やかなセット。週末の午後、時間をかけてゆっくり淹れたい。",
+    total: 28300,
+    items: [
+      { cat:"DRIPPER", brand:"ORIGAMI", name:"ドリッパー S クリーム", price:3300, url:"#" },
+      { cat:"SERVER",  brand:"KINTO", name:"スローコーヒースタイル サーバー 600ml", price:3300, url:"#" },
+      { cat:"KETTLE",  brand:"TIMEMORE", name:"Fish スマートケトル ホワイト", price:9900, url:"#" },
+      { cat:"SCALE",   brand:"HARIO", name:"V60 ドリップスケール", price:11800, url:"#" },
+    ]
+  },
+  {
+    label: "SET 03 · URBAN STEEL",
+    name: "Urban Steel",
+    concept: "ステンレスとガラスが映えるプロ仕様の構成。道具としての美しさを最大限に追求した上級セット。",
+    total: 36800,
+    items: [
+      { cat:"BREWER",  brand:"CHEMEX", name:"クラシック コーヒーメーカー 6cup", price:8800, url:"#" },
+      { cat:"KETTLE",  brand:"Fellow", name:"Stagg EKG ステンレス", price:22000, url:"#" },
+      { cat:"SCALE",   brand:"TIMEMORE", name:"Black Mirror Basic スケール", price:6000, url:"#" },
+    ]
+  }
+];
+
+const CUSTOM_STEPS = [
+  {
+    cat: "Dripper", label: "DRIPPER", products: [
+      { brand:"HARIO",    name:"V60 ドリッパー 01 ブラック", price:1320, url:"#" },
+      { brand:"HARIO",    name:"V60 ドリッパー 02 クリア", price:880, url:"#" },
+      { brand:"ORIGAMI",  name:"ドリッパー S ホワイト", price:3300, url:"#" },
+      { brand:"ORIGAMI",  name:"ドリッパー M マット黒", price:3850, url:"#" },
+      { brand:"CHEMEX",   name:"クラシック 3cup ガラス", price:5500, url:"#" },
+      { brand:"Kalita",   name:"ウェーブドリッパー 185 ステンレス", price:2750, url:"#" },
+      { brand:"Kalita",   name:"ウェーブドリッパー 155 ブラック", price:2200, url:"#" },
+      { brand:"Cores",    name:"ゴールドコーン C200", price:3300, url:"#" },
+      { brand:"FELLOW",   name:"Stagg [X] ドリッパー", price:6600, url:"#" },
+      { brand:"Timemore", name:"Crystal Eye ドリッパー ブラック", price:4400, url:"#" },
+    ]
+  },
+  {
+    cat: "Server", label: "SERVER", products: [
+      { brand:"HARIO",   name:"コーヒーサーバー V60 600ml", price:2200, url:"#" },
+      { brand:"HARIO",   name:"コーヒーサーバー V60 800ml", price:2640, url:"#" },
+      { brand:"KINTO",   name:"スローコーヒースタイル サーバー 600ml", price:3300, url:"#" },
+      { brand:"KINTO",   name:"ワークアウト ウォーターボトル 800ml", price:4400, url:"#" },
+      { brand:"Kalita",  name:"ウェーブサーバー 500 ブラック", price:2200, url:"#" },
+      { brand:"CHEMEX",  name:"コーヒーメーカー 専用ガラスカラフェ", price:3850, url:"#" },
+      { brand:"FELLOW",  name:"Stagg Tasting Glass 2個セット", price:3300, url:"#" },
+      { brand:"Cores",   name:"グラスサーバー 500ml", price:2750, url:"#" },
+      { brand:"HARIO",   name:"ネックサーバー 300ml", price:1650, url:"#" },
+      { brand:"Timemore", name:"グラスサーバー 600ml ブラック", price:2970, url:"#" },
+    ]
+  },
+  {
+    cat: "Kettle", label: "KETTLE", products: [
+      { brand:"Fellow",    name:"Stagg EKG マットブラック", price:22000, url:"#" },
+      { brand:"Fellow",    name:"Stagg EKG ポリッシュドシルバー", price:22000, url:"#" },
+      { brand:"Timemore",  name:"Fish スマートケトル ブラック", price:9900, url:"#" },
+      { brand:"Timemore",  name:"Fish スマートケトル ホワイト", price:9900, url:"#" },
+      { brand:"HARIO",     name:"V60 パワーケトル ヴォーノ ブラック", price:6600, url:"#" },
+      { brand:"HARIO",     name:"V60 ドリップケトル ブラック 0.8L", price:2750, url:"#" },
+      { brand:"Kalita",    name:"細口ケトル ステンレス 0.7L", price:4400, url:"#" },
+      { brand:"BALMUDA",   name:"ザ・ケトル ブラック", price:15400, url:"#" },
+      { brand:"De'Longhi", name:"アクティーボ ケトル マットブラック", price:7700, url:"#" },
+      { brand:"Cores",     name:"ゴールドケトル C310BK", price:11000, url:"#" },
+    ]
+  },
+  {
+    cat: "Scale", label: "SCALE", products: [
+      { brand:"ACAIA",    name:"Pearl ブラック", price:18700, url:"#" },
+      { brand:"ACAIA",    name:"Lunar 2021 ブラック", price:27500, url:"#" },
+      { brand:"Timemore", name:"Black Mirror Basic ブラック", price:5940, url:"#" },
+      { brand:"Timemore", name:"Black Mirror Nano ブラック", price:7700, url:"#" },
+      { brand:"HARIO",    name:"V60 ドリップスケール", price:11800, url:"#" },
+      { brand:"Felicita", name:"Arc スケール ブラック", price:8800, url:"#" },
+      { brand:"Brewista", name:"スマートスケール II", price:9900, url:"#" },
+      { brand:"OXO",      name:"バリスタブレイン スケール", price:6600, url:"#" },
+      { brand:"KINTO",    name:"スローコーヒースタイル スケール", price:4400, url:"#" },
+      { brand:"Pearl",    name:"S+ スケール シルバー", price:22000, url:"#" },
+    ]
+  }
+];
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PRODUCT ILLUSTRATIONS (SVG inline)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+function dripperSVG(sel) {
+  const c = sel ? '#f7f5f2' : '#0e0e0e';
+  const o = sel ? '0.9' : '0.15';
+  return `<svg viewBox="0 0 80 80" class="svg-product" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="20" y="18" width="40" height="8" rx="3" fill="${c}" opacity="${o}"/>
+    <path d="M18 26 L62 26 L56 58 L24 58 Z" fill="${c}" opacity="${sel?'0.7':'0.1'}" stroke="${c}" stroke-width="1" opacity="${o}"/>
+    <line x1="40" y1="26" x2="40" y2="58" stroke="${c}" stroke-width="0.5" opacity="${o}"/>
+    <line x1="32" y1="28" x2="30" y2="56" stroke="${c}" stroke-width="0.5" opacity="${o}"/>
+    <line x1="48" y1="28" x2="50" y2="56" stroke="${c}" stroke-width="0.5" opacity="${o}"/>
+  </svg>`;
+}
+function serverSVG(sel) {
+  const c = sel ? '#f7f5f2' : '#0e0e0e';
+  const o = sel ? '0.9' : '0.12';
+  return `<svg viewBox="0 0 80 80" class="svg-product" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M26 20 Q24 50 28 62 L52 62 Q56 50 54 20 Z" fill="${c}" opacity="${sel?'0.7':'0.08'}" stroke="${c}" stroke-width="1" opacity="${o}"/>
+    <rect x="22" y="62" width="36" height="4" rx="2" fill="${c}" opacity="${o}"/>
+    <path d="M40 20 L42 14 L44 20" stroke="${c}" stroke-width="1" opacity="${o}" fill="none"/>
+    <ellipse cx="40" cy="20" rx="14" ry="3" fill="${c}" opacity="${o}"/>
+  </svg>`;
+}
+function kettleSVG(sel) {
+  const c = sel ? '#f7f5f2' : '#0e0e0e';
+  const o = sel ? '0.9' : '0.12';
+  return `<svg viewBox="0 0 80 80" class="svg-product" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="20" y="30" width="36" height="26" rx="8" fill="${c}" opacity="${sel?'0.7':'0.08'}" stroke="${c}" stroke-width="1" opacity="${o}"/>
+    <path d="M56 38 Q70 38 70 43 Q70 48 56 48" stroke="${c}" stroke-width="1.5" opacity="${o}" fill="none"/>
+    <path d="M32 30 Q30 22 36 18 Q42 14 46 20" stroke="${c}" stroke-width="1.5" opacity="${o}" fill="none"/>
+    <rect x="16" y="42" width="6" height="8" rx="2" fill="${c}" opacity="${o}"/>
+  </svg>`;
+}
+function scaleSVG(sel) {
+  const c = sel ? '#f7f5f2' : '#0e0e0e';
+  const o = sel ? '0.9' : '0.12';
+  return `<svg viewBox="0 0 80 80" class="svg-product" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="14" y="42" width="52" height="20" rx="5" fill="${c}" opacity="${sel?'0.7':'0.08'}" stroke="${c}" stroke-width="1" opacity="${o}"/>
+    <rect x="22" y="32" width="36" height="12" rx="3" fill="${c}" opacity="${sel?'0.5':'0.06'}" stroke="${c}" stroke-width="1" opacity="${o}"/>
+    <rect x="30" y="48" width="20" height="8" rx="2" fill="${c}" opacity="${sel?'0.4':'0.06'}"/>
+    <circle cx="58" cy="52" r="3" fill="${c}" opacity="${o}"/>
+  </svg>`;
+}
+function genericSVG(sel) {
+  const c = sel ? '#f7f5f2' : '#0e0e0e';
+  const o = sel ? '0.9' : '0.15';
+  return `<svg viewBox="0 0 80 80" class="svg-product" fill="none"><rect x="20" y="20" width="40" height="40" rx="6" fill="${c}" opacity="${o}"/></svg>`;
+}
+function getIllust(stepIdx, sel) {
+  if (stepIdx === 0) return dripperSVG(sel);
+  if (stepIdx === 1) return serverSVG(sel);
+  if (stepIdx === 2) return kettleSVG(sel);
+  if (stepIdx === 3) return scaleSVG(sel);
+  return genericSVG(sel);
+}
+
+/* set illustrations */
+function setIllustSVG(idx) {
+  if (idx === 0) return `<svg viewBox="0 0 260 240" class="brew-illust" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="90" y="10" width="80" height="52" rx="10" fill="#0e0e0e" opacity="0.1"/>
+    <text x="130" y="41" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#888" letter-spacing="2">KETTLE</text>
+    <path d="M75 72 L185 72 L174 128 L86 128 Z" fill="#0e0e0e" opacity="0.07" stroke="#c8c8c8" stroke-width="0.5"/>
+    <text x="130" y="104" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#888" letter-spacing="2">DRIPPER</text>
+    <rect x="82" y="128" width="96" height="5" rx="2" fill="#0e0e0e" opacity="0.12"/>
+    <rect x="70" y="133" width="120" height="44" rx="10" fill="#0e0e0e" opacity="0.06" stroke="#c8c8c8" stroke-width="0.5"/>
+    <text x="130" y="160" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#888" letter-spacing="2">SERVER</text>
+    <rect x="60" y="186" width="140" height="26" rx="6" fill="#0e0e0e" opacity="0.08" stroke="#c8c8c8" stroke-width="0.5"/>
+    <text x="130" y="203" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#888" letter-spacing="2">SCALE</text>
+  </svg>`;
+  if (idx === 1) return `<svg viewBox="0 0 260 240" class="brew-illust" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="130" cy="40" rx="50" ry="22" fill="#c8c8c8" opacity="0.2" stroke="#c8c8c8" stroke-width="0.5"/>
+    <path d="M100 62 L160 62 L152 118 L108 118 Z" fill="#c8c8c8" opacity="0.18" stroke="#c8c8c8" stroke-width="0.5"/>
+    <rect x="88" y="118" width="84" height="5" rx="2" fill="#c8c8c8" opacity="0.25"/>
+    <rect x="76" y="123" width="108" height="40" rx="10" fill="#c8c8c8" opacity="0.15" stroke="#c8c8c8" stroke-width="0.5"/>
+    <rect x="66" y="172" width="128" height="24" rx="6" fill="#c8c8c8" opacity="0.18" stroke="#c8c8c8" stroke-width="0.5"/>
+  </svg>`;
+  return `<svg viewBox="0 0 260 240" class="brew-illust" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="50" y="30" width="160" height="130" rx="12" fill="#888" opacity="0.1" stroke="#888" stroke-width="0.5"/>
+    <line x1="50" y1="90" x2="210" y2="90" stroke="#888" stroke-width="0.5" opacity="0.4"/>
+    <rect x="80" y="172" width="100" height="36" rx="6" fill="#888" opacity="0.1" stroke="#888" stroke-width="0.5"/>
+    <rect x="66" y="216" width="128" height="14" rx="4" fill="#888" opacity="0.08"/>
+  </svg>`;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   SET PANEL LOGIC
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+let currentSet = 0;
+function fmt(n) { return '¥' + n.toLocaleString(); }
+
+function renderSet(idx) {
+  const s = SETS[idx];
+  const rows = s.items.map(it => `
+    <div class="item-row">
+      <div class="item-left">
+        <span class="item-cat">${it.cat}</span>
+        <span class="item-name-s">${it.brand} ${it.name}</span>
+      </div>
+      <div class="item-right">
+        <span class="item-price-s">${fmt(it.price)}</span>
+        <a href="${it.url}" class="amz-link-s" target="_blank" rel="noopener">Amazon →</a>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('set-detail').innerHTML = `
+    <div class="set-visual" data-label="${s.label}">
+      ${setIllustSVG(idx)}
+    </div>
+    <div class="set-info">
+      <div class="set-number">${s.label}</div>
+      <div class="set-name">${s.name}</div>
+      <p class="set-concept">${s.concept}</p>
+      <div class="item-list">${rows}</div>
+      <div class="set-footer">
+        <div>
+          <div class="set-total-label">SET TOTAL</div>
+          <div class="set-total-price">${fmt(s.total)}</div>
+        </div>
+        <a href="#" class="set-cta" target="_blank" rel="noopener">全品をAmazonで見る →</a>
+      </div>
+    </div>`;
+}
+
+function showSet(idx, btn) {
+  currentSet = idx;
+  document.querySelectorAll('.set-nav-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
+  renderSet(idx);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   CUSTOM PANEL LOGIC
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+let currentStep = 0;
+const selections = [null, null, null, null];
+
+function renderStep(idx) {
+  const step = CUSTOM_STEPS[idx];
+  document.getElementById('sel-step-label').textContent = 'STEP 0' + (idx+1);
+  document.getElementById('sel-step-of').textContent = (idx+1) + ' / 4';
+  document.getElementById('sel-cat-name').textContent = step.cat;
+
+  const grid = document.getElementById('products-grid');
+  grid.innerHTML = step.products.map((p, pi) => {
+    const sel = selections[idx] === pi;
+    return `<div class="product-card${sel?' selected':''}" onclick="selectProduct(${pi})">
+      <div class="check-mark">${sel ? '✓' : ''}</div>
+      <div class="prod-illust">${getIllust(idx, sel)}</div>
+      <div class="prod-brand">${p.brand}</div>
+      <div class="prod-name">${p.name}</div>
+      <div class="prod-price">${fmt(p.price)}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('btn-prev').style.display = idx === 0 ? 'none' : '';
+  document.getElementById('btn-next').textContent = idx === 3 ? 'CONFIRM ✓' : 'NEXT →';
+  document.getElementById('btn-next').disabled = false;
+
+  document.querySelectorAll('.step-item').forEach((el, i) => {
+    el.classList.remove('active', 'done');
+    if (i < idx) el.classList.add('done');
+    if (i === idx) el.classList.add('active');
+  });
+
+  updateSummary();
+}
+
+function selectProduct(pi) {
+  selections[currentStep] = pi;
+  updateSummary();
+  renderStep(currentStep);
+}
+
+function updateSummary() {
+  let total = 0;
+  let allDone = true;
+  selections.forEach((sel, i) => {
+    const el = document.getElementById('step-sel-' + i);
+    if (sel !== null) {
+      const p = CUSTOM_STEPS[i].products[sel];
+      el.textContent = p.brand + ' ' + p.name;
+      el.classList.remove('empty');
+      total += p.price;
+    } else {
+      el.textContent = '— not selected';
+      el.classList.add('empty');
+      allDone = false;
+    }
+  });
+  document.getElementById('custom-total').textContent = total > 0 ? fmt(total) : '¥ —';
+  const cta = document.getElementById('custom-cta');
+  if (allDone) { cta.classList.add('ready'); } else { cta.classList.remove('ready'); }
+}
+
+function goStep(idx) {
+  currentStep = idx;
+  renderStep(idx);
+}
+function prevStep() { if (currentStep > 0) { currentStep--; renderStep(currentStep); } }
+function nextStep() {
+  if (currentStep < 3) { currentStep++; renderStep(currentStep); }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   TABS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-' + name).classList.add('active');
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   INIT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+renderSet(0);
+renderStep(0);
+</script>
+</body>
+</html>
