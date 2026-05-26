@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>コーヒー豆 在庫管理</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FBF6EF;
+    --bg2: #F3EAE0;
+    --brown-dark: #2E1505;
+    --brown-mid: #6B3416;
+    --brown-light: #C0732A;
+    --accent: #E8956D;
+    --cream: #FFFAF5;
+    --border: #D4B896;
+    --text: #3B1A08;
+    --muted: #8B6A50;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* Header */
+  header {
+    background: linear-gradient(100deg, #2E1505 0%, #6B3416 100%);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 24px rgba(40,10,0,0.28);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .header-logo { font-size: 30px; }
+  .header-title { color: #FFE0BA; font-family: 'Noto Serif JP', serif; font-size: 19px; font-weight: 700; letter-spacing: 0.08em; }
+  .header-sub { color: #C4946A; font-size: 10px; letter-spacing: 0.18em; margin-top: 2px; }
+
+  .btn-add {
+    background: linear-gradient(135deg, #E8956D, #C0732A);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 22px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'Noto Sans JP', sans-serif;
+    cursor: pointer;
+    letter-spacing: 0.06em;
+    box-shadow: 0 2px 12px rgba(200,80,0,0.3);
+    transition: transform 0.12s, box-shadow 0.12s;
+  }
+  .btn-add:hover { transform: translateY(-1px); box-shadow: 0 4px 18px rgba(200,80,0,0.38); }
+  .btn-add:active { transform: scale(0.97); }
+
+  /* Stats */
+  .stats {
+    display: flex;
+    gap: 12px;
+    padding: 20px 32px 0;
+  }
+  .stat-card {
+    flex: 1;
+    background: var(--cream);
+    border-radius: 12px;
+    padding: 12px 16px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(100,40,0,0.07);
+    border: 2px solid var(--border);
+  }
+  .stat-count { font-size: 22px; font-weight: 800; font-family: 'Noto Serif JP', serif; }
+  .stat-label { font-size: 10px; color: var(--muted); letter-spacing: 0.1em; margin-top: 2px; }
+  .stat-all .stat-count { color: #8B5E3C; }
+  .stat-light .stat-count { color: #E8956D; }
+  .stat-mid .stat-count { color: #C0732A; }
+  .stat-dark .stat-count { color: #6B3416; }
+  .stat-all { border-color: #D4956A; }
+  .stat-light { border-color: #F2C49B; }
+  .stat-mid { border-color: #D4956A; }
+  .stat-dark { border-color: #8B5E3C; }
+
+  /* Filters */
+  .filters {
+    display: flex;
+    gap: 10px;
+    padding: 16px 32px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .search-input {
+    flex: 1;
+    min-width: 180px;
+    padding: 9px 14px;
+    border-radius: 9px;
+    border: 1.5px solid var(--border);
+    font-size: 13px;
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-input:focus { border-color: var(--accent); }
+  select {
+    padding: 9px 12px;
+    border-radius: 9px;
+    border: 1.5px solid var(--border);
+    font-size: 13px;
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    outline: none;
+    cursor: pointer;
+  }
+
+  /* Chart */
+  .chart-section {
+    margin: 16px 32px 0;
+    background: var(--cream);
+    border-radius: 14px;
+    border: 1.5px solid var(--border);
+    box-shadow: 0 2px 8px rgba(100,40,0,0.07);
+    overflow: hidden;
+  }
+  .chart-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px 10px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+  }
+  .chart-header-left { display: flex; align-items: center; gap: 8px; }
+  .chart-title { font-family: 'Noto Serif JP', serif; font-size: 13px; font-weight: 700; color: var(--brown-dark); letter-spacing: 0.06em; }
+  .chart-toggle { font-size: 12px; color: var(--muted); transition: transform 0.2s; }
+  .chart-toggle.open { transform: rotate(180deg); }
+  .chart-body { padding: 16px 20px 18px; }
+
+  .chart-tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+  .chart-tab {
+    padding: 5px 14px; border-radius: 20px; font-size: 11px; font-weight: 700;
+    border: 1.5px solid var(--border); background: var(--bg); color: var(--muted);
+    cursor: pointer; transition: all 0.15s; font-family: 'Noto Sans JP', sans-serif;
+  }
+  .chart-tab.active { background: var(--brown-mid); color: #fff; border-color: var(--brown-mid); }
+
+  .bar-group { margin-bottom: 10px; }
+  .bar-label {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 4px;
+  }
+  .bar-label-name { font-size: 12px; font-weight: 600; color: var(--text); }
+  .bar-label-count { font-size: 11px; font-weight: 700; color: var(--muted); min-width: 24px; text-align: right; }
+  .bar-track {
+    background: var(--bg2); border-radius: 99px; height: 12px; overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%; border-radius: 99px;
+    transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* List */
+  .list-area { padding: 0 32px 48px; }
+
+  .empty-state {
+    text-align: center;
+    padding: 64px 20px;
+    color: #C4946A;
+  }
+  .empty-icon { font-size: 52px; margin-bottom: 14px; }
+  .empty-text { font-size: 15px; }
+
+  .item-row {
+    background: var(--cream);
+    border-radius: 12px;
+    padding: 13px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+    box-shadow: 0 2px 8px rgba(100,40,0,0.06);
+    transition: box-shadow 0.18s, transform 0.12s;
+    animation: fadeIn 0.2s ease;
+  }
+  .item-row:hover { box-shadow: 0 4px 16px rgba(100,40,0,0.13); transform: translateY(-1px); }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .badge-roast {
+    border-radius: 8px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+  .badge-light { background: #F2C49B; color: #7A3B1E; border: 1.5px solid #F2C49B; }
+  .badge-mid   { background: #D4956A; color: #5C3010; border: 1.5px solid #D4956A; }
+  .badge-dark  { background: #8B5E3C; color: #fff;    border: 1.5px solid #8B5E3C; }
+
+  .item-name { flex: 1; font-size: 13.5px; font-weight: 600; color: var(--brown-dark); }
+
+  .badge-size, .badge-loc {
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 7px;
+    padding: 3px 10px;
+    white-space: nowrap;
+  }
+  .badge-size { background: #FFF0E5; color: var(--brown-light); border: 1px solid #F2C49B; }
+  .badge-loc  { background: #F0E4D4; color: #5C3010; border: 1px solid var(--border); }
+
+  .icon-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 5px 7px;
+    border-radius: 7px;
+    transition: background 0.15s;
+    line-height: 1;
+  }
+  .icon-btn:hover { background: rgba(200,100,30,0.1); }
+
+  /* Modal */
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(20,10,5,0.55);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(3px);
+  }
+  .overlay.open { display: flex; }
+
+  .modal {
+    background: var(--cream);
+    border-radius: 16px;
+    padding: 30px 28px;
+    max-width: 440px;
+    width: 90%;
+    box-shadow: 0 8px 48px rgba(100,40,0,0.2);
+    border: 1.5px solid #E8D5C0;
+    animation: modalIn 0.2s ease;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95) translateY(8px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .modal-title { font-family: 'Noto Serif JP', serif; font-size: 17px; font-weight: 700; color: var(--brown-dark); margin-bottom: 6px; }
+  .modal-divider { height: 2px; background: linear-gradient(90deg, #E8956D, #C0732A); border-radius: 2px; margin-bottom: 20px; }
+
+  label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: #8B5E3C;
+    letter-spacing: 0.1em;
+    margin-bottom: 5px;
+    margin-top: 14px;
+  }
+  label:first-of-type { margin-top: 0; }
+
+  .modal select, .modal input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 9px;
+    border: 1.5px solid var(--border);
+    font-size: 13px;
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .modal select:focus, .modal input:focus { border-color: var(--accent); }
+
+  .modal-actions { display: flex; gap: 10px; margin-top: 22px; }
+
+  .btn-cancel {
+    flex: 1;
+    padding: 11px 0;
+    border-radius: 9px;
+    border: 1.5px solid var(--border);
+    background: var(--cream);
+    color: var(--muted);
+    font-weight: 600;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-cancel:hover { background: var(--bg2); }
+
+  .btn-save {
+    flex: 2;
+    padding: 11px 0;
+    border-radius: 9px;
+    border: none;
+    background: linear-gradient(135deg, #E8956D, #C0732A);
+    color: #fff;
+    font-weight: 700;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(180,80,0,0.25);
+    transition: opacity 0.15s;
+  }
+  .btn-save:hover { opacity: 0.9; }
+
+  .btn-delete-confirm {
+    flex: 1;
+    padding: 11px 0;
+    border-radius: 9px;
+    border: none;
+    background: linear-gradient(135deg, #C0732A, #8B3A10);
+    color: #fff;
+    font-weight: 700;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .delete-center { text-align: center; }
+  .delete-icon { font-size: 40px; margin-bottom: 12px; }
+  .delete-title { font-size: 16px; font-weight: 700; color: var(--brown-dark); margin-bottom: 8px; }
+  .delete-sub { font-size: 13px; color: var(--muted); margin-bottom: 22px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <span class="header-logo">☕</span>
+    <div>
+      <div class="header-title">コーヒー豆 在庫管理</div>
+      <div class="header-sub">COFFEE BEAN INVENTORY</div>
+    </div>
+  </div>
+  <button class="btn-add" onclick="openAdd()">＋ 在庫を追加</button>
+</header>
+
+<div class="stats">
+  <div class="stat-card stat-all"><div class="stat-count" id="count-all">0</div><div class="stat-label">全て</div></div>
+  <div class="stat-card stat-light"><div class="stat-count" id="count-light">0</div><div class="stat-label">浅煎り</div></div>
+  <div class="stat-card stat-mid"><div class="stat-count" id="count-mid">0</div><div class="stat-label">中煎り</div></div>
+  <div class="stat-card stat-dark"><div class="stat-count" id="count-dark">0</div><div class="stat-label">深煎り</div></div>
+</div>
+
+<div class="filters">
+  <input class="search-input" type="text" id="search" placeholder="🔍 豆の名前で検索..." oninput="render()">
+  <select id="filter-roast" onchange="render()">
+    <option value="">全て（焙煎度）</option>
+    <option>浅煎り</option>
+    <option>中煎り</option>
+    <option>深煎り</option>
+  </select>
+  <select id="filter-loc" onchange="render()">
+    <option value="">全て（場所）</option>
+    <option>1F手前</option>
+    <option>1F奥</option>
+    <option>2F</option>
+  </select>
+</div>
+
+<div class="chart-section">
+  <div class="chart-header" onclick="toggleChart()">
+    <div class="chart-header-left">
+      <span>📊</span>
+      <span class="chart-title">在庫グラフ</span>
+    </div>
+    <span class="chart-toggle open" id="chart-toggle">▲</span>
+  </div>
+  <div class="chart-body" id="chart-body">
+    <div class="chart-tabs">
+      <button class="chart-tab active" onclick="setChartTab('location', this)">場所別</button>
+      <button class="chart-tab" onclick="setChartTab('roast', this)">焙煎度別</button>
+      <button class="chart-tab" onclick="setChartTab('size', this)">サイズ別</button>
+    </div>
+    <div id="chart-bars"></div>
+  </div>
+</div>
+
+<div class="list-area" id="list-area"></div>
+
+<!-- Add/Edit Modal -->
+<div class="overlay" id="modal-form" onclick="closeForm(event)">
+  <div class="modal">
+    <div class="modal-title" id="modal-title">在庫を追加</div>
+    <div class="modal-divider"></div>
+    <label>焙煎度</label>
+    <select id="f-roast" onchange="updateBeanList()">
+      <option>浅煎り</option>
+      <option>中煎り</option>
+      <option>深煎り</option>
+    </select>
+    <label>豆の名前</label>
+    <select id="f-bean"></select>
+    <label>袋のサイズ</label>
+    <select id="f-size">
+      <option>大</option>
+      <option>中</option>
+      <option>小</option>
+    </select>
+    <label>場所</label>
+    <select id="f-loc">
+      <option>1F手前</option>
+      <option>1F奥</option>
+      <option>2F</option>
+    </select>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modal-form')">キャンセル</button>
+      <button class="btn-save" onclick="saveItem()">追加する</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirm Modal -->
+<div class="overlay" id="modal-delete" onclick="closeForm(event)">
+  <div class="modal">
+    <div class="delete-center">
+      <div class="delete-icon">🗑️</div>
+      <div class="delete-title">この在庫を削除しますか？</div>
+      <div class="delete-sub">削除すると元に戻せません。</div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeModal('modal-delete')">キャンセル</button>
+        <button class="btn-delete-confirm" onclick="confirmDelete()">削除する</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'coffee_inventory_v1';
+
+const BEANS = {
+  '浅煎り': [
+    'WUSH WUSH カッファG1 ウォッシュド',
+    'エチオピア アナソラ アナエロビック',
+    'モカ・ヘレフG１「ナチュラル精製」',
+    'コロンビア ゲイシャ サーマルショック',
+    'コロンビア アプリコットパンチ',
+    'COLOMBIA Uba NITRO-WASH',
+    'エルディビソ サーマルショック',
+    'ラス・アギラス SIDRA WASHED',
+    'コロンビア ジューシーグレープ',
+    'アカシアヒルズ パカマラ',
+    'シナモン ラ・ピラグア コロンビア',
+    'コロンビア ゲイシャ ピーチ',
+    '日本初登場 ワイニーフラワー',
+    'ペルラ・デ・オトゥン SUDAN RUMME',
+    'コロンビア スイートベリー',
+    'ブラジル ゲイシャ カーボニックマセレーション',
+    'Brazil コヘゴ・ダ・リベルダージ COE2023 第5位',
+    'オーロヴェルデ ナチュラル COE2022 第3位',
+    'ルワンダ ニャマシェケ レッドブルボン',
+    'パナマ グラン・デル・バル',
+    'ウガンダ ニャビロンゴ アナエロビック',
+    '雲南 レモン＆ベルガモット アナエロビックハニー',
+    'グアテマラ COE2024 ロス・コネホス #5',
+    'ゲイシャ ナチュラル エドウィンファンカ ボリビア',
+    'グアテマラ ウエウエテナンゴ',
+    '寿ブレンド＿華',
+    '寿ブレンド＿姫',
+    'モカ・ヘレフG１「ウォッシュド精製」',
+  ],
+  '中煎り': [
+    'ブラジル セーハ・ド・ボネ',
+    'ブラジル カルモエステート',
+    'ハワイ コナ',
+    'ブルーマウンテン',
+    '稀少天然 コピルアク ジャコウネコ',
+    'デイリーブレンド',
+    'フォレストマウンテン',
+  ],
+  '深煎り': [
+    'ブラジル ロブスタ コニロン',
+    'タイ OMKOI オムコイ オーガニック',
+    '日本初輸入 ラヒャン インドネシア',
+    'ペルー マチュピチュ',
+    'タンザニア ンゴロンゴロ',
+    'インド ファインロブスタ パパクチ',
+    'インドネシア マンデリン',
+    'グアテマラ アンティグア',
+    'ケニア ニエリ ファクトリー ウォッシュド',
+    '寿ブレンド＿殿',
+    'アイスブレンド',
+    '水出しコーヒー「コールドブリュー」２ℓ対応',
+    'フルッタメルカドン デカフェ',
+    'ドン・ラファ デカフェ',
+    'モカ・ヘレフG１「ウォッシュド精製」',
+  ],
+};
+
+const ROAST_CLASS = { '浅煎り': 'light', '中煎り': 'mid', '深煎り': 'dark' };
+const BAG_ICON = { '大': '◉', '中': '◎', '小': '○' };
+const LOC_ICON = { '1F手前': '①', '1F奥': '②', '2F': '③' };
+
+let items = [];
+let editId = null;
+let deleteId = null;
+
+// Load from localStorage
+function load() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    items = saved ? JSON.parse(saved) : [];
+  } catch { items = []; }
+}
+
+function save() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); } catch {}
+}
+
+function render() {
+  const search = document.getElementById('search').value;
+  const filterRoast = document.getElementById('filter-roast').value;
+  const filterLoc = document.getElementById('filter-loc').value;
+
+  const filtered = items.filter(item => {
+    return (!filterRoast || item.roast === filterRoast)
+      && (!filterLoc || item.location === filterLoc)
+      && item.bean.includes(search);
+  });
+
+  // Stats
+  document.getElementById('count-all').textContent = items.length;
+  document.getElementById('count-light').textContent = items.filter(i => i.roast === '浅煎り').length;
+  document.getElementById('count-mid').textContent = items.filter(i => i.roast === '中煎り').length;
+  document.getElementById('count-dark').textContent = items.filter(i => i.roast === '深煎り').length;
+
+  const area = document.getElementById('list-area');
+  if (filtered.length === 0) {
+    area.innerHTML = `<div class="empty-state"><div class="empty-icon">🫘</div><div class="empty-text">${items.length === 0 ? '在庫がまだ登録されていません' : '条件に一致する在庫がありません'}</div></div>`;
+    return;
+  }
+
+  area.innerHTML = filtered.map(item => {
+    const rc = ROAST_CLASS[item.roast] || 'mid';
+    return `
+      <div class="item-row" style="border: 1.5px solid ${rc === 'light' ? '#F2C49B' : rc === 'mid' ? '#D4956A' : '#8B5E3C'}">
+        <span class="badge-roast badge-${rc}">${item.roast}</span>
+        <span class="item-name">${item.bean}</span>
+        <span class="badge-size">${BAG_ICON[item.bagSize] || ''} ${item.bagSize}</span>
+        <span class="badge-loc">${LOC_ICON[item.location] || ''} ${item.location}</span>
+        <button class="icon-btn" onclick="openEdit(${item.id})" title="編集">✏️</button>
+        <button class="icon-btn" onclick="openDelete(${item.id})" title="削除">🗑️</button>
+      </div>`;
+  }).join('');
+}
+
+function updateBeanList(selectedBean) {
+  const roast = document.getElementById('f-roast').value;
+  const beanSel = document.getElementById('f-bean');
+  const beans = BEANS[roast] || [];
+  beanSel.innerHTML = beans.map(b => `<option${b === selectedBean ? ' selected' : ''}>${b}</option>`).join('');
+}
+
+function openAdd() {
+  editId = null;
+  document.getElementById('modal-title').textContent = '在庫を追加';
+  document.querySelector('#modal-form .btn-save').textContent = '追加する';
+  document.getElementById('f-roast').value = '浅煎り';
+  updateBeanList();
+  document.getElementById('f-size').value = '中';
+  document.getElementById('f-loc').value = '1F手前';
+  document.getElementById('modal-form').classList.add('open');
+}
+
+function openEdit(id) {
+  const item = items.find(i => i.id === id);
+  if (!item) return;
+  editId = id;
+  document.getElementById('modal-title').textContent = '在庫を編集';
+  document.querySelector('#modal-form .btn-save').textContent = '更新する';
+  document.getElementById('f-roast').value = item.roast;
+  updateBeanList(item.bean);
+  document.getElementById('f-size').value = item.bagSize;
+  document.getElementById('f-loc').value = item.location;
+  document.getElementById('modal-form').classList.add('open');
+}
+
+function saveItem() {
+  const roast = document.getElementById('f-roast').value;
+  const bean = document.getElementById('f-bean').value;
+  const bagSize = document.getElementById('f-size').value;
+  const location = document.getElementById('f-loc').value;
+  if (!bean) return;
+
+  if (editId !== null) {
+    items = items.map(i => i.id === editId ? { ...i, roast, bean, bagSize, location } : i);
+  } else {
+    items.push({ id: Date.now(), roast, bean, bagSize, location });
+  }
+  save();
+  closeModal('modal-form');
+  render();
+  renderChart();
+}
+
+function openDelete(id) {
+  deleteId = id;
+  document.getElementById('modal-delete').classList.add('open');
+}
+
+function confirmDelete() {
+  items = items.filter(i => i.id !== deleteId);
+  save();
+  closeModal('modal-delete');
+  render();
+  renderChart();
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+function closeForm(e) {
+  if (e.target.classList.contains('overlay')) {
+    e.target.classList.remove('open');
+  }
+}
+
+// Chart
+let chartTab = 'location';
+let chartOpen = true;
+
+const CHART_CONFIGS = {
+  location: {
+    keys: ['1F手前', '1F奥', '2F'],
+    getKey: i => i.location,
+    colors: ['#E8956D', '#C0732A', '#6B3416'],
+  },
+  roast: {
+    keys: ['浅煎り', '中煎り', '深煎り'],
+    getKey: i => i.roast,
+    colors: ['#F2C49B', '#D4956A', '#8B5E3C'],
+    textColors: ['#7A3B1E', '#5C3010', '#fff'],
+  },
+  size: {
+    keys: ['大', '中', '小'],
+    getKey: i => i.bagSize,
+    colors: ['#E8956D', '#C0732A', '#6B3416'],
+  },
+};
+
+function renderChart() {
+  const cfg = CHART_CONFIGS[chartTab];
+  const counts = {};
+  cfg.keys.forEach(k => counts[k] = 0);
+  items.forEach(item => {
+    const k = cfg.getKey(item);
+    if (k in counts) counts[k]++;
+  });
+  const max = Math.max(...Object.values(counts), 1);
+
+  document.getElementById('chart-bars').innerHTML = cfg.keys.map((key, i) => {
+    const count = counts[key];
+    const pct = Math.round((count / max) * 100);
+    const color = cfg.colors[i];
+    return `
+      <div class="bar-group">
+        <div class="bar-label">
+          <span class="bar-label-name">${key}</span>
+          <span class="bar-label-count">${count}件</span>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:${pct}%; background: ${color};"></div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function setChartTab(tab, el) {
+  chartTab = tab;
+  document.querySelectorAll('.chart-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderChart();
+}
+
+function toggleChart() {
+  chartOpen = !chartOpen;
+  document.getElementById('chart-body').style.display = chartOpen ? '' : 'none';
+  const toggle = document.getElementById('chart-toggle');
+  toggle.classList.toggle('open', chartOpen);
+  toggle.textContent = chartOpen ? '▲' : '▼';
+}
+
+// Init
+load();
+updateBeanList();
+render();
+renderChart();
+</script>
+</body>
+</html>
