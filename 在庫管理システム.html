@@ -108,13 +108,13 @@
 
 <header>
   <div class="header-left">
-    <span class="header-logo">☕</span>
+    <span class="header-logo" id="logo-tap" onclick="handleLogoTap()">☕</span>
     <div>
       <div class="header-title">コーヒー豆 在庫管理</div>
       <div class="header-sub">COFFEE BEAN INVENTORY</div>
     </div>
   </div>
-  <button class="btn-add" onclick="openAdd()">＋ 在庫を追加</button>
+  <button class="btn-add" id="btn-add" onclick="openAdd()" style="display:none">＋ 在庫を追加</button>
 </header>
 
 <div class="stats">
@@ -226,6 +226,29 @@ const BAG_ICON    = {'大':'◉','中':'◎','小':'○'};
 const LOC_ICON    = {'1F手前':'①','1F手前〈黒〉':'①','1F奥':'②','2F':'③'};
 
 let items = [], editId = null, deleteId = null, useCustomBean = false;
+let isAdmin = false;
+let tapCount = 0, tapTimer = null;
+
+window.handleLogoTap = () => {
+  tapCount++;
+  if (tapTimer) clearTimeout(tapTimer);
+  tapTimer = setTimeout(() => { tapCount = 0; }, 2000);
+  if (tapCount >= 5) {
+    tapCount = 0;
+    if (isAdmin) {
+      isAdmin = false;
+      document.getElementById('btn-add').style.display = 'none';
+      document.getElementById('logo-tap').style.filter = '';
+      showToast('🔒 管理モード終了');
+    } else {
+      isAdmin = true;
+      document.getElementById('btn-add').style.display = '';
+      document.getElementById('logo-tap').style.filter = 'drop-shadow(0 0 8px #FFE0BA)';
+      showToast('🔓 管理モード ON');
+    }
+    render();
+  }
+};
 let chartTab = 'location', chartOpen = true;
 
 function showToast(msg) {
@@ -259,8 +282,7 @@ function render() {
       <span class="item-name">${item.bean}</span>
       <span class="badge-size">${BAG_ICON[item.bagSize]||''} ${item.bagSize}</span>
       <span class="badge-loc">${LOC_ICON[item.location]||''} ${item.location}</span>
-      <button class="icon-btn" onclick="openEdit('${item.id}')">✏️</button>
-      <button class="icon-btn" onclick="openDelete('${item.id}')">🗑️</button>
+      ${isAdmin?`<button class="icon-btn" onclick="openEdit('${item.id}')">✏️</button><button class="icon-btn" onclick="openDelete('${item.id}')">🗑️</button>`:''}
     </div>`;
   }).join('');
   renderChart();
