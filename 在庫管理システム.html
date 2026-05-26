@@ -297,22 +297,35 @@ const CHART_CFGS = {
 function renderChart() {
   const el = document.getElementById('chart-bars');
   if (chartTab === 'bean') {
-    const counts = {};
-    items.forEach(i => { counts[i.bean]=(counts[i.bean]||0)+1; });
-    const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+    const SIZE_W = {'大':3,'中':2,'小':1};
+    const beanData = {};
+    items.forEach(i => {
+      if (!beanData[i.bean]) beanData[i.bean] = {score:0, 大:0, 中:0, 小:0};
+      beanData[i.bean].score += SIZE_W[i.bagSize]||1;
+      beanData[i.bean][i.bagSize] = (beanData[i.bean][i.bagSize]||0)+1;
+    });
+    const sorted = Object.entries(beanData).sort((a,b)=>b[1].score-a[1].score);
     if (!sorted.length) { el.innerHTML='<div style="text-align:center;color:var(--muted);font-size:13px;padding:16px 0;">在庫がまだありません</div>'; return; }
-    const max=sorted[0][1];
+    const max=sorted[0][1].score;
     const C=['#E8956D','#C0732A','#6B3416','#A0522D','#8B4513','#CD853F','#D2691E'];
-    el.innerHTML = sorted.map(([bean,cnt],i)=>{
-      const pct=Math.round(cnt/max*100);
+    el.innerHTML = sorted.map(([bean,data],i)=>{
+      const pct=Math.round(data.score/max*100);
       const rank=i===0?'🥇':i===1?'🥈':i===2?'🥉':`${i+1}.`;
+      const breakdown = [
+        data['大']?`大×${data['大']}`:'',
+        data['中']?`中×${data['中']}`:'',
+        data['小']?`小×${data['小']}`:''
+      ].filter(Boolean).join(' ');
       return `<div class="bar-group">
         <div class="bar-label">
           <span class="bar-label-name" style="display:flex;align-items:center;gap:5px;">
             <span style="min-width:22px;font-size:12px;">${rank}</span>
-            <span style="overflow:hidden;text-overflow:ellipsis;max-width:240px;white-space:nowrap;">${bean}</span>
+            <span style="overflow:hidden;text-overflow:ellipsis;max-width:200px;white-space:nowrap;">${bean}</span>
           </span>
-          <span class="bar-label-count">${cnt}袋</span>
+          <span class="bar-label-count" style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;">
+            <span>${data.score}pt</span>
+            <span style="font-size:9px;color:var(--muted);font-weight:400;">${breakdown}</span>
+          </span>
         </div>
         <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${C[i%C.length]};"></div></div>
       </div>`;
