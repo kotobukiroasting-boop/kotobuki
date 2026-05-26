@@ -132,7 +132,7 @@
   </select>
   <select id="filter-loc" onchange="render()">
     <option value="">全て（場所）</option>
-    <option>1F手前</option><option>1F奥</option><option>2F</option>
+    <option>1F手前</option><option>1F手前〈黒〉</option><option>1F奥</option><option>2F</option>
   </select>
 </div>
 
@@ -173,7 +173,7 @@
     <label>袋のサイズ</label>
     <select id="f-size"><option>大</option><option>中</option><option>小</option></select>
     <label>場所</label>
-    <select id="f-loc"><option>1F手前</option><option>1F奥</option><option>2F</option></select>
+    <select id="f-loc"><option>1F手前</option><option>1F手前〈黒〉</option><option>1F奥</option><option>2F</option></select>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal('modal-form')">キャンセル</button>
       <button class="btn-save" onclick="saveItem()">追加する</button>
@@ -223,7 +223,7 @@ const BEANS = {
 
 const ROAST_CLASS = {'浅煎り':'light','中煎り':'mid','深煎り':'dark'};
 const BAG_ICON    = {'大':'◉','中':'◎','小':'○'};
-const LOC_ICON    = {'1F手前':'①','1F奥':'②','2F':'③'};
+const LOC_ICON    = {'1F手前':'①','1F手前〈黒〉':'①','1F奥':'②','2F':'③'};
 
 let items = [], editId = null, deleteId = null, useCustomBean = false;
 let chartTab = 'location', chartOpen = true;
@@ -267,7 +267,7 @@ function render() {
 }
 
 const CHART_CFGS = {
-  location:{keys:['1F手前','1F奥','2F'],getKey:i=>i.location,colors:['#E8956D','#C0732A','#6B3416']},
+  location:{keys:['1F手前','1F手前〈黒〉','1F奥','2F'],getKey:i=>i.location,colors:['#E8956D','#D4956A','#C0732A','#6B3416']},
   roast:{keys:['浅煎り','中煎り','深煎り'],getKey:i=>i.roast,colors:['#F2C49B','#D4956A','#8B5E3C']},
   size:{keys:['大','中','小'],getKey:i=>i.bagSize,colors:['#E8956D','#C0732A','#6B3416']},
 };
