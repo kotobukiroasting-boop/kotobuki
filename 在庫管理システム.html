@@ -134,6 +134,11 @@
     <option value="">全て（場所）</option>
     <option>1F手前</option><option>1F手前〈黒〉</option><option>1F奥</option><option>2F</option>
   </select>
+  <select id="sort-roast" onchange="render()">
+    <option value="">並び順（焙煎度）</option>
+    <option value="asc">浅煎り → 深煎り</option>
+    <option value="desc">深煎り → 浅煎り</option>
+  </select>
 </div>
 
 <div class="chart-section">
@@ -257,12 +262,22 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2200);
 }
 
-function render() {
+const ROAST_ORDER = {'浅煎り':0,'中煎り':1,'深煎り':2};
+
+window.render = function render() {
   const search = document.getElementById('search').value;
   const fr = document.getElementById('filter-roast').value;
   const fl = document.getElementById('filter-loc').value;
-  const filtered = items.filter(i =>
+  const sortRoast = document.getElementById('sort-roast').value;
+
+  let filtered = items.filter(i =>
     (!fr || i.roast === fr) && (!fl || i.location === fl) && i.bean.includes(search));
+
+  if (sortRoast === 'asc') {
+    filtered.sort((a,b) => (ROAST_ORDER[a.roast]||0)-(ROAST_ORDER[b.roast]||0));
+  } else if (sortRoast === 'desc') {
+    filtered.sort((a,b) => (ROAST_ORDER[b.roast]||0)-(ROAST_ORDER[a.roast]||0));
+  }
 
   document.getElementById('count-all').textContent   = items.length;
   document.getElementById('count-light').textContent = items.filter(i=>i.roast==='浅煎り').length;
@@ -286,7 +301,7 @@ function render() {
     </div>`;
   }).join('');
   renderChart();
-}
+};
 
 const CHART_CFGS = {
   location:{keys:['1F手前','1F手前〈黒〉','1F奥','2F'],getKey:i=>i.location,colors:['#E8956D','#D4956A','#C0732A','#6B3416']},
@@ -294,7 +309,7 @@ const CHART_CFGS = {
   size:{keys:['大','中','小'],getKey:i=>i.bagSize,colors:['#E8956D','#C0732A','#6B3416']},
 };
 
-function renderChart() {
+window.renderChart = function renderChart() {
   const el = document.getElementById('chart-bars');
   if (chartTab === 'bean') {
     const SIZE_W = {'大':3,'中':2,'小':1};
@@ -343,9 +358,9 @@ function renderChart() {
       <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${cfg.colors[i]};"></div></div>
     </div>`;
   }).join('');
-}
+};
 
-window.setChartTab=(tab,el)=>{chartTab=tab;document.querySelectorAll('.chart-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderChart();};
+window.setChartTab=(tab,el)=>{chartTab=tab;document.querySelectorAll('.chart-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');window.renderChart();};
 window.toggleChart=()=>{chartOpen=!chartOpen;document.getElementById('chart-body').style.display=chartOpen?'':'none';document.getElementById('chart-toggle').textContent=chartOpen?'▲':'▼';};
 
 window.updateBeanList=(selectedBean)=>{
