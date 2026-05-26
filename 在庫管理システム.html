@@ -122,6 +122,53 @@
     cursor: pointer;
   }
 
+  /* Chart */
+  .chart-section {
+    margin: 16px 32px 0;
+    background: var(--cream);
+    border-radius: 14px;
+    border: 1.5px solid var(--border);
+    box-shadow: 0 2px 8px rgba(100,40,0,0.07);
+    overflow: hidden;
+  }
+  .chart-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px 10px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+  }
+  .chart-header-left { display: flex; align-items: center; gap: 8px; }
+  .chart-title { font-family: 'Noto Serif JP', serif; font-size: 13px; font-weight: 700; color: var(--brown-dark); letter-spacing: 0.06em; }
+  .chart-toggle { font-size: 12px; color: var(--muted); transition: transform 0.2s; }
+  .chart-toggle.open { transform: rotate(180deg); }
+  .chart-body { padding: 16px 20px 18px; }
+
+  .chart-tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+  .chart-tab {
+    padding: 5px 14px; border-radius: 20px; font-size: 11px; font-weight: 700;
+    border: 1.5px solid var(--border); background: var(--bg); color: var(--muted);
+    cursor: pointer; transition: all 0.15s; font-family: 'Noto Sans JP', sans-serif;
+  }
+  .chart-tab.active { background: var(--brown-mid); color: #fff; border-color: var(--brown-mid); }
+
+  .bar-group { margin-bottom: 10px; }
+  .bar-label {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 4px;
+  }
+  .bar-label-name { font-size: 12px; font-weight: 600; color: var(--text); }
+  .bar-label-count { font-size: 11px; font-weight: 700; color: var(--muted); min-width: 24px; text-align: right; }
+  .bar-track {
+    background: var(--bg2); border-radius: 99px; height: 12px; overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%; border-radius: 99px;
+    transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
   /* List */
   .list-area { padding: 0 32px 48px; }
 
@@ -330,6 +377,24 @@
     <option>1F奥</option>
     <option>2F</option>
   </select>
+</div>
+
+<div class="chart-section">
+  <div class="chart-header" onclick="toggleChart()">
+    <div class="chart-header-left">
+      <span>📊</span>
+      <span class="chart-title">在庫グラフ</span>
+    </div>
+    <span class="chart-toggle open" id="chart-toggle">▲</span>
+  </div>
+  <div class="chart-body" id="chart-body">
+    <div class="chart-tabs">
+      <button class="chart-tab active" onclick="setChartTab('location', this)">場所別</button>
+      <button class="chart-tab" onclick="setChartTab('roast', this)">焙煎度別</button>
+      <button class="chart-tab" onclick="setChartTab('size', this)">サイズ別</button>
+    </div>
+    <div id="chart-bars"></div>
+  </div>
 </div>
 
 <div class="list-area" id="list-area"></div>
@@ -546,6 +611,7 @@ function saveItem() {
   save();
   closeModal('modal-form');
   render();
+  renderChart();
 }
 
 function openDelete(id) {
@@ -558,6 +624,7 @@ function confirmDelete() {
   save();
   closeModal('modal-delete');
   render();
+  renderChart();
 }
 
 function closeModal(id) {
@@ -570,10 +637,76 @@ function closeForm(e) {
   }
 }
 
+// Chart
+let chartTab = 'location';
+let chartOpen = true;
+
+const CHART_CONFIGS = {
+  location: {
+    keys: ['1F手前', '1F奥', '2F'],
+    getKey: i => i.location,
+    colors: ['#E8956D', '#C0732A', '#6B3416'],
+  },
+  roast: {
+    keys: ['浅煎り', '中煎り', '深煎り'],
+    getKey: i => i.roast,
+    colors: ['#F2C49B', '#D4956A', '#8B5E3C'],
+    textColors: ['#7A3B1E', '#5C3010', '#fff'],
+  },
+  size: {
+    keys: ['大', '中', '小'],
+    getKey: i => i.bagSize,
+    colors: ['#E8956D', '#C0732A', '#6B3416'],
+  },
+};
+
+function renderChart() {
+  const cfg = CHART_CONFIGS[chartTab];
+  const counts = {};
+  cfg.keys.forEach(k => counts[k] = 0);
+  items.forEach(item => {
+    const k = cfg.getKey(item);
+    if (k in counts) counts[k]++;
+  });
+  const max = Math.max(...Object.values(counts), 1);
+
+  document.getElementById('chart-bars').innerHTML = cfg.keys.map((key, i) => {
+    const count = counts[key];
+    const pct = Math.round((count / max) * 100);
+    const color = cfg.colors[i];
+    return `
+      <div class="bar-group">
+        <div class="bar-label">
+          <span class="bar-label-name">${key}</span>
+          <span class="bar-label-count">${count}件</span>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:${pct}%; background: ${color};"></div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function setChartTab(tab, el) {
+  chartTab = tab;
+  document.querySelectorAll('.chart-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderChart();
+}
+
+function toggleChart() {
+  chartOpen = !chartOpen;
+  document.getElementById('chart-body').style.display = chartOpen ? '' : 'none';
+  const toggle = document.getElementById('chart-toggle');
+  toggle.classList.toggle('open', chartOpen);
+  toggle.textContent = chartOpen ? '▲' : '▼';
+}
+
 // Init
 load();
 updateBeanList();
 render();
+renderChart();
 </script>
 </body>
 </html>
