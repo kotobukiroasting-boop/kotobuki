@@ -849,9 +849,28 @@
           content = linkify(nl2br(escapeHtml(data.text || "")));
         }
 
+        // クーポンのスタンプボタン
+        let stampHtml = "";
+        if (msgClass === "coupon") {
+          if (data.used) {
+            stampHtml = `<div style="text-align:center;margin-top:10px">
+              <div style="display:inline-block;border:3px solid #e74c3c;border-radius:50%;padding:8px 12px;color:#e74c3c;font-weight:bold;font-size:14px;transform:rotate(-15deg);opacity:0.8">
+                ✅ 使用済み
+              </div>
+            </div>`;
+          } else {
+            stampHtml = `<div style="text-align:center;margin-top:10px">
+              <button onclick="useCoupon('${doc.id}')" style="background:#e74c3c;color:white;border:none;border-radius:20px;padding:8px 20px;font-size:13px;cursor:pointer;font-weight:bold">
+                🎁 クーポンを使用する
+              </button>
+            </div>`;
+          }
+        }
+
         div.innerHTML = `
           <div class="name">${escapeHtml(data.name)}</div>
           <div>${content}</div>
+          ${stampHtml}
           <div class="time">${time}</div>
         `;
         container.appendChild(div);
@@ -955,6 +974,27 @@
     localStorage.setItem("installDismissed", "1");
     document.getElementById("installModal").classList.remove("show");
   });
+
+  // ===== クーポン使用 =====
+  window.useCoupon = async function(messageId) {
+    if (!confirm("クーポンを使用しますか？\n使用後は取り消せません。")) return;
+    try {
+      const { updateDoc, doc: fsDoc } = await import("https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js");
+      await updateDoc(fsDoc(db, "messages", messageId), { used: true });
+
+      // couponsコレクションも更新
+      const today = new Date();
+      const sentMonth = `${today.getFullYear()}-${today.getMonth()+1}`;
+      const couponId = `${sentMonth}_${userName}`;
+      try {
+        await updateDoc(fsDoc(db, "coupons", couponId), { used: true });
+      } catch(e) {}
+
+      alert("✅ クーポンを使用しました！\nスタッフにお声がけください☕");
+    } catch(e) {
+      alert("エラーが発生しました。もう一度お試しください。");
+    }
+  };
 
   function nl2br(text) { return text.replace(/\n/g, '<br>'); }
   function linkify(text) { return text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>'); }

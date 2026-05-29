@@ -363,6 +363,17 @@
     <button id="notifyBtn" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:6px 12px;font-size:13px;cursor:pointer;white-space:nowrap">🔔 通知OFF</button>
   </div>
 
+  <!-- 個別クーポン送信モーダル -->
+  <div class="modal" id="individualCouponModal" style="display:none">
+    <div class="modal-box" style="width:360px">
+      <h2 style="color:#e74c3c">🎂 個別クーポン送信</h2>
+      <p id="individualCouponTarget" style="font-weight:bold;margin-bottom:12px"></p>
+      <textarea id="individualCouponText" style="width:100%;height:100px;padding:10px;border:1px solid #ddd;border-radius:8px;font-size:13px;resize:none;outline:none;margin-bottom:12px;font-family:inherit"></textarea>
+      <button id="individualCouponSendBtn" style="background:linear-gradient(135deg,#e74c3c,#c0392b);margin-bottom:8px">🎂 送信</button>
+      <button id="individualCouponCancelBtn" style="background:#aaa">キャンセル</button>
+    </div>
+  </div>
+
   <!-- クーポン送信モーダル -->
   <div class="modal" id="couponModal" style="display:none">
     <div class="modal-box" style="width:380px;max-height:90vh;overflow-y:auto">
@@ -441,6 +452,7 @@
           <button class="icon-btn" id="imageBtn">📎</button>
           <input type="file" id="fileInput" accept="image/*" style="display:none">
           <button class="icon-btn" id="linkBtn">🔗</button>
+          <button class="icon-btn" id="individualCouponBtn" title="個別クーポン送信">🎂</button>
           <textarea id="messageInput" placeholder="返信を入力..." rows="1" style="resize:none;overflow-y:hidden;line-height:1.4;padding-top:10px;padding-bottom:10px;font-family:inherit"></textarea>
           <button id="sendBtn">➤</button>
         </div>
@@ -673,6 +685,7 @@
       div.innerHTML = `
         <div class="name">${escapeHtml(msg.name)}</div>
         <div>${content}</div>
+        ${stampHtml || ""}
         <div class="time">${time}</div>
       `;
       container.appendChild(div);
@@ -1052,6 +1065,55 @@
   });
 
   // ===== クーポン履歴 =====
+  // ===== 個別クーポン送信 =====
+  document.getElementById("individualCouponBtn").addEventListener("click", () => {
+    if (!selectedCustomer) return;
+    const today = new Date();
+    const m1 = today.getMonth() + 1;
+    const m2 = m1 % 12 + 1;
+    const m3 = m2 % 12 + 1;
+    document.getElementById("individualCouponTarget").textContent = `送信先：${selectedCustomer} さん`;
+    document.getElementById("individualCouponText").value =
+      `🎁 誕生月おめでとうございます！
+コーヒー豆増量クーポンをプレゼント🎉
+
+有効期限：${m1}月・${m2}月・${m3}月
+ご来店の際にスタッフにお声がけください☕`;
+    document.getElementById("individualCouponModal").style.display = "flex";
+  });
+
+  document.getElementById("individualCouponCancelBtn").addEventListener("click", () => {
+    document.getElementById("individualCouponModal").style.display = "none";
+  });
+
+  document.getElementById("individualCouponSendBtn").addEventListener("click", async () => {
+    const text = document.getElementById("individualCouponText").value.trim();
+    if (!text || !selectedCustomer) return;
+
+    const today = new Date();
+    const sentMonth = `${today.getFullYear()}-${today.getMonth()+1}`;
+
+    await addDoc(collection(db, "messages"), {
+      text,
+      type: "coupon",
+      name: "🎂 誕生月クーポン",
+      role: "admin",
+      roomId: selectedCustomer,
+      timestamp: serverTimestamp()
+    });
+
+    await setDoc(doc(db, "coupons", `${sentMonth}_${selectedCustomer}`), {
+      name: selectedCustomer,
+      month: sentMonth,
+      text,
+      used: false,
+      sentAt: serverTimestamp()
+    });
+
+    document.getElementById("individualCouponModal").style.display = "none";
+    alert(`✅ ${selectedCustomer} さんにクーポンを送信しました！`);
+  });
+
   window.showCouponTab = function(tab) {
     const sendArea = document.getElementById("couponTargetList");
     const historyArea = document.getElementById("couponHistoryList");
