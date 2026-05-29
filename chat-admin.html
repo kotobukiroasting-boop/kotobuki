@@ -913,23 +913,29 @@
     document.getElementById("couponModal").style.display = "none";
   });
 
+  window.updateCouponByMonth = function() {
+    renderCouponList();
+  };
+
   function renderCouponList() {
     const today = new Date();
-    const thisMonth = today.getMonth() + 1;
-    // 誕生月 or 前後1ヶ月（3ヶ月間対象）
-    const targetMonths = [
-      ((thisMonth - 2 + 12) % 12) + 1,
-      thisMonth,
-      thisMonth % 12 + 1
-    ];
+    const selectEl = document.getElementById("couponMonthSelect");
+    // 初回は今月をデフォルト選択
+    if (!selectEl.dataset.initialized) {
+      selectEl.value = String(today.getMonth() + 1);
+      selectEl.dataset.initialized = "1";
+    }
+    const selectedMonth = parseInt(selectEl.value);
+
+    // 選択月・翌月・翌々月が対象
+    const m1 = selectedMonth;
+    const m2 = selectedMonth % 12 + 1;
+    const m3 = m2 % 12 + 1;
+    const targetMonths = [m1, m2, m3];
 
     document.getElementById("couponMonthLabel").textContent =
-      `${thisMonth}月（前後含む ${targetMonths.join('・')}月生まれの方が対象）`;
+      `${m1}月生まれ対象（有効期限：${m1}月・${m2}月・${m3}月）`;
 
-    // 有効期限：誕生月・翌月・翌々月
-    const m1 = thisMonth;
-    const m2 = thisMonth % 12 + 1;
-    const m3 = m2 % 12 + 1;
     const couponTextEl = document.getElementById("couponText");
     couponTextEl.value = `🎁 お誕生日月おめでとうございます！
 コーヒー豆増量クーポンをプレゼント🎉
