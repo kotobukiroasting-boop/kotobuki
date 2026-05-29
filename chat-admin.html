@@ -672,6 +672,8 @@
         : "";
 
       let content = "";
+      let stampHtml = "";
+
       if (msg.type === "image" && msg.imageData) {
         const safe = msg.imageData;
         content = `<img src="${safe}" onclick="document.getElementById('imgModal').classList.add('show'); document.getElementById('imgModalSrc').src=this.src">`;
@@ -682,10 +684,17 @@
         content = linkify(nl2br(escapeHtml(msg.text || "")));
       }
 
+      // クーポン使用済みスタンプ（管理者側表示）
+      if (msg.type === "coupon") {
+        stampHtml = msg.used
+          ? `<div style="text-align:center;margin-top:8px"><span style="border:2px solid #2e7d32;border-radius:20px;padding:4px 10px;color:#2e7d32;font-size:12px;display:inline-block">✅ 使用済み</span></div>`
+          : `<div style="text-align:center;margin-top:8px"><span style="border:2px solid #e74c3c;border-radius:20px;padding:4px 10px;color:#e74c3c;font-size:12px;display:inline-block">未使用</span></div>`;
+      }
+
       div.innerHTML = `
         <div class="name">${escapeHtml(msg.name)}</div>
         <div>${content}</div>
-        ${stampHtml || ""}
+        ${stampHtml}
         <div class="time">${time}</div>
       `;
       container.appendChild(div);
