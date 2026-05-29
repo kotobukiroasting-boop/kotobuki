@@ -915,7 +915,8 @@
 
   document.getElementById("couponOpenBtn").addEventListener("click", () => {
     document.getElementById("couponModal").style.display = "flex";
-    renderCouponList();
+    // モーダルが表示されてからrenderCouponListを呼ぶ
+    setTimeout(() => renderCouponList(), 50);
   });
 
   document.getElementById("couponCancelBtn").addEventListener("click", () => {
@@ -929,6 +930,7 @@
   function renderCouponList() {
     const today = new Date();
     const selectEl = document.getElementById("couponMonthSelect");
+    if (!selectEl) return; // モーダルが開いていない場合はスキップ
     // 初回は今月をデフォルト選択
     if (!selectEl.dataset.initialized) {
       selectEl.value = String(today.getMonth() + 1);
