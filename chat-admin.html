@@ -673,9 +673,21 @@
   });
 
   // ===== チャット描画 =====
+  async function markMessagesAsRead(name) {
+    const unread = allMessages.filter(m =>
+      m.role === "customer" && m.name === name && !m.readByAdmin
+    );
+    for (const msg of unread) {
+      try {
+        await updateDoc(doc(db, "messages", msg.id), { readByAdmin: true });
+      } catch(e) {}
+    }
+  }
+
   function renderChat(name) {
     const container = document.getElementById("messages");
     container.innerHTML = "";
+    markMessagesAsRead(name);
 
     allMessages.forEach(msg => {
       const isCustomerMsg = msg.role === "customer" && msg.name === name;
@@ -710,11 +722,22 @@
           : `<div style="text-align:center;margin-top:8px"><span style="border:2px solid #e74c3c;border-radius:20px;padding:4px 10px;color:#e74c3c;font-size:12px;display:inline-block">未使用</span></div>`;
       }
 
+      // 既読表示
+      let readStatus = "";
+      if (msg.role === "admin" && msg.roomId === name) {
+        readStatus = msg.readByCustomer
+          ? `<span style="font-size:10px;color:#aaa">既読</span>`
+          : `<span style="font-size:10px;color:#ccc">未読</span>`;
+      }
+
       div.innerHTML = `
         <div class="name">${escapeHtml(msg.name)}</div>
         <div>${content}</div>
         ${stampHtml}
-        <div class="time">${time}</div>
+        <div style="display:flex;justify-content:flex-end;align-items:center;gap:6px">
+          ${readStatus}
+          <div class="time">${time}</div>
+        </div>
       `;
       container.appendChild(div);
     });

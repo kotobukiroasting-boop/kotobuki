@@ -815,6 +815,17 @@
       snapshot.forEach(doc => allMsgs.push({ id: doc.id, ...doc.data() }));
       checkNewAdminMessage(allMsgs);
 
+      // スタッフのメッセージを既読にする
+      snapshot.forEach(async (docSnap) => {
+        const data = docSnap.data();
+        if (data.role === "admin" && data.roomId === userName && !data.readByCustomer) {
+          try {
+            const { updateDoc, doc: fsDoc } = await import("https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js");
+            await updateDoc(fsDoc(db, "messages", docSnap.id), { readByCustomer: true });
+          } catch(e) {}
+        }
+      });
+
       snapshot.forEach((doc) => {
         const data = doc.data();
         const isMyMessage = data.role === "customer" && data.name === userName;
@@ -867,11 +878,26 @@
           }
         }
 
+        // 既読表示
+        let readStatus = "";
+        if (data.role === "customer" && data.name === userName) {
+          readStatus = data.readByAdmin
+            ? `<div style="font-size:10px;color:#aaa;text-align:right;margin-top:2px">既読</div>`
+            : `<div style="font-size:10px;color:#ccc;text-align:right;margin-top:2px">未読</div>`;
+        } else if (data.role === "admin" && data.roomId === userName) {
+          readStatus = data.readByCustomer
+            ? `<div style="font-size:10px;color:#aaa;text-align:right;margin-top:2px">既読</div>`
+            : "";
+        }
+
         div.innerHTML = `
           <div class="name">${escapeHtml(data.name)}</div>
           <div>${content}</div>
           ${stampHtml}
-          <div class="time">${time}</div>
+          <div style="display:flex;justify-content:flex-end;align-items:center;gap:6px">
+            ${readStatus}
+            <div class="time">${time}</div>
+          </div>
         `;
         container.appendChild(div);
       });
