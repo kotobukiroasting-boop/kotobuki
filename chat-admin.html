@@ -378,22 +378,41 @@
   <div class="modal" id="couponModal" style="display:none">
     <div class="modal-box" style="width:380px;max-height:90vh;overflow-y:auto">
       <h2 style="color:#e74c3c">🎂 誕生月クーポン送信</h2>
-      <p id="couponMonthLabel" style="margin-bottom:12px"></p>
+
+      <!-- 月選択 -->
+      <div style="margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <label style="font-size:13px;font-weight:bold;color:#333">対象の誕生月：</label>
+        <select id="couponMonthSelect" style="padding:6px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;outline:none">
+          <option value="1">1月生まれ</option>
+          <option value="2">2月生まれ</option>
+          <option value="3">3月生まれ</option>
+          <option value="4">4月生まれ</option>
+          <option value="5">5月生まれ</option>
+          <option value="6">6月生まれ</option>
+          <option value="7">7月生まれ</option>
+          <option value="8">8月生まれ</option>
+          <option value="9">9月生まれ</option>
+          <option value="10">10月生まれ</option>
+          <option value="11">11月生まれ</option>
+          <option value="12">12月生まれ</option>
+        </select>
+        <button onclick="updateCouponByMonth()" style="background:#e74c3c;color:white;border:none;border-radius:8px;padding:6px 14px;font-size:13px;cursor:pointer">更新</button>
+      </div>
+      <div id="couponMonthLabel" style="margin-bottom:8px;font-size:13px;color:#666"></div>
 
       <!-- クーポン文面 -->
-      <textarea id="couponText" style="width:100%;height:100px;padding:10px;border:1px solid #ddd;border-radius:8px;font-size:13px;resize:none;outline:none;margin-bottom:10px;font-family:inherit"></textarea>
+      <textarea id="couponText" style="width:100%;height:120px;padding:10px;border:1px solid #ddd;border-radius:8px;font-size:13px;resize:none;outline:none;margin-bottom:10px;font-family:inherit"></textarea>
 
       <!-- 対象者リスト -->
       <div style="font-size:13px;font-weight:bold;color:#333;margin-bottom:8px">📋 対象者（チャット登録済みの方のみ送信）</div>
-      <div id="couponTargetList" style="max-height:200px;overflow-y:auto;border:1px solid #eee;border-radius:8px;margin-bottom:12px"></div>
-
+      <div id="couponTargetList" style="max-height:180px;overflow-y:auto;border:1px solid #eee;border-radius:8px;margin-bottom:12px"></div>
       <div id="couponCount" style="font-size:13px;color:#888;margin-bottom:12px"></div>
 
       <div style="display:flex;gap:8px;margin-bottom:8px">
         <button id="couponTabSend" onclick="showCouponTab('send')" style="flex:1;background:#e74c3c;color:white;border:none;border-radius:8px;padding:8px;cursor:pointer;font-size:13px">📤 配信</button>
         <button id="couponTabHistory" onclick="showCouponTab('history')" style="flex:1;background:#888;color:white;border:none;border-radius:8px;padding:8px;cursor:pointer;font-size:13px">📋 履歴</button>
       </div>
-      <div id="couponHistoryList" style="display:none;max-height:250px;overflow-y:auto;margin-bottom:12px"></div>
+      <div id="couponHistoryList" style="display:none;max-height:200px;overflow-y:auto;margin-bottom:12px"></div>
       <button id="couponSendBtn" style="background:linear-gradient(135deg,#e74c3c,#c0392b);margin-bottom:8px">🎂 選択した方に送信</button>
       <button id="couponCancelBtn" style="background:#aaa">キャンセル</button>
     </div>
@@ -950,6 +969,11 @@
     const couponTextEl = document.getElementById("couponText");
     couponTextEl.value = `🎁 お誕生日月おめでとうございます！
 コーヒー豆増量クーポンをプレゼント🎉
+
+【クーポン内容】
+1100円までのコーヒー豆を100g⇒200gに増量
+※1種類・100gのみ適用
+※会計2000円以上の場合にご利用いただけます
 
 有効期限：${m1}月・${m2}月・${m3}月
 ご来店の際にスタッフにお声がけください☕`;
