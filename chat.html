@@ -17,8 +17,11 @@
       font-family: 'Helvetica Neue', Arial, sans-serif;
       background: #1a0e05;
       height: 100vh;
+      height: 100dvh;
+      max-height: 100dvh;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
     }
 
     /* ヘッダー */
@@ -104,11 +107,13 @@
     #messages {
       flex: 1;
       overflow-y: auto;
+      overflow-x: hidden;
       padding: 16px;
       display: flex;
       flex-direction: column;
       gap: 8px;
       background: #1a0e05;
+      min-height: 0;
     }
 
     .message {
@@ -182,6 +187,8 @@
       background: white;
       border-top: 1px solid #e0e0e0;
       flex-shrink: 0;
+      position: relative;
+      z-index: 10;
     }
 
     .link-bar {
@@ -442,12 +449,12 @@
   </div>
 
   <!-- 返信案内バナー -->
-  <div style="background:#2c1500;color:#f5d06a;text-align:center;padding:5px 12px;font-size:11px;line-height:1.5;border-bottom:1px solid #5a2d00">
+  <div style="background:#2c1500;color:#f5d06a;text-align:center;padding:5px 12px;font-size:11px;line-height:1.5;border-bottom:1px solid #5a2d00;flex-shrink:0">
     返信は数時間かかる場合があります。時間を置いて開きなおしてご確認ください。
   </div>
 
   <!-- お知らせバナー -->
-  <div class="notice-bar" style="display:flex;align-items:center;justify-content:space-between;padding:6px 12px;font-size:12px">
+  <div class="notice-bar" style="display:flex;align-items:center;justify-content:space-between;padding:6px 12px;font-size:12px;flex-shrink:0">
     <div style="display:flex;align-items:center;gap:8px">
       <span>☕ 担当者がお返事します</span>
       <span id="currentUserName" style="font-size:11px;color:rgba(245,230,200,0.7)"></span>
@@ -456,7 +463,7 @@
   </div>
 
   <!-- SP会員バッジ -->
-  <div id="spBadge" style="margin:6px 12px 0;padding:8px 12px">
+  <div id="spBadge" style="margin:6px 12px 0;padding:8px 12px;flex-shrink:0">
     <div class="badge-row" style="gap:8px">
       <div class="badge-icon" style="font-size:20px">👑</div>
       <div class="badge-info">
