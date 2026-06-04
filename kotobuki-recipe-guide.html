@@ -308,7 +308,7 @@ footer::before{content:"";position:absolute;top:0;left:50%;transform:translateX(
     </div>
   </div>
 
-  <div class="recipe-grid reveal" id="recipe-grid"></div>
+  <div class="recipe-grid" id="recipe-grid"></div>
 
   <!-- 03 器具ガイド -->
   <section class="section-label reveal" id="sec-gear">
@@ -1547,37 +1547,48 @@ PAIRING_DATA.forEach(p => {
   tbody.appendChild(tr);
 });
 
+/* ── FILTER STATE ── */
+let currentBean   = 'all';
+let currentMethod = 'all';
+
+function applyFilters() {
+  document.querySelectorAll('.rcard').forEach(c => {
+    const roast   = c.dataset.roast;
+    const cat     = c.dataset.category;
+    const methods = (c.dataset.methods || '').split(',');
+
+    // Bean / roast filter
+    let beanOk = false;
+    if(currentBean === 'all')    beanOk = true;
+    else if(currentBean === 'light')  beanOk = roast === 'light';
+    else if(currentBean === 'medium') beanOk = roast === 'medium';
+    else if(currentBean === 'dark')   beanOk = roast === 'dark';
+    else beanOk = cat === currentBean;
+
+    // Method filter
+    const methodOk = currentMethod === 'all' || methods.includes(currentMethod);
+
+    c.classList.toggle('hidden', !(beanOk && methodOk));
+  });
+}
+
 /* ── FILTER: BEAN CATEGORY ── */
 function filterBean(cat, btn) {
   document.querySelectorAll('.bfbtn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  document.querySelectorAll('.rcard').forEach(c => {
-    const roast = c.dataset.roast;
-    let show = false;
-    if(cat === 'all') show = true;
-    else if(cat === 'light') show = roast === 'light';
-    else if(cat === 'medium') show = roast === 'medium';
-    else if(cat === 'dark') show = roast === 'dark';
-    else show = c.dataset.category === cat;
-    c.classList.toggle('hidden', !show);
-  });
+  currentBean = cat;
+  applyFilters();
 }
 
 /* ── FILTER: METHOD ── */
 function filterMethod(method) {
-  if(method === 'all') {
-    document.querySelectorAll('.rcard').forEach(c => c.classList.remove('hidden'));
-    document.querySelectorAll('.sel-card').forEach(s => s.style.outline = '');
-    return;
-  }
-  document.querySelectorAll('.rcard').forEach(c => {
-    const methods = c.dataset.methods.split(',');
-    c.classList.toggle('hidden', !methods.includes(method));
-  });
-  // Highlight selected
+  currentMethod = method;
+  // Highlight selected card
   document.querySelectorAll('.sel-card[data-method]').forEach(s => {
-    s.style.outline = s.dataset.method === method ? `1px solid ${getComputedStyle(s).getPropertyValue('--sel-color')}` : '';
+    const active = s.dataset.method === method;
+    s.style.outline = active ? `1px solid ${getComputedStyle(s).getPropertyValue('--sel-color')}` : '';
   });
+  applyFilters();
   // Smooth scroll to recipes
   document.getElementById('sec-recipes').scrollIntoView({behavior:'smooth',block:'start'});
 }
