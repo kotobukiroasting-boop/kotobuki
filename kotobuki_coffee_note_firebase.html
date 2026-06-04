@@ -1309,6 +1309,7 @@ window.startApp = async function(){
   obScreen.style.transition='';
 
   document.getElementById('screen-main').classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'instant' });
   loadFavorites();
   renderFavorites();
 
