@@ -309,6 +309,452 @@ footer::before{content:"";position:absolute;top:0;left:50%;transform:translateX(
   <p class="f-text">© KOTOBUKI ROASTERS — KOTOBUKIDIET.COM — SPECIALTY COFFEE — KAKOGAWA HYOGO</p>
 </footer>
 
+<!-- ══════════════════════════════════════
+  AI COFFEE ADVISOR フローティングUI
+══════════════════════════════════════ -->
+<style>
+/* フローティングボタン */
+.advisor-fab{
+  position:fixed;bottom:28px;right:28px;z-index:1000;
+  width:62px;height:62px;border-radius:50%;
+  background:linear-gradient(135deg,#2a1a06,#1a1000);
+  border:1px solid var(--gold);
+  box-shadow:0 4px 24px rgba(0,0,0,.6),0 0 0 0 rgba(212,160,64,.4);
+  cursor:pointer;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:2px;
+  transition:transform .2s,box-shadow .2s;
+  animation:fabPulse 3s ease-in-out infinite;
+}
+.advisor-fab:hover{transform:scale(1.08);box-shadow:0 6px 32px rgba(0,0,0,.7),0 0 0 6px rgba(212,160,64,.15)}
+@keyframes fabPulse{
+  0%,100%{box-shadow:0 4px 24px rgba(0,0,0,.6),0 0 0 0 rgba(212,160,64,.4)}
+  50%{box-shadow:0 4px 24px rgba(0,0,0,.6),0 0 0 8px rgba(212,160,64,.0)}
+}
+.advisor-fab-icon{font-size:1.4rem;line-height:1}
+.advisor-fab-label{
+  font-family:'Cinzel',serif;font-size:.38rem;letter-spacing:.15em;
+  color:var(--gold);opacity:.8;
+}
+.advisor-fab-badge{
+  position:absolute;top:-4px;right:-4px;
+  width:18px;height:18px;border-radius:50%;
+  background:var(--gold);color:#000;
+  font-family:'Cinzel',serif;font-size:.45rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  letter-spacing:0;
+}
+
+/* モーダルオーバーレイ */
+.advisor-overlay{
+  position:fixed;inset:0;z-index:999;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(4px);
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.advisor-overlay.open{opacity:1;pointer-events:all}
+
+/* チャットパネル */
+.advisor-panel{
+  position:fixed;bottom:0;right:0;z-index:1000;
+  width:min(420px,100vw);
+  height:min(680px,90vh);
+  background:var(--bg);
+  border-top:1px solid var(--border);
+  border-left:1px solid var(--border);
+  display:flex;flex-direction:column;
+  transform:translateY(110%);
+  transition:transform .4s cubic-bezier(.16,1,.3,1);
+  box-shadow:-4px 0 40px rgba(0,0,0,.5);
+}
+.advisor-panel.open{transform:translateY(0)}
+
+/* パネルヘッダー */
+.adv-header{
+  padding:14px 18px 12px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:12px;
+  flex-shrink:0;background:var(--bg);
+}
+.adv-header-mark{
+  width:30px;height:30px;border:1px solid var(--gold);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-size:.65rem;color:var(--gold);flex-shrink:0;
+}
+.adv-header-title{font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.2em;color:var(--gold)}
+.adv-header-sub{font-size:.58rem;letter-spacing:.1em;color:var(--muted);margin-top:2px}
+.adv-btn{
+  font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.15em;
+  color:var(--dim);background:none;border:1px solid var(--border);
+  padding:5px 9px;cursor:pointer;transition:color .2s,border-color .2s;
+  white-space:nowrap;
+}
+.adv-btn:hover{color:var(--gold);border-color:var(--gold)}
+.adv-close{
+  margin-left:auto;font-size:1rem;color:var(--muted);
+  background:none;border:none;cursor:pointer;
+  padding:4px 8px;transition:color .2s;line-height:1;
+}
+.adv-close:hover{color:var(--cream)}
+
+/* チャットエリア */
+.adv-chat{
+  flex:1;overflow-y:auto;padding:18px 16px;
+  display:flex;flex-direction:column;gap:14px;
+  scrollbar-width:thin;scrollbar-color:var(--border) transparent;
+}
+.adv-chat::-webkit-scrollbar{width:3px}
+.adv-chat::-webkit-scrollbar-thumb{background:var(--border)}
+
+/* バブル */
+.adv-bubble{max-width:88%;animation:advIn .3s cubic-bezier(.16,1,.3,1) both}
+@keyframes advIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.adv-bubble-ai{align-self:flex-start}
+.adv-bubble-ai .adv-inner{
+  background:var(--s1);border:1px solid var(--border);
+  padding:11px 14px;font-size:.78rem;line-height:1.8;color:var(--cream);
+  position:relative;
+}
+.adv-bubble-ai .adv-inner::before{
+  content:'K';position:absolute;top:-9px;left:12px;
+  width:18px;height:18px;border-radius:50%;
+  background:var(--gold);color:#000;
+  font-family:'Cinzel',serif;font-size:.5rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.adv-bubble-user{align-self:flex-end}
+.adv-bubble-user .adv-inner{
+  background:linear-gradient(135deg,#2a1e0a,#1a1408);
+  border:1px solid var(--gold);
+  padding:10px 14px;font-size:.78rem;line-height:1.75;color:var(--cream);
+}
+
+/* タイピング */
+.adv-typing{align-self:flex-start}
+.adv-typing .adv-inner{background:var(--s1);border:1px solid var(--border);padding:12px 16px;display:flex;gap:4px;align-items:center}
+.adv-tdot{width:5px;height:5px;border-radius:50%;background:var(--muted);animation:tPulse 1.2s ease-in-out infinite}
+.adv-tdot:nth-child(2){animation-delay:.2s}
+.adv-tdot:nth-child(3){animation-delay:.4s}
+@keyframes tPulse{0%,60%,100%{transform:scale(1);opacity:.4}30%{transform:scale(1.3);opacity:1}}
+
+/* 選択肢 */
+.adv-choices{display:flex;flex-wrap:wrap;gap:6px;align-self:flex-start;max-width:96%;animation:advIn .35s .1s both}
+.adv-choice{
+  font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.1em;
+  padding:7px 12px;border:1px solid var(--border);
+  background:var(--s1);color:var(--muted);cursor:pointer;
+  transition:border-color .2s,color .2s,background .2s;
+  text-transform:uppercase;
+}
+.adv-choice:hover{border-color:var(--gold);color:var(--cream);background:var(--s2)}
+
+/* 結果カード */
+.adv-results{display:flex;flex-direction:column;gap:8px;align-self:stretch;animation:advIn .4s .1s both}
+.adv-result-card{
+  background:var(--s1);border:1px solid var(--border);
+  padding:11px 13px;display:flex;gap:10px;align-items:flex-start;
+  text-decoration:none;color:inherit;
+  transition:background .2s,border-color .2s;
+  position:relative;overflow:hidden;
+}
+.adv-result-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--gold)}
+.adv-result-card:hover{background:var(--s2);border-color:var(--gold)}
+.adv-rank{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--gold);opacity:.35;line-height:1;flex-shrink:0;width:22px}
+.adv-rbody{flex:1;min-width:0}
+.adv-rname{font-family:'Noto Serif JP',serif;font-weight:300;font-size:.78rem;line-height:1.5;color:var(--cream);margin-bottom:4px}
+.adv-rmeta{font-size:.6rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:5px;margin-bottom:5px}
+.adv-rmeta span{background:var(--s2);padding:1px 7px;border:1px solid var(--border)}
+.adv-rmeters{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:5px}
+.adv-meter{display:flex;align-items:center;gap:3px;font-size:.54rem;color:var(--muted)}
+.adv-mdots{display:flex;gap:2px}
+.adv-mdot{width:5px;height:5px;border-radius:50%;border:1px solid var(--dim)}
+.adv-mdot.mb{background:#c87030;border-color:#c87030}
+.adv-mdot.ma{background:#5090c8;border-color:#5090c8}
+.adv-mdot.ms{background:#d060a0;border-color:#d060a0}
+.adv-mdot.mo{background:#888;border-color:#888}
+.adv-rreason{font-size:.65rem;line-height:1.65;color:var(--muted);padding-top:5px;border-top:1px solid var(--border)}
+.adv-rarrow{font-size:.7rem;color:var(--gold);opacity:.4;flex-shrink:0;align-self:center;transition:opacity .2s}
+.adv-result-card:hover .adv-rarrow{opacity:1}
+
+/* 入力エリア */
+.adv-input-area{
+  padding:10px 14px;border-top:1px solid var(--border);
+  display:none;gap:8px;align-items:center;flex-shrink:0;
+}
+.adv-input-area.show{display:flex}
+.adv-input{
+  flex:1;background:var(--s1);border:1px solid var(--border);
+  padding:9px 12px;color:var(--cream);font-size:.75rem;
+  font-family:'Noto Sans JP',sans-serif;font-weight:300;
+  outline:none;transition:border-color .2s;
+}
+.adv-input:focus{border-color:var(--gold)}
+.adv-input::placeholder{color:var(--dim)}
+.adv-send{
+  font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.15em;
+  padding:9px 14px;background:var(--gold);color:#000;
+  border:none;cursor:pointer;transition:background .2s;flex-shrink:0;
+}
+.adv-send:hover{background:var(--gold2)}
+.adv-send:disabled{background:var(--dim);cursor:not-allowed}
+
+@media(max-width:480px){
+  .advisor-panel{width:100vw;height:85vh;border-left:none}
+  .advisor-fab{bottom:20px;right:20px;width:56px;height:56px}
+}
+</style>
+
+<!-- フローティングボタン -->
+<div class="advisor-fab" onclick="advisorOpen()" id="advisorFab">
+  <span class="advisor-fab-icon">☕</span>
+  <span class="advisor-fab-label">ADVISOR</span>
+  <span class="advisor-fab-badge">AI</span>
+</div>
+
+<!-- オーバーレイ -->
+<div class="advisor-overlay" id="advisorOverlay" onclick="advisorClose()"></div>
+
+<!-- チャットパネル -->
+<div class="advisor-panel" id="advisorPanel">
+  <div class="adv-header">
+    <div class="adv-header-mark">K</div>
+    <div>
+      <div class="adv-header-title">COFFEE ADVISOR</div>
+      <div class="adv-header-sub">あなたにぴったりの豆をご提案します</div>
+    </div>
+    <button class="adv-btn" onclick="advisorRestart()">↺ リセット</button>
+    <button class="adv-close" onclick="advisorClose()">✕</button>
+  </div>
+  <div class="adv-chat" id="advChat"></div>
+  <div class="adv-input-area" id="advInputArea">
+    <input class="adv-input" id="advInput" placeholder="メッセージを入力..." onkeydown="if(event.key==='Enter')advSendFree()">
+    <button class="adv-send" id="advSendBtn" onclick="advSendFree()">SEND</button>
+  </div>
+</div>
+
+<script>
+/* ══ ADVISOR ════════════════════════════════ */
+(function(){
+
+const ADV_PRODUCTS = CATEGORIES.reduce((arr,cat)=>{
+  cat.items.forEach(item=>{
+    arr.push({
+      name:item.name, url:item.url||'#',
+      price:item.price, unit:item.unit,
+      roast:item.roast, country:item.country, flag:item.flag||'',
+      bitter:item.bitter||0, acid:item.acid||0,
+      sweet:item.sweet||0, body:item.body||0,
+      flavors:item.flavors||[], desc:item.desc||'',
+    });
+  });
+  return arr;
+},[]);
+
+const ADV_SYSTEM = `あなたはKotobuki Roasters（寿珈琲焙煎所）の専門コーヒーアドバイザーです。
+お客様との自然な会話を通じて好みを把握し、在庫商品の中から最適な3種類を提案してください。
+
+【会話の進め方】
+- 1回のメッセージで1〜2つの質問だけ。絶対に全部一気に聞かない
+- 3〜4往復で好みを絞り込み、提案に移る
+- 敬語で丁寧に、でもフレンドリーに
+- 専門用語は使いすぎない
+- 回答に選択肢を使う場合は [CHOICES] タグで指定する
+
+【聞くべき項目（全部聞かなくてよい、流れで判断）】
+1. どんなシーンで飲むか（朝/仕事中/ゆっくり/アイスで/など）
+2. 苦味の好み（強め/弱め/ミルク入れるか）
+3. フレーバーの方向性（フルーティ/チョコ系/花系/スパイシーなど）
+4. 予算感（手軽に/特別な一杯として）
+5. カフェインが気になるか
+
+【選択肢の書き方】
+[CHOICES]選択肢1|選択肢2|選択肢3[/CHOICES]
+※選択肢は2〜4個まで
+
+【提案フェーズ】
+好みが十分つかめたら [RECOMMEND] タグで商品名を3つ指定する。
+必ず下記の在庫商品リストから選ぶこと。
+[RECOMMEND]商品名1|商品名2|商品名3[/RECOMMEND]
+提案後は各商品を一言ずつ簡潔に説明する（箇条書きで）。
+
+【在庫商品リスト】
+${ADV_PRODUCTS.map(p=>`・${p.name}（${p.roast}、酸味${p.acid}/甘み${p.sweet}/苦味${p.bitter}/濃度${p.body}、${p.flavors.join('/')}）`).join('\n')}`;
+
+const advHistory = [];
+const advChat    = document.getElementById('advChat');
+const advInput   = document.getElementById('advInput');
+const advSendBtn = document.getElementById('advSendBtn');
+
+// ── パネル開閉 ──
+window.advisorOpen = function(){
+  document.getElementById('advisorPanel').classList.add('open');
+  document.getElementById('advisorOverlay').classList.add('open');
+  document.getElementById('advisorFab').style.display='none';
+  if(advChat.children.length===0) advStart();
+};
+window.advisorClose = function(){
+  document.getElementById('advisorPanel').classList.remove('open');
+  document.getElementById('advisorOverlay').classList.remove('open');
+  document.getElementById('advisorFab').style.display='flex';
+};
+window.advisorRestart = function(){
+  advHistory.length=0;
+  advChat.innerHTML='';
+  document.getElementById('advInputArea').classList.remove('show');
+  advStart();
+};
+
+// ── バブル追加 ──
+function advBubble(role, html){
+  const wrap=document.createElement('div');
+  wrap.className=`adv-bubble adv-bubble-${role}`;
+  const inner=document.createElement('div');
+  inner.className='adv-inner';
+  inner.innerHTML=html;
+  wrap.appendChild(inner);
+  advChat.appendChild(wrap);
+  advChat.scrollTop=advChat.scrollHeight;
+  return inner;
+}
+
+function advTyping(){
+  const wrap=document.createElement('div');
+  wrap.className='adv-typing';
+  wrap.innerHTML='<div class="adv-inner"><span class="adv-tdot"></span><span class="adv-tdot"></span><span class="adv-tdot"></span></div>';
+  advChat.appendChild(wrap);
+  advChat.scrollTop=advChat.scrollHeight;
+  return wrap;
+}
+
+function advChoices(list, cb){
+  const wrap=document.createElement('div');
+  wrap.className='adv-choices';
+  list.forEach(c=>{
+    const btn=document.createElement('button');
+    btn.className='adv-choice';
+    btn.textContent=c;
+    btn.onclick=()=>{ wrap.remove(); cb(c); };
+    wrap.appendChild(btn);
+  });
+  advChat.appendChild(wrap);
+  advChat.scrollTop=advChat.scrollHeight;
+}
+
+function advMeter(label,cls,val){
+  const dots=Array.from({length:5},(_,i)=>`<span class="adv-mdot${i<val?' '+cls:''}"></span>`).join('');
+  return `<div class="adv-meter"><span>${label}</span><div class="adv-mdots">${dots}</div></div>`;
+}
+
+function advResultCards(names, bodyText){
+  const wrap=document.createElement('div');
+  wrap.className='adv-results';
+  const lines=(bodyText||'').split('\n').filter(l=>l.trim());
+  names.forEach((name,idx)=>{
+    const p=ADV_PRODUCTS.find(x=>x.name===name||name.includes(x.name.slice(0,8))||x.name.includes(name.slice(0,8)));
+    if(!p) return;
+    const reason=lines[idx]?lines[idx].replace(/^[・\-\d．.]\s*/,''):p.desc;
+    const card=document.createElement('a');
+    card.className='adv-result-card';
+    card.href=p.url; card.target='_blank'; card.rel='noopener noreferrer';
+    card.innerHTML=`
+      <div class="adv-rank">${idx+1}</div>
+      <div class="adv-rbody">
+        <div class="adv-rname">${p.flag} ${p.name}</div>
+        <div class="adv-rmeta"><span>${p.roast}</span><span>${p.price}/${p.unit}</span></div>
+        <div class="adv-rmeters">
+          ${advMeter('苦','mb',p.bitter)}
+          ${advMeter('酸','ma',p.acid)}
+          ${advMeter('甘','ms',p.sweet)}
+          ${advMeter('濃','mo',p.body)}
+        </div>
+        <div class="adv-rreason">${reason}</div>
+      </div>
+      <div class="adv-rarrow">→</div>`;
+    wrap.appendChild(card);
+  });
+  advChat.appendChild(wrap);
+  advChat.scrollTop=advChat.scrollHeight;
+}
+
+// ── API呼び出し ──
+async function advCall(userMsg){
+  advHistory.push({role:'user',content:userMsg});
+  const typing=advTyping();
+  advSendBtn.disabled=true;
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:ADV_SYSTEM,
+        messages:advHistory,
+      })
+    });
+    const data=await res.json();
+    const raw=data.content?.[0]?.text||'エラーが発生しました。';
+    advHistory.push({role:'assistant',content:raw});
+    typing.remove();
+    advRender(raw);
+  }catch(e){
+    typing.remove();
+    advBubble('ai','申し訳ありません、通信エラーが発生しました。もう一度お試しください。');
+  }finally{
+    advSendBtn.disabled=false;
+  }
+}
+
+// ── レスポンス描画 ──
+function advRender(raw){
+  const recM=raw.match(/\[RECOMMEND\]([\s\S]*?)\[\/RECOMMEND\]/);
+  const choM=raw.match(/\[CHOICES\]([\s\S]*?)\[\/CHOICES\]/);
+  let text=raw.replace(/\[RECOMMEND\][\s\S]*?\[\/RECOMMEND\]/g,'')
+              .replace(/\[CHOICES\][\s\S]*?\[\/CHOICES\]/g,'').trim();
+
+  if(text) advBubble('ai',text.replace(/\n/g,'<br>'));
+
+  if(recM){
+    const names=recM[1].split('|').map(s=>s.trim());
+    advResultCards(names,text);
+    setTimeout(()=>{
+      advBubble('ai','気になる豆はありましたか？<br>カードをタップするとショップページへ移動できます。');
+    },600);
+  }else if(choM){
+    const choices=choM[1].split('|').map(s=>s.trim());
+    advChoices(choices,txt=>{ advBubble('user',txt); advCall(txt); });
+  }else{
+    document.getElementById('advInputArea').classList.add('show');
+    advInput.focus();
+  }
+}
+
+// ── 自由入力送信 ──
+window.advSendFree=function(){
+  const msg=advInput.value.trim();
+  if(!msg) return;
+  advInput.value='';
+  document.getElementById('advInputArea').classList.remove('show');
+  advBubble('user',msg);
+  advCall(msg);
+};
+
+// ── 開始メッセージ ──
+function advStart(){
+  setTimeout(()=>{
+    advBubble('ai',
+      'こんにちは！Kotobuki Roastersの<br>コーヒーアドバイザーです ☕<br><br>'+
+      'いくつか質問に答えていただくだけで、<br>ぴったりの豆を3種類ご提案します。<br><br>'+
+      'まず、どんなシーンで飲まれますか？'
+    );
+    advChoices(
+      ['朝の目覚めに','仕事・勉強中に','ゆっくりリラックス','食後に','アイスコーヒーで'],
+      txt=>{ advBubble('user',txt); advCall(txt); }
+    );
+  },300);
+}
+
+})(); // ADVISOR END
+</script>
+
 <script>
 /* ═══════════════════════════════════════════
    PRODUCT DATA
