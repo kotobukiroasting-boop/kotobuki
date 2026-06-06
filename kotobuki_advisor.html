@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kotobuki Roasters — Coffee Advisor</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Noto+Serif+JP:wght@200;300;400&family=Bebas+Neue&family=Noto+Sans+JP:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070604;--s1:#141210;--s2:#1e1c14;
+  --border:#3a3422;--gold:#d4a040;--gold2:#f5c050;
+  --cream:#f8f2e4;--muted:#b09878;--dim:#6a5a42;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{
+  background:var(--bg);color:var(--cream);
+  font-family:"Noto Sans JP",sans-serif;font-weight:300;
+  display:flex;flex-direction:column;overflow:hidden;
+}
+
+/* ── ヘッダー ── */
+.header{
+  padding:16px 24px 14px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:14px;
+  background:var(--bg);flex-shrink:0;
+}
+.header-mark{
+  width:34px;height:34px;border:1px solid var(--gold);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:"Cinzel",serif;font-size:.7rem;color:var(--gold);flex-shrink:0;
+}
+.header-title{
+  font-family:"Cinzel",serif;font-size:.8rem;letter-spacing:.25em;color:var(--gold);
+}
+.header-sub{
+  font-size:.62rem;letter-spacing:.15em;color:var(--muted);margin-top:2px;
+}
+.header-restart{
+  margin-left:auto;font-family:"Cinzel",serif;font-size:.55rem;
+  letter-spacing:.2em;color:var(--dim);background:none;border:1px solid var(--border);
+  padding:6px 12px;cursor:pointer;transition:color .2s,border-color .2s;
+}
+.header-restart:hover{color:var(--gold);border-color:var(--gold)}
+
+/* ── チャットエリア ── */
+.chat-area{
+  flex:1;overflow-y:auto;padding:24px 20px;
+  display:flex;flex-direction:column;gap:16px;
+  scrollbar-width:thin;scrollbar-color:var(--border) transparent;
+}
+.chat-area::-webkit-scrollbar{width:4px}
+.chat-area::-webkit-scrollbar-track{background:transparent}
+.chat-area::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+/* バブル共通 */
+.bubble{
+  max-width:82%;animation:bubbleIn .3s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes bubbleIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* AIバブル */
+.bubble-ai{align-self:flex-start}
+.bubble-ai .bubble-inner{
+  background:var(--s1);border:1px solid var(--border);
+  padding:14px 18px;
+  font-size:.82rem;line-height:1.85;color:var(--cream);
+  position:relative;
+}
+.bubble-ai .bubble-inner::before{
+  content:'K';
+  position:absolute;top:-10px;left:14px;
+  width:20px;height:20px;border-radius:50%;
+  background:var(--gold);color:#000;
+  font-family:"Cinzel",serif;font-size:.55rem;font-weight:600;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ユーザーバブル */
+.bubble-user{align-self:flex-end}
+.bubble-user .bubble-inner{
+  background:linear-gradient(135deg,#2a1e0a,#1a1408);
+  border:1px solid var(--gold);
+  padding:12px 16px;
+  font-size:.82rem;line-height:1.75;color:var(--cream);
+}
+
+/* タイピングインジケーター */
+.typing{align-self:flex-start}
+.typing .bubble-inner{
+  background:var(--s1);border:1px solid var(--border);
+  padding:14px 20px;display:flex;gap:5px;align-items:center;
+}
+.typing-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--muted);
+  animation:typingPulse 1.2s ease-in-out infinite;
+}
+.typing-dot:nth-child(2){animation-delay:.2s}
+.typing-dot:nth-child(3){animation-delay:.4s}
+@keyframes typingPulse{0%,60%,100%{transform:scale(1);opacity:.4}30%{transform:scale(1.3);opacity:1}}
+
+/* 選択肢ボタン */
+.choices{
+  display:flex;flex-wrap:wrap;gap:8px;
+  align-self:flex-start;max-width:90%;
+  animation:bubbleIn .35s .15s cubic-bezier(.16,1,.3,1) both;
+}
+.choice-btn{
+  font-family:"Cinzel",serif;font-size:.62rem;letter-spacing:.12em;
+  padding:9px 16px;border:1px solid var(--border);
+  background:var(--s1);color:var(--muted);cursor:pointer;
+  transition:border-color .2s,color .2s,background .2s;
+  text-transform:uppercase;
+}
+.choice-btn:hover{border-color:var(--gold);color:var(--cream);background:var(--s2)}
+
+/* 結果カード */
+.result-cards{
+  display:flex;flex-direction:column;gap:10px;
+  align-self:flex-start;width:100%;max-width:520px;
+  animation:bubbleIn .4s .1s cubic-bezier(.16,1,.3,1) both;
+}
+.result-card{
+  background:var(--s1);border:1px solid var(--border);
+  padding:14px 16px;display:flex;gap:14px;align-items:flex-start;
+  text-decoration:none;color:inherit;
+  transition:background .2s,border-color .2s;
+  position:relative;overflow:hidden;
+}
+.result-card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:var(--gold);
+}
+.result-card:hover{background:var(--s2);border-color:var(--gold)}
+.result-rank{
+  font-family:"Bebas Neue",sans-serif;font-size:2rem;
+  color:var(--gold);opacity:.4;line-height:1;flex-shrink:0;width:28px;
+}
+.result-body{flex:1}
+.result-name{
+  font-family:"Noto Serif JP",serif;font-weight:300;
+  font-size:.85rem;line-height:1.5;color:var(--cream);margin-bottom:5px;
+}
+.result-meta{
+  font-size:.65rem;letter-spacing:.08em;color:var(--muted);
+  display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;
+}
+.result-meta span{
+  background:var(--s2);padding:2px 8px;border:1px solid var(--border);
+}
+.result-meters{display:flex;gap:10px;flex-wrap:wrap}
+.meter{display:flex;align-items:center;gap:4px;font-size:.58rem;color:var(--muted)}
+.meter-dots{display:flex;gap:2px}
+.mdot{width:6px;height:6px;border-radius:50%;border:1px solid var(--dim)}
+.mdot.on-bitter{background:#c87030;border-color:#c87030}
+.mdot.on-acid  {background:#5090c8;border-color:#5090c8}
+.mdot.on-sweet {background:#d060a0;border-color:#d060a0}
+.mdot.on-body  {background:#c87030;border-color:#808080}
+.result-reason{
+  font-size:.7rem;line-height:1.7;color:var(--muted);
+  margin-top:6px;padding-top:6px;border-top:1px solid var(--border);
+}
+.result-arrow{
+  font-size:.7rem;color:var(--gold);opacity:.5;flex-shrink:0;
+  align-self:center;transition:opacity .2s;
+}
+.result-card:hover .result-arrow{opacity:1}
+
+/* 入力エリア（フリー入力用） */
+.input-area{
+  padding:14px 20px;border-top:1px solid var(--border);
+  display:none;gap:10px;align-items:center;flex-shrink:0;
+}
+.input-area.show{display:flex}
+.input-field{
+  flex:1;background:var(--s1);border:1px solid var(--border);
+  padding:10px 14px;color:var(--cream);font-size:.8rem;
+  font-family:"Noto Sans JP",sans-serif;font-weight:300;
+  outline:none;transition:border-color .2s;
+}
+.input-field:focus{border-color:var(--gold)}
+.input-field::placeholder{color:var(--dim)}
+.input-send{
+  font-family:"Cinzel",serif;font-size:.6rem;letter-spacing:.2em;
+  padding:10px 18px;background:var(--gold);color:#000;
+  border:none;cursor:pointer;transition:background .2s;
+  flex-shrink:0;
+}
+.input-send:hover{background:var(--gold2)}
+.input-send:disabled{background:var(--dim);cursor:not-allowed}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-mark">K</div>
+  <div>
+    <div class="header-title">COFFEE ADVISOR</div>
+    <div class="header-sub">あなたにぴったりの豆をご提案します</div>
+  </div>
+  <button class="header-restart" onclick="restart()">↺ はじめから</button>
+</div>
+
+<div class="chat-area" id="chatArea"></div>
+
+<div class="input-area" id="inputArea">
+  <input class="input-field" id="inputField" placeholder="メッセージを入力..." onkeydown="if(event.key==='Enter')sendFree()">
+  <button class="input-send" id="sendBtn" onclick="sendFree()">SEND</button>
+</div>
+
+<script>
+/* ══════════════════════════════════
+   商品データ
+══════════════════════════════════ */
+const PRODUCTS = [
+  {name:'WUSH WUSH カッファG1 ウォッシュド',url:'https://www.kotobukidiet.com/product-page/wush-wush-カッファg1-ウォッシュド',price:'¥1,100',unit:'100g',roast:'浅煎り',bitter:1,acid:4,sweet:4,body:2,flavors:['Citrus','Raspberry','Blacktea'],country:'エチオピア',flag:'🇪🇹',desc:'シトラスや赤系果実の爽やかなフレーバー。紅茶のようなアロマが特徴的です。'},
+  {name:'エチオピア アナソラ アナエロビック',url:'https://www.kotobukidiet.com/product-page/エチオピア-アナソラ-アナエロビック',price:'¥1,100',unit:'100g',roast:'浅煎り',bitter:1,acid:3,sweet:3,body:4,flavors:['Red Wine','Blueberry','Fig'],country:'エチオピア',flag:'🇪🇹',desc:'レッドワイン・ブルーベリー・イチジクなど華やかで強度あるフレーバー。'},
+  {name:'モカ・ヘレフG１「ウォッシュド精製」',url:'https://www.kotobukidiet.com/product-page/モカ-ヘレフg１-ウォッシュド精製',price:'¥1,100',unit:'100g',roast:'浅煎り',bitter:1,acid:4,sweet:3,body:1,flavors:['Citrus','Raspberry','Grape','Peach'],country:'エチオピア',flag:'🇪🇹',desc:'クリーンな味わいで、シトラスフルーツやピーチのようなスッキリとした風味。ダイレクトトレード。'},
+  {name:'モカ・ヘレフG１「ナチュラル精製」',url:'https://www.kotobukidiet.com/product-page/モカ-ヘレフg１-ナチュラル精製',price:'¥1,100',unit:'100g',roast:'浅煎り',bitter:1,acid:3,sweet:4,body:4,flavors:['Berry','Tropical Fruit','Honey','Chocolate'],country:'エチオピア',flag:'🇪🇹',desc:'ナチュラル精製の豊かなボディ。ウォッシュドと飲み比べると精製の違いを体感できます。ダイレクトトレード。'},
+  {name:'コロンビア ゲイシャ サーマルショック',url:'https://www.kotobukidiet.com/product-page/コロンビア-ゲイシャ-サーマルショック',price:'¥1,200',unit:'50g',roast:'浅煎り',bitter:1,acid:3,sweet:5,body:3,flavors:['Jasmine','Orange Blossom','Bergamot','White Peach'],country:'コロンビア',flag:'🇨🇴',desc:'ゲイシャ特有の華やかさ。透明感ある酸とシルキーな口当たり。'},
+  {name:'コロンビア アプリコットパンチ',url:'https://www.kotobukidiet.com/product-page/コロンビア-アプリコットパンチ-apricot-punch',price:'¥1,200',unit:'50g',roast:'浅煎り',bitter:1,acid:3,sweet:5,body:3,flavors:['Apricot','Tropical Fruit','Citrus'],country:'コロンビア',flag:'🇨🇴',desc:'アプリコットのパンチが効いた個性的なカップ。トロピカルフルーツのジューシーさ。'},
+  {name:'COLOMBIA Uba NITRO-WASH',url:'https://www.kotobukidiet.com/product-page/colombia-uba-nitro-wash',price:'¥1,900',unit:'50g',roast:'浅煎り',bitter:1,acid:3,sweet:5,body:2,flavors:['Tropical Fruit','Floral','Citrus'],country:'コロンビア',flag:'🇨🇴',desc:'窒素ガスを使用した革新的NITRO-WASHプロセス。SCAJ2025提供豆。'},
+  {name:'エルディビソ サーマルショック',url:'https://www.kotobukidiet.com/product-page/エルディビソ-サーマルショック',price:'¥1,300',unit:'50g',roast:'浅煎り',bitter:1,acid:3,sweet:5,body:2,flavors:['Floral','Stone Fruit','Citrus'],country:'コロンビア',flag:'🇨🇴',desc:'サーマルショックプロセスが生み出すクリーンさと立体感あるフレーバー。SCAJ2025。'},
+  {name:'ラス・アギラス SIDRA WASHED',url:'https://www.kotobukidiet.com/product-page/ラス-アギラス-sidra-washed',price:'¥1,400',unit:'100g',roast:'浅煎り',bitter:1,acid:4,sweet:3,body:1,flavors:['Berry','Floral','Citrus','Tea'],country:'コロンビア',flag:'🇨🇴',desc:'希少なSidra品種。フローラルとベリーが複雑に絡み合う上品な味わい。'},
+  {name:'コロンビア ジューシーグレープ',url:'https://www.kotobukidiet.com/product-page/コロンビア-ジューシーグレープ',price:'¥1,150',unit:'50g',roast:'浅煎り',bitter:1,acid:2,sweet:4,body:3,flavors:['Grape','Berry','Juicy'],country:'コロンビア',flag:'🇨🇴',desc:'ジューシーなグレープのフレーバーが名前そのままに広がる。'},
+  {name:'アカシアヒルズ パカマラ',url:'https://www.kotobukidiet.com/product-page/アカシアヒルズ-パカマラ',price:'¥1,100',unit:'100g',roast:'浅煎り',bitter:1,acid:4,sweet:3,body:1,flavors:['Floral','Citrus','Honey','Tropical Fruit'],country:'タンザニア',flag:'🇹🇿',desc:'パカマラ種特有の大粒の豆から生まれる豊かなボディとフローラルアロマ。'},
+  {name:'シナモン ラ・ピラグア コロンビア',url:'https://www.kotobukidiet.com/product-page/シナモン-ラ-ピラグア-コロンビア',price:'¥1,400',unit:'100g',roast:'中煎り',bitter:2,acid:3,sweet:3,body:4,flavors:['Cinnamon','Spice','Caramel','Berry'],country:'コロンビア',flag:'🇨🇴',desc:'シナモンをインフューズドした個性的な一杯。スパイシーなシナモンの香りとコーヒーの甘みが見事に融合。'},
+  {name:'コロンビア ゲイシャ ピーチ',url:'https://www.kotobukidiet.com/product-page/コロンビア-ゲイシャ-ピーチ',price:'¥1,200',unit:'50g',roast:'浅煎り',bitter:1,acid:3,sweet:5,body:3,flavors:['Peach','Floral','Bergamot','Honey'],country:'コロンビア',flag:'🇨🇴',desc:'ゲイシャ種のフローラルな特性に、アナエロビックのピーチフレーバーが重なる贅沢な一杯。'},
+  {name:'日本初登場 ワイニーフラワー',url:'https://www.kotobukidiet.com/product-page/7-6-7-7-限定販売-もうひとつの日本初登場-ワイニーフラワーコロンビア',price:'¥2,500',unit:'50g',roast:'浅煎り',bitter:1,acid:3,sweet:4,body:1,flavors:['Red Wine','Floral','Berry','Rose'],country:'コロンビア',flag:'🇨🇴',desc:'日本初登場。ワインのような複雑なフレーバーとフローラルな華やかさが共存。'},
+  {name:'ペルラ・デ・オトゥン SUDAN RUMME',url:'https://www.kotobukidiet.com/product-page/ペルラ-デ-オトゥン-sudan-rumme',price:'¥2,250',unit:'50g',roast:'浅煎り',bitter:1,acid:3,sweet:5,body:4,flavors:['Tropical Fruit','Berry','Floral','Honey'],country:'コロンビア',flag:'🇨🇴',desc:'超希少品種Sudan Rumme。流通量が極めて少なく、手に入れること自体が希少体験。'},
+  {name:'コロンビア スイートベリー',url:'https://www.kotobukidiet.com/product-page/コロンビア-スイートベリー-200g',price:'¥1,600',unit:'200g',roast:'深煎り',bitter:3,acid:1,sweet:2,body:3,flavors:['Berry','Honey','Caramel','Chocolate'],country:'コロンビア',flag:'🇨🇴',desc:'甘くジューシーなベリーのフレーバーが広がる飲みやすい一杯。'},
+  {name:'ブラジル ゲイシャ カーボニックマセレーション',url:'https://www.kotobukidiet.com/product-page/ブラジル-ゲイシャ-カーボニックマセレーション',price:'¥1,150',unit:'50g',roast:'浅煎り',bitter:1,acid:2,sweet:4,body:2,flavors:['Strawberry','Mango','Lychee','Honey','Caramel'],country:'ブラジル',flag:'🇧🇷',desc:'密閉環境で発酵。ナチュラルの豊かなボディに発酵由来の華やかさ。'},
+  {name:'ブラジル セーハ・ド・ボネ',url:'https://www.kotobukidiet.com/product-page/ブラジル-セーハ-ド-ボネ-1',price:'¥1,800',unit:'200g',roast:'中煎り',bitter:2,acid:2,sweet:3,body:2,flavors:['Chocolate','Caramel','Nutty','Berry'],country:'ブラジル',flag:'🇧🇷',desc:'ナチュラル精製の豊かなボディと甘み。チョコレートとキャラメルの安定した味わい。'},
+  {name:'ブラジル ロブスタ コニロン',url:'https://www.kotobukidiet.com/product-page/ブラジル-ロブスタ-コニロン',price:'¥1,370',unit:'250g',roast:'深煎り',bitter:4,acid:1,sweet:1,body:3,flavors:['Chocolate','Spice','Nutty'],country:'ブラジル',flag:'🇧🇷',desc:'力強いボディと苦味。エスプレッソブレンドにも最適。'},
+  {name:'ブラジル カルモエステート',url:'https://www.kotobukidiet.com/product-page/ブラジル-カルモエステート',price:'¥1,800',unit:'200g',roast:'中煎り',bitter:2,acid:2,sweet:3,body:2,flavors:['Chocolate','Caramel','Almond','Honey'],country:'ブラジル',flag:'🇧🇷',desc:'バランスのよい甘みとコク。毎日飲みたくなる安定感。'},
+  {name:'Brazil コヘゴ・ダ・リベルダージ COE2023 第5位',url:'https://www.kotobukidiet.com/product-page/brazil-コヘゴ-ダ-リベルダージ-coe2023-第5位',price:'¥1,150',unit:'50g',roast:'浅煎り',bitter:1,acid:2,sweet:3,body:4,flavors:['Berry','Caramel','Floral','Honey'],country:'ブラジル',flag:'🇧🇷',desc:'2023年カップオブエクセレンス第5位。国際審査員が認めた卓越した品質。'},
+  {name:'オーロヴェルデ ナチュラル COE2022 第3位',url:'https://www.kotobukidiet.com/product-page/オークションロット-オーロヴェルデ-ナチュラル',price:'¥1,150',unit:'50g',roast:'浅煎り',bitter:1,acid:2,sweet:4,body:2,flavors:['Berry','Floral','Caramel','Chocolate'],country:'ブラジル',flag:'🇧🇷',desc:'2022年カップオブエクセレンス第3位。希少なアワードロット。'},
+  {name:'ルワンダ ニャマシェケ レッドブルボン',url:'https://www.kotobukidiet.com/product-page/ルワンダ-ニャマシェケ-レッドブルボン',price:'¥1,100',unit:'100g',roast:'中煎り',bitter:2,acid:2,sweet:3,body:4,flavors:['Berry','Citrus','Floral','Honey'],country:'ルワンダ',flag:'🇷🇼',desc:'華やかなベリーとフローラルのフレーバーが調和する上品な一杯。'},
+  {name:'パナマ グラン・デル・バル',url:'https://www.kotobukidiet.com/product-page/パナマ-グラン-デル-バル',price:'¥1,100',unit:'100g',roast:'浅煎り',bitter:1,acid:3,sweet:4,body:3,flavors:['Floral','Citrus','Stone Fruit','Tea'],country:'パナマ',flag:'🇵🇦',desc:'クリーンで透明感のある味わい。フローラルとシトラスが美しく溶け込んでいます。'},
+  {name:'ウガンダ ニャビロンゴ アナエロビック',url:'https://www.kotobukidiet.com/product-page/ウガンダ-ニャビロンゴ-アナエロビック',price:'¥1,100',unit:'100g',roast:'浅煎り',bitter:1,acid:3,sweet:3,body:4,flavors:['Tropical Fruit','Berry','Red Wine','Honey'],country:'ウガンダ',flag:'🇺🇬',desc:'アフリカらしい野性的なフルーツ感とアナエロビックの複雑さ。'},
+  {name:'タイ OMKOI オムコイ オーガニック',url:'https://www.kotobukidiet.com/product-page/日本初輸入-タイ-omkoi-オムコイ-オーガニック',price:'¥1,500',unit:'100g',roast:'深煎り',bitter:3,acid:1,sweet:3,body:1,flavors:['Tropical Fruit','Honey','Caramel','Tea'],country:'タイ',flag:'🇹🇭',desc:'日本初輸入タイ産オーガニック認証豆。甘みとフルーツ感のバランスが秀逸。'},
+  {name:'日本初輸入 ラヒャン インドネシア',url:'https://www.kotobukidiet.com/product-page/日本初輸入-ラヒャン-インドネシア-1',price:'¥1,800',unit:'100g',roast:'深煎り',bitter:4,acid:1,sweet:5,body:5,flavors:['Tropical Fruit','Spice','Earthy','Chocolate'],country:'インドネシア',flag:'🇮🇩',desc:'日本初輸入。スマトラとは異なるインドネシアの個性。在庫限り。'},
+  {name:'雲南 レモン＆ベルガモット アナエロビックハニー',url:'https://www.kotobukidiet.com/product-page/雲南-レモン-ベルガモット-アナエロビックハニー',price:'¥1,200',unit:'100g',roast:'浅煎り',bitter:1,acid:3,sweet:3,body:1,flavors:['Lemon','Bergamot','Honey','Floral'],country:'中国（雲南）',flag:'🇨🇳',desc:'柑橘系の明るいフレーバーが印象的な中国雲南省産ユニークロット。'},
+  {name:'グアテマラ COE2024 ロス・コネホス #5',url:'https://www.kotobukidiet.com/product-page/グアテマラ-coe2024-one-of-a-kind-5-ロス-コネホス',price:'¥1,150',unit:'50g',roast:'浅煎り',bitter:1,acid:3,sweet:5,body:2,flavors:['Floral','Caramel','Berry','Citrus'],country:'グアテマラ',flag:'🇬🇹',desc:'2024年COE ONE OF A KIND #5。クリーンさとフローラルな個性。'},
+  {name:'ゲイシャ ナチュラル エドウィンファンカ ボリビア',url:'https://www.kotobukidiet.com/product-page/エドウィンファンカ-ボリビア-ゲイシャ',price:'¥1,100',unit:'50g',roast:'浅煎り',bitter:1,acid:4,sweet:4,body:2,flavors:['Floral','Tropical Fruit','Berry','Honey'],country:'ボリビア',flag:'🇧🇴',desc:'南米ボリビアのゲイシャ種ナチュラル精製。希少な産地と品種の組み合わせ。'},
+  {name:'ペルー マチュピチュ',url:'https://www.kotobukidiet.com/product-page/ペルー-マチュピチュ',price:'¥1,600',unit:'200g',roast:'深煎り',bitter:3,acid:1,sweet:2,body:3,flavors:['Chocolate','Caramel','Nutty','Citrus'],country:'ペルー',flag:'🇵🇪',desc:'マイルドでバランスの良い味わい。毎日の一杯にぴったり。'},
+  {name:'タンザニア ンゴロンゴロ',url:'https://www.kotobukidiet.com/product-page/タンザニア-ンゴロンゴロ-200g-1',price:'¥1,600',unit:'200g',roast:'深煎り',bitter:3,acid:1,sweet:3,body:1,flavors:['Berry','Citrus','Chocolate','Tea'],country:'タンザニア',flag:'🇹🇿',desc:'アフリカらしいワイルドなベリー感とすっきりとした後味。'},
+  {name:'インド ファインロブスタ パパクチ',url:'https://www.kotobukidiet.com/product-page/インド-ファインロブスタ-パパクチ-200g',price:'¥1,600',unit:'200g',roast:'深煎り',bitter:4,acid:1,sweet:1,body:3,flavors:['Chocolate','Spice','Earthy','Caramel'],country:'インド',flag:'🇮🇳',desc:'品質の高いインド産ファインロブスタ。エスプレッソにも最適。'},
+  {name:'インドネシア マンデリン',url:'https://www.kotobukidiet.com/product-page/インドネシア-マンデリン-200g',price:'¥1,800',unit:'200g',roast:'深煎り',bitter:4,acid:1,sweet:1,body:5,flavors:['Dark Chocolate','Spice','Cedar','Earthy','Herb'],country:'インドネシア',flag:'🇮🇩',desc:'スマトラ式精製の重厚なボディ感。深煎り好きに特におすすめ。'},
+  {name:'ハワイ コナ',url:'https://www.kotobukidiet.com/product-page/ハワイ-コナ',price:'¥1,500',unit:'50g',roast:'中煎り',bitter:2,acid:3,sweet:5,body:2,flavors:['Caramel','Honey','Nutty','Chocolate'],country:'ハワイ',flag:'🇺🇸',desc:'豊かな甘みと穏やかな酸味が絶妙に調和。世界三大コーヒーのひとつ。'},
+  {name:'ブルーマウンテン',url:'https://www.kotobukidiet.com/product-page/ブルーマウンテン',price:'¥1,400',unit:'50g',roast:'中煎り',bitter:2,acid:2,sweet:3,body:2,flavors:['Floral','Caramel','Chocolate','Citrus'],country:'ジャマイカ',flag:'🇯🇲',desc:'苦味・酸味・甘みが高次元で調和。世界三大コーヒーの王様。'},
+  {name:'稀少天然 コピルアク ジャコウネコ',url:'https://www.kotobukidiet.com/product-page/稀少天然-コピルアク-ジャコウネコ-現地採取',price:'¥8,800',unit:'50g',roast:'中煎り',bitter:2,acid:2,sweet:3,body:3,flavors:['Caramel','Chocolate','Earthy','Honey','Spice'],country:'インドネシア',flag:'🇮🇩',desc:'世界最高級コーヒー。ジャコウネコの消化酵素で発酵した独特のなめらかさ。'},
+  {name:'グアテマラ ウエウエテナンゴ',url:'https://www.kotobukidiet.com/product-page/グアテマラ-ウエウエテナンゴ-1',price:'¥1,800',unit:'200g',roast:'浅煎り',bitter:1,acid:3,sweet:4,body:2,flavors:['Orange','Apple','Brown Sugar','Tea'],country:'グアテマラ',flag:'🇬🇹',desc:'透明感ある味わい。オレンジやアップルを思わせる明るい果実感と紅茶のような滑らかな余韻。'},
+  {name:'グアテマラ アンティグア',url:'https://www.kotobukidiet.com/product-page/グアテマラ-アンティグア',price:'¥1,800',unit:'200g',roast:'深煎り',bitter:4,acid:2,sweet:4,body:4,flavors:['Dark Chocolate','Cacao','Roasted Nuts','Caramel'],country:'グアテマラ',flag:'🇬🇹',desc:'ダークチョコレートのような濃厚な甘さとカカオ。ミルクとの相性も抜群。'},
+  {name:'ケニア ニエリ ファクトリー ウォッシュド',url:'https://www.kotobukidiet.com/product-page/ケニア-ニエリ-ファクトリー-ウォッシュド',price:'¥1,100',unit:'100g',roast:'深煎り',bitter:4,acid:3,sweet:3,body:5,flavors:['Cassis','Dark Berry','Bitter Chocolate','Winey'],country:'ケニア',flag:'🇰🇪',desc:'深煎りでもケニア特有の鮮やかな酸が輪郭を残す。カシスやダークベリーの重厚な果実感。'},
+  {name:'フルッタメルカドン デカフェ',url:'https://www.kotobukidiet.com/product-page/フルッタメルカドン-デカフェ',price:'¥1,300',unit:'100g',roast:'深煎り',bitter:3,acid:1,sweet:2,body:4,flavors:['Caramel','Chocolate','Berry','Honey'],country:'ブラジル（デカフェ）',flag:'🇧🇷',desc:'砂糖きびによる自然なデカフェ処理。カフェインを取り除いても豊かなフレーバー。夜でも安心。'},
+  {name:'ドン・ラファ デカフェ',url:'https://www.kotobukidiet.com/product-page/ドン-ラファ-デカフェ',price:'¥1,300',unit:'100g',roast:'深煎り',bitter:3,acid:1,sweet:3,body:2,flavors:['Caramel','Citrus','Berry','Honey'],country:'コロンビア（デカフェ）',flag:'🇨🇴',desc:'コロンビア産のデカフェ。コロンビアらしい明るいフレーバーが健在。'},
+  {name:'寿ブレンド＿華',url:'https://www.kotobukidiet.com/product-page/寿ブレンド-華-200g',price:'¥1,800',unit:'200g',roast:'浅煎り',bitter:2,acid:2,sweet:2,body:4,flavors:['Floral','Berry','Honey','Citrus'],country:'オリジナルブレンド',flag:'🇯🇵',desc:'Kotobuki焙煎オリジナル。華やかなフローラルとベリーの上品なブレンド。'},
+  {name:'寿ブレンド＿姫',url:'https://www.kotobukidiet.com/product-page/寿ブレンド-姫',price:'¥1,500',unit:'200g',roast:'中煎り',bitter:2,acid:2,sweet:3,body:2,flavors:['Floral','Citrus','Honey','Tea'],country:'オリジナルブレンド',flag:'🇯🇵',desc:'上品で繊細なフローラルブレンド。日本茶に親しむ方にも馴染みやすい。'},
+  {name:'デイリーブレンド',url:'https://www.kotobukidiet.com/product-page/デイリーブレンド-300g',price:'¥1,400',unit:'200g',roast:'中煎り',bitter:2,acid:1,sweet:2,body:3,flavors:['Chocolate','Caramel','Citrus'],country:'オリジナルブレンド',flag:'🇯🇵',desc:'毎日飲んでも飽きない定番ブレンド。飲みやすさとコクのバランスが絶妙。'},
+  {name:'寿ブレンド＿殿',url:'https://www.kotobukidiet.com/product-page/寿ブレンド-殿',price:'¥1,500',unit:'200g',roast:'深煎り',bitter:4,acid:1,sweet:3,body:3,flavors:['Chocolate','Caramel','Nutty'],country:'オリジナルブレンド',flag:'🇯🇵',desc:'バランスの良い中深煎りブレンド。チョコレートとキャラメルの安定したコク。'},
+  {name:'アイスブレンド',url:'https://www.kotobukidiet.com/product-page/アイスブレンド-200g',price:'¥1,600',unit:'200g',roast:'深煎り',bitter:4,acid:1,sweet:2,body:4,flavors:['Dark Chocolate','Caramel','Smoky'],country:'オリジナルブレンド',flag:'🇯🇵',desc:'アイスコーヒー用に設計されたブレンド。深煎りのしっかりした苦味と甘み。'},
+  {name:'フォレストマウンテン',url:'https://www.kotobukidiet.com/product-page/フォレストマウンテン',price:'¥1,600',unit:'200g',roast:'中煎り',bitter:2,acid:2,sweet:3,body:3,flavors:['Chocolate','Berry','Earthy','Caramel'],country:'オリジナルブレンド',flag:'🇯🇵',desc:'森の山から着想を得たブレンド。大地感のある落ち着いたフレーバー。'},
+];
+
+/* ══════════════════════════════════
+   会話状態
+══════════════════════════════════ */
+const history = [];
+
+const SYSTEM_PROMPT = `あなたはKotobuki Roasters（寿珈琲焙煎所）の専門コーヒーアドバイザーです。
+お客様との自然な会話を通じて好みを把握し、在庫商品の中から最適な3種類を提案してください。
+
+【会話の進め方】
+- 1回のメッセージで1〜2つの質問だけ。絶対に全部一気に聞かない
+- 3〜4往復で好みを絞り込み、提案に移る
+- 敬語で丁寧に、でもフレンドリーに
+- 専門用語は使いすぎない
+- 回答に選択肢（ボタン）を使う場合は [CHOICES] タグで指定する
+
+【聞くべき項目（全部聞かなくてよい、流れで判断）】
+1. どんなシーンで飲むか（朝/仕事中/ゆっくり/アイスで/など）
+2. 苦味の好み（強め/弱め/ミルク入れるか）
+3. フレーバーの方向性（フルーティ/チョコ系/花系/スパイシーなど）
+4. 予算感（手軽に/特別な一杯として）
+5. カフェインが気になるか
+
+【選択肢の書き方】
+[CHOICES]選択肢1|選択肢2|選択肢3[/CHOICES]
+※選択肢は2〜4個まで
+
+【提案フェーズ】
+好みが十分つかめたら [RECOMMEND] タグで商品名を3つ指定する。
+必ず下記の在庫商品リストから選ぶこと。
+
+[RECOMMEND]商品名1|商品名2|商品名3[/RECOMMEND]
+
+提案後は「なぜこの3つか」を一言ずつ簡潔に説明する。
+
+【在庫商品リスト】
+${PRODUCTS.map(p=>`・${p.name}（${p.roast}、酸味${p.acid}/甘み${p.sweet}/苦味${p.bitter}/濃度${p.body}、フレーバー:${p.flavors.join('/')}）`).join('\n')}`;
+
+/* ══════════════════════════════════
+   UI ヘルパー
+══════════════════════════════════ */
+const chatArea = document.getElementById('chatArea');
+
+function scrollBottom(){ chatArea.scrollTop = chatArea.scrollHeight; }
+
+function addBubble(role, html){
+  const wrap = document.createElement('div');
+  wrap.className = `bubble bubble-${role}`;
+  const inner = document.createElement('div');
+  inner.className = 'bubble-inner';
+  inner.innerHTML = html;
+  wrap.appendChild(inner);
+  chatArea.appendChild(wrap);
+  scrollBottom();
+  return inner;
+}
+
+function addTyping(){
+  const wrap = document.createElement('div');
+  wrap.className = 'typing';
+  wrap.innerHTML = '<div class="bubble-inner"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>';
+  chatArea.appendChild(wrap);
+  scrollBottom();
+  return wrap;
+}
+
+function addChoices(choices, onSelect){
+  const wrap = document.createElement('div');
+  wrap.className = 'choices';
+  choices.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.textContent = c;
+    btn.onclick = () => {
+      wrap.remove();
+      onSelect(c);
+    };
+    wrap.appendChild(btn);
+  });
+  chatArea.appendChild(wrap);
+  scrollBottom();
+}
+
+function addResultCards(names, reasonText){
+  const wrap = document.createElement('div');
+  wrap.className = 'result-cards';
+
+  // reasonText から各商品の理由を抽出
+  const reasonLines = reasonText ? reasonText.split('\n').filter(l=>l.trim()) : [];
+
+  names.forEach((name, idx) => {
+    const p = PRODUCTS.find(x => x.name === name || name.includes(x.name.slice(0,8)) || x.name.includes(name.slice(0,8)));
+    if(!p) return;
+
+    const card = document.createElement('a');
+    card.className = 'result-card';
+    card.href = p.url;
+    card.target = '_blank';
+    card.rel = 'noopener noreferrer';
+
+    const reason = reasonLines[idx] ? reasonLines[idx].replace(/^[・\-\d．.]\s*/,'') : p.desc;
+
+    card.innerHTML = `
+      <div class="result-rank">${idx+1}</div>
+      <div class="result-body">
+        <div class="result-name">${p.flag} ${p.name}</div>
+        <div class="result-meta">
+          <span>${p.roast}</span>
+          <span>${p.country}</span>
+          <span>${p.price} / ${p.unit}</span>
+        </div>
+        <div class="result-meters">
+          ${meter('苦','bitter',p.bitter,'on-bitter')}
+          ${meter('酸','acid',p.acid,'on-acid')}
+          ${meter('甘','sweet',p.sweet,'on-sweet')}
+          ${meter('濃','body',p.body,'on-body')}
+        </div>
+        <div class="result-reason">${reason}</div>
+      </div>
+      <div class="result-arrow">→</div>
+    `;
+    wrap.appendChild(card);
+  });
+
+  chatArea.appendChild(wrap);
+  scrollBottom();
+}
+
+function meter(label, key, val, cls){
+  const dots = Array.from({length:5},(_,i)=>`<span class="mdot${i<val?' '+cls:''}"></span>`).join('');
+  return `<div class="meter"><span>${label}</span><div class="meter-dots">${dots}</div></div>`;
+}
+
+/* ══════════════════════════════════
+   API呼び出し
+══════════════════════════════════ */
+async function callClaude(userMsg){
+  history.push({role:'user', content: userMsg});
+
+  const typing = addTyping();
+  const sendBtn = document.getElementById('sendBtn');
+  sendBtn.disabled = true;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system: SYSTEM_PROMPT,
+        messages: history,
+      })
+    });
+    const data = await res.json();
+    const raw = data.content?.[0]?.text || 'エラーが発生しました。';
+    history.push({role:'assistant', content: raw});
+    typing.remove();
+    renderResponse(raw);
+  } catch(e) {
+    typing.remove();
+    addBubble('ai','申し訳ありません、通信エラーが発生しました。もう一度お試しください。');
+  } finally {
+    sendBtn.disabled = false;
+  }
+}
+
+/* ══════════════════════════════════
+   レスポンス解析・描画
+══════════════════════════════════ */
+function renderResponse(raw){
+  // [RECOMMEND] を抽出
+  const recMatch = raw.match(/\[RECOMMEND\]([\s\S]*?)\[\/RECOMMEND\]/);
+  // [CHOICES] を抽出
+  const choiceMatch = raw.match(/\[CHOICES\]([\s\S]*?)\[\/CHOICES\]/);
+
+  // タグを除いたテキスト
+  let text = raw
+    .replace(/\[RECOMMEND\][\s\S]*?\[\/RECOMMEND\]/g,'')
+    .replace(/\[CHOICES\][\s\S]*?\[\/CHOICES\]/g,'')
+    .trim();
+
+  if(text) addBubble('ai', text.replace(/\n/g,'<br>'));
+
+  if(recMatch){
+    const names = recMatch[1].split('|').map(s=>s.trim());
+    addResultCards(names, text);
+    // リスタートを促す
+    setTimeout(()=>{
+      addBubble('ai','気になる豆はありましたか？<br>商品名をクリックするとショップページへ移動します。<br>もう一度診断したい場合は「↺ はじめから」をタップしてください。');
+    }, 600);
+  } else if(choiceMatch){
+    const choices = choiceMatch[1].split('|').map(s=>s.trim());
+    addChoices(choices, txt => {
+      addBubble('user', txt);
+      callClaude(txt);
+    });
+  } else {
+    // 自由入力モードに
+    document.getElementById('inputArea').classList.add('show');
+    document.getElementById('inputField').focus();
+  }
+}
+
+/* ══════════════════════════════════
+   自由入力
+══════════════════════════════════ */
+function sendFree(){
+  const field = document.getElementById('inputField');
+  const msg = field.value.trim();
+  if(!msg) return;
+  field.value = '';
+  document.getElementById('inputArea').classList.remove('show');
+  addBubble('user', msg);
+  callClaude(msg);
+}
+
+/* ══════════════════════════════════
+   リスタート
+══════════════════════════════════ */
+function restart(){
+  history.length = 0;
+  chatArea.innerHTML = '';
+  document.getElementById('inputArea').classList.remove('show');
+  startConversation();
+}
+
+/* ══════════════════════════════════
+   開始
+══════════════════════════════════ */
+function startConversation(){
+  // 最初のメッセージだけローカルで表示（API節約）
+  setTimeout(()=>{
+    addBubble('ai',
+      'こんにちは！Kotobuki Roastersのコーヒーアドバイザーです ☕<br><br>' +
+      'いくつか質問に答えていただくだけで、あなたにぴったりの豆を3種類ご提案します。<br><br>' +
+      'まず、コーヒーはどんなシーンで飲まれることが多いですか？'
+    );
+    addChoices(
+      ['朝の目覚めに','仕事・勉強中に','ゆっくりリラックスしたい','食後に','アイスコーヒーで飲みたい'],
+      txt => {
+        addBubble('user', txt);
+        callClaude(txt);
+      }
+    );
+  }, 400);
+}
+
+startConversation();
+
+// 高さ通知
+function notifyHeight(){
+  window.parent.postMessage({type:'height',value:document.body.scrollHeight},'*');
+}
+window.addEventListener('load', notifyHeight);
+window.addEventListener('resize', notifyHeight);
+</script>
+</body>
+</html>
