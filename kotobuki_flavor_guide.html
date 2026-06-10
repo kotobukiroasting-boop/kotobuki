@@ -230,17 +230,193 @@ footer::before{content:"";position:absolute;top:0;left:50%;transform:translateX(
 </style>
 </head>
 <body>
-  
-<iframe 
-  src="kotobuki_nav.html" 
-  width="100%" 
-  height="52px" 
-  frameborder="0" 
-  scrolling="no"
-  style="display:block;">
-</iframe>
 
-  
+<!-- ══════════════════════════════════
+  GLOBAL NAVIGATION
+══════════════════════════════════ -->
+<style>
+.gnav{
+  position:fixed;top:0;left:0;right:0;z-index:10000;
+  background:rgba(7,6,4,.97);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid #3a3422;
+  display:flex;align-items:center;
+  padding:0 20px;height:48px;
+}
+.gnav-logo{
+  display:flex;align-items:center;gap:9px;
+  text-decoration:none;margin-right:auto;
+}
+.gnav-logo-mark{
+  width:26px;height:26px;border:1px solid #d4a040;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-size:.55rem;color:#d4a040;flex-shrink:0;
+}
+.gnav-logo-text{
+  font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.2em;
+  color:#d4a040;white-space:nowrap;
+}
+.gnav-toggle{
+  background:none;border:1px solid #3a3422;
+  width:34px;height:34px;cursor:pointer;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:5px;
+  flex-shrink:0;transition:border-color .2s;
+}
+.gnav-toggle:hover{border-color:#d4a040}
+.gnav-toggle-bar{
+  display:block;width:14px;height:1px;
+  background:#b09878;transition:background .2s, transform .25s, opacity .25s;
+  transform-origin:center;
+}
+.gnav-toggle:hover .gnav-toggle-bar{background:#d4a040}
+/* ハンバーガー→Xアニメーション */
+.gnav-open .gnav-toggle-bar:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.gnav-open .gnav-toggle-bar:nth-child(2){opacity:0;transform:scaleX(0)}
+.gnav-open .gnav-toggle-bar:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+
+.gnav-menu{
+  position:fixed;top:48px;right:0;
+  background:rgba(7,6,4,.98);
+  border:1px solid #3a3422;border-top:none;
+  width:min(260px,90vw);
+  opacity:0;pointer-events:none;
+  transform:translateY(-6px);
+  transition:opacity .25s cubic-bezier(.16,1,.3,1),transform .25s cubic-bezier(.16,1,.3,1);
+  z-index:9999;
+}
+.gnav-menu.gnav-open{opacity:1;pointer-events:all;transform:translateY(0)}
+.gnav-menu-header{
+  padding:10px 16px 8px;border-bottom:1px solid #3a3422;
+  font-family:'Cinzel',serif;font-size:.48rem;letter-spacing:.4em;
+  color:#4a3e2c;text-transform:uppercase;
+}
+.gnav-item{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 16px;text-decoration:none;
+  border-bottom:1px solid #1a1810;
+  transition:background .15s;position:relative;overflow:hidden;
+}
+.gnav-item:last-child{border-bottom:none}
+.gnav-item::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:#d4a040;transform:scaleY(0);transition:transform .2s;
+}
+.gnav-item:hover{background:#1a1810}
+.gnav-item:hover::before{transform:scaleY(1)}
+.gnav-item:hover .gnav-arrow{opacity:1;transform:translateX(0)}
+.gnav-item.gnav-current{background:#111009}
+.gnav-item.gnav-current::before{transform:scaleY(1)}
+.gnav-item.gnav-current .gnav-name{color:#d4a040}
+.gnav-icon{font-size:.95rem;line-height:1;width:20px;text-align:center;flex-shrink:0}
+.gnav-texts{flex:1}
+.gnav-name{
+  font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.15em;
+  color:#f8f2e4;display:block;margin-bottom:2px;text-transform:uppercase;
+}
+.gnav-desc{font-size:.56rem;color:#6a5a42;display:block;letter-spacing:.04em}
+.gnav-arrow{
+  font-size:.6rem;color:#d4a040;opacity:0;
+  transform:translateX(-4px);transition:opacity .15s,transform .15s;
+}
+/* ページ上部の余白（ナビ分） */
+.gnav-spacer{height:48px;flex-shrink:0}
+/* オーバーレイ */
+.gnav-overlay{
+  position:fixed;inset:0;z-index:9998;
+  display:none;
+}
+.gnav-overlay.gnav-open{display:block}
+</style>
+
+<div class="gnav" id="gnavBar">
+  <a class="gnav-logo" href="https://kotobukiroasting-boop.github.io/kotobuki/">
+    <span class="gnav-logo-mark">K</span>
+    <span class="gnav-logo-text">KOTOBUKI ROASTERS</span>
+  </a>
+  <button class="gnav-toggle" id="gnavToggle" onclick="gnavToggle()">
+    <span class="gnav-toggle-bar"></span>
+    <span class="gnav-toggle-bar"></span>
+    <span class="gnav-toggle-bar"></span>
+  </button>
+</div>
+
+<div class="gnav-overlay" id="gnavOverlay" onclick="gnavClose()"></div>
+
+<div class="gnav-menu" id="gnavMenu">
+  <div class="gnav-menu-header">Navigation</div>
+  <a class="gnav-item" href="https://kotobukiroasting-boop.github.io/kotobuki/kotobuki_flavor_guide.html">
+    <span class="gnav-icon">☕</span>
+    <span class="gnav-texts">
+      <span class="gnav-name">Flavor Catalog</span>
+      <span class="gnav-desc">コーヒー豆の検索・フィルター</span>
+    </span>
+    <span class="gnav-arrow">→</span>
+  </a>
+  <a class="gnav-item" href="https://kotobukiroasting-boop.github.io/kotobuki/kotobuki-recipe-guide.html">
+    <span class="gnav-icon">📖</span>
+    <span class="gnav-texts">
+      <span class="gnav-name">Recipe Guide</span>
+      <span class="gnav-desc">抽出レシピ・ドリッパーガイド</span>
+    </span>
+    <span class="gnav-arrow">→</span>
+  </a>
+  <a class="gnav-item" href="https://kotobukiroasting-boop.github.io/kotobuki/kotobuki_coffee_note_firebase.html">
+    <span class="gnav-icon">📝</span>
+    <span class="gnav-texts">
+      <span class="gnav-name">Coffee Note</span>
+      <span class="gnav-desc">コーヒーノートを記録する</span>
+    </span>
+    <span class="gnav-arrow">→</span>
+  </a>
+  <a class="gnav-item" href="https://kotobukiroasting-boop.github.io/kotobuki/chat.html">
+    <span class="gnav-icon">💬</span>
+    <span class="gnav-texts">
+      <span class="gnav-name">Chat</span>
+      <span class="gnav-desc">スタッフへのお問い合わせ</span>
+    </span>
+    <span class="gnav-arrow">→</span>
+  </a>
+  <a class="gnav-item" href="https://www.kotobukidiet.com">
+    <span class="gnav-icon">🛒</span>
+    <span class="gnav-texts">
+      <span class="gnav-name">Online Shop</span>
+      <span class="gnav-desc">コーヒー豆を購入する</span>
+    </span>
+    <span class="gnav-arrow">→</span>
+  </a>
+</div>
+
+<div class="gnav-spacer"></div>
+
+<script>
+function gnavToggle(){
+  const menu    = document.getElementById('gnavMenu');
+  const overlay = document.getElementById('gnavOverlay');
+  const bar     = document.getElementById('gnavBar');
+  const isOpen  = menu.classList.contains('gnav-open');
+  if(isOpen){ gnavClose(); } else {
+    menu.classList.add('gnav-open');
+    overlay.classList.add('gnav-open');
+    bar.classList.add('gnav-open');
+  }
+}
+function gnavClose(){
+  document.getElementById('gnavMenu').classList.remove('gnav-open');
+  document.getElementById('gnavOverlay').classList.remove('gnav-open');
+  document.getElementById('gnavBar').classList.remove('gnav-open');
+}
+// 現在ページをハイライト
+(function(){
+  const cur = location.href;
+  document.querySelectorAll('.gnav-item').forEach(a=>{
+    const href = a.getAttribute('href')||'';
+    const page = href.split('/').pop().split('.')[0];
+    if(page && cur.includes(page)) a.classList.add('gnav-current');
+  });
+})();
+</script>
+
 <!-- HERO -->
 <section class="hero">
   <canvas class="hero-canvas" id="hcanvas"></canvas>
