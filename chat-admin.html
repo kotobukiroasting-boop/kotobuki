@@ -894,23 +894,61 @@
   document.getElementById("broadcastCancelBtn").addEventListener("click", () => {
     document.getElementById("broadcastModal").style.display = "none";
     document.getElementById("broadcastInput").value = "";
+    cancelBroadcastImage();
+  });
+
+  let broadcastImage = null;
+
+  window.cancelBroadcastImage = function() {
+    broadcastImage = null;
+    document.getElementById("broadcastImagePreview").style.display = "none";
+    document.getElementById("broadcastPreviewImg").src = "";
+    document.getElementById("broadcastFileInput").value = "";
+  };
+
+  document.getElementById("broadcastFileInput").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const MAX = 800;
+        let w = img.width, h = img.height;
+        if (w > MAX) { h = h * MAX / w; w = MAX; }
+        if (h > MAX) { w = w * MAX / h; h = MAX; }
+        canvas.width = w; canvas.height = h;
+        canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+        broadcastImage = canvas.toDataURL("image/jpeg", 0.7);
+        document.getElementById("broadcastPreviewImg").src = broadcastImage;
+        document.getElementById("broadcastImagePreview").style.display = "block";
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
   });
 
   document.getElementById("broadcastSendBtn").addEventListener("click", async () => {
     const text = document.getElementById("broadcastInput").value.trim();
-    if (!text) { alert("内容を入力してください"); return; }
+    if (!text && !broadcastImage) { alert("内容または画像を入力してください"); return; }
 
-    await addDoc(collection(db, "messages"), {
-      text: text,
-      type: "broadcast",
+    const msgData = {
+      text: text || "",
+      type: broadcastImage ? "broadcast-image" : "broadcast",
       name: "📢 お知らせ",
       role: "admin",
       roomId: "broadcast",
       timestamp: serverTimestamp()
-    });
+    };
+    if (broadcastImage) msgData.imageData = broadcastImage;
+
+    await addDoc(collection(db, "messages"), msgData);
 
     document.getElementById("broadcastModal").style.display = "none";
     document.getElementById("broadcastInput").value = "";
+    cancelBroadcastImage();
 
     // 登録済みユーザー数を表示
     const total = new Set([
