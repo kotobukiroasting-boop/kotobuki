@@ -349,6 +349,19 @@
       <h2>📢 一斉配信</h2>
       <p>全お客さまのチャットに届きます</p>
       <textarea id="broadcastInput" placeholder="お知らせ内容を入力..." style="width:100%;height:100px;padding:10px;border:1px solid #ddd;border-radius:8px;font-size:14px;resize:none;outline:none;margin-bottom:12px;font-family:inherit"></textarea>
+
+      <!-- 画像プレビュー -->
+      <div id="broadcastImagePreview" style="display:none;margin-bottom:12px;position:relative">
+        <img id="broadcastPreviewImg" src="" style="width:100%;border-radius:8px;max-height:200px;object-fit:contain">
+        <button onclick="cancelBroadcastImage()" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,0.6);color:white;border:none;border-radius:50%;width:28px;height:28px;font-size:16px;cursor:pointer;line-height:1">✕</button>
+      </div>
+
+      <!-- 画像添付ボタン -->
+      <label style="display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border:1px dashed #ddd;border-radius:8px;cursor:pointer;font-size:13px;color:#666;margin-bottom:12px">
+        📎 画像を添付する
+        <input type="file" id="broadcastFileInput" accept="image/*" style="display:none">
+      </label>
+
       <button id="broadcastSendBtn" style="margin-bottom:8px">📢 全員に送信</button>
       <button id="broadcastCancelBtn" style="background:#aaa">キャンセル</button>
     </div>
