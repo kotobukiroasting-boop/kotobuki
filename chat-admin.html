@@ -499,6 +499,9 @@
   // ===== 会員データ（最初に宣言） =====
   let spMembers = JSON.parse(localStorage.getItem("spMembers") || "[]");
   let allMembersCsv = JSON.parse(localStorage.getItem("allMembers") || "[]");
+  let lastMessageCount = 0;
+  let isFirstLoad = true;
+  let registeredUsers = [];
 
 
   const ADMIN_PASSWORD = "admin1234";
@@ -522,8 +525,6 @@
   });
 
   // ===== 全メッセージ監視 =====
-  let registeredUsers = []; // チャット登録済みユーザー
-
   function startListening() {
     // メッセージ監視
     const q = query(collection(db, "messages"), orderBy("timestamp"));
@@ -906,7 +907,8 @@
     document.getElementById("broadcastFileInput").value = "";
   };
 
-  document.getElementById("broadcastFileInput").addEventListener("change", (e) => {
+  const broadcastFileInputEl = document.getElementById("broadcastFileInput");
+  if (broadcastFileInputEl) broadcastFileInputEl.addEventListener("change", (e) => {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
@@ -1352,9 +1354,6 @@
       alert("通知が許可されませんでした。ブラウザの設定から許可してください。");
     }
   });
-
-  let lastMessageCount = 0;
-  let isFirstLoad = true;
 
   function checkNewMessages(messages) {
     if (isFirstLoad) {
