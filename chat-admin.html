@@ -509,6 +509,9 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
+  // ===== Google Apps Script URL =====
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbwcsufNC-zTyOwbxHmdhO2o4mW20e2foW6gvmdFEM57W7WuNUmcKtbFfeRcLJ4qWr7n/exec";
+
   // ===== 会員データ（最初に宣言） =====
   let spMembers = JSON.parse(localStorage.getItem("spMembers") || "[]");
   let allMembersCsv = JSON.parse(localStorage.getItem("allMembers") || "[]");
@@ -896,6 +899,22 @@
         body: text.substring(0, 50),
         sentAt: serverTimestamp()
       });
+      // お客さまへのメール通知
+      if (GAS_URL && GAS_URL !== "ここにGASのURLを貼り付けてください") {
+        const userSnap = await getDoc(doc(db, "users", selectedCustomer));
+        if (userSnap.exists() && userSnap.data().email) {
+          fetch(GAS_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              type: "customer_notify",
+              customerEmail: userSnap.data().email,
+              customerName: selectedCustomer,
+              message: text
+            })
+          }).catch(e => console.log("GAS通知エラー:", e));
+        }
+      }
     }
   }
 
@@ -1378,6 +1397,21 @@
     if (customerMessages.length > lastMessageCount) {
       const latest = customerMessages[customerMessages.length - 1];
       sendNotification("💬 新着メッセージ", `${latest.name}：${latest.text}`);
+
+      // GASにメール通知を送信
+      if (GAS_URL && GAS_URL !== "ここにGASのURLを貼り付けてください") {
+        fetch(GAS_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: "admin_notify",
+            name: latest.name,
+            message: latest.text || "",
+            msgType: latest.type || "text"
+          })
+        }).catch(e => console.log("GAS通知エラー:", e));
+      }
+
       lastMessageCount = customerMessages.length;
     }
   }

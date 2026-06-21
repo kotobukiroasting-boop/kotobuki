@@ -422,10 +422,22 @@
   <div class="modal" id="nameModal">
     <div class="modal-box">
       <h2>ようこそ！</h2>
-      <p>チャットを始める前に、お名前を入力してください</p>
-      <p style="font-size:12px;color:#c0392b;background:#fff0f0;border-radius:8px;padding:8px;margin-bottom:4px;line-height:1.6">⚠️ SP会員の方は会員登録時に利用したフルネームを漢字で入力してください</p>
-      <input type="text" id="nameInput" placeholder="例：田中 太郎" maxlength="20">
+      <p style="font-size:12px;color:#c0392b;background:#fff0f0;border-radius:8px;padding:8px;margin-bottom:8px;line-height:1.6">⚠️ SP会員の方は会員登録時に利用したフルネームを漢字で入力してください</p>
+      <input type="text" id="nameInput" placeholder="お名前（例：田中 太郎）" maxlength="20" style="margin-bottom:8px">
+      <input type="email" id="emailInput" placeholder="メールアドレス（返信通知用）" style="margin-bottom:4px">
+      <p style="font-size:11px;color:#aaa;margin-bottom:12px">※返信があった際にメールでお知らせします</p>
       <button id="startBtn">チャットを始める</button>
+    </div>
+  </div>
+
+  <!-- メールアドレス追加モーダル（既存ユーザー用） -->
+  <div class="modal" id="emailModal" style="display:none">
+    <div class="modal-box">
+      <h2>メールアドレスの登録</h2>
+      <p style="font-size:13px;color:#666;margin-bottom:16px">返信をメールでお知らせするために、メールアドレスを登録してください</p>
+      <input type="email" id="emailModalInput" placeholder="メールアドレス" style="margin-bottom:4px">
+      <p style="font-size:11px;color:#aaa;margin-bottom:12px">※返信があった際にメールでお知らせします</p>
+      <button id="emailModalBtn">登録してチャットを始める</button>
     </div>
   </div>
 
@@ -640,7 +652,7 @@
     }
   }
 
-  async function startChat(name) {
+  async function startChat(name, email) {
     userName = name;
     document.getElementById("nameModal").style.display = "none";
     document.getElementById("currentUserName").textContent = name + " さん";
@@ -648,10 +660,11 @@
       checkSpMember(userName);
     }
 
-    // Firestoreにユーザー登録（メッセージなしでも一斉配信対象に）
+    // Firestoreにユーザー登録（メールアドレスも保存）
     try {
       await setDoc(doc(db, "users", name), {
         name: name,
+        email: email || "",
         registeredAt: serverTimestamp(),
         lastSeenAt: serverTimestamp()
       }, { merge: true });
@@ -661,7 +674,6 @@
 
     startListening();
     listenFCMQueue(name);
-    // FCM通知を初期化
     if ("serviceWorker" in navigator) {
       initFCM(name);
     }
@@ -669,19 +681,36 @@
 
   // 自動ログイン
   const savedName = localStorage.getItem("chatUserName");
+  const savedEmail = localStorage.getItem("chatUserEmail");
   if (savedName) {
-    startChat(savedName);
+    if (!savedEmail) {
+      // メールアドレス未設定の既存ユーザー → メール登録画面を表示
+      document.getElementById("emailModal").style.display = "flex";
+    } else {
+      startChat(savedName, savedEmail);
+    }
   }
 
   document.getElementById("startBtn").addEventListener("click", () => {
     const val = document.getElementById("nameInput").value.trim();
+    const email = document.getElementById("emailInput").value.trim();
     if (!val) { alert("お名前を入力してください"); return; }
+    if (!email || !email.includes("@")) { alert("メールアドレスを入力してください"); return; }
     localStorage.setItem("chatUserName", val);
-    // 初回登録時刻を保存（既存の場合は上書きしない）
+    localStorage.setItem("chatUserEmail", email);
     if (!localStorage.getItem("chatJoinedAt")) {
       localStorage.setItem("chatJoinedAt", new Date().toISOString());
     }
-    startChat(val);
+    startChat(val, email);
+  });
+
+  // 既存ユーザーのメールアドレス登録
+  document.getElementById("emailModalBtn").addEventListener("click", () => {
+    const email = document.getElementById("emailModalInput").value.trim();
+    if (!email || !email.includes("@")) { alert("メールアドレスを入力してください"); return; }
+    localStorage.setItem("chatUserEmail", email);
+    document.getElementById("emailModal").style.display = "none";
+    startChat(localStorage.getItem("chatUserName"), email);
   });
 
   document.getElementById("nameInput").addEventListener("keydown", e => {
