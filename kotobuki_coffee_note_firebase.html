@@ -63,10 +63,13 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--cream);color:var(--d
 .card-bean-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;color:var(--brown);line-height:1.2}
 .badge-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:.75rem}
 .badge{font-size:10px;letter-spacing:.06em;padding:3px 9px;border-radius:1px;font-weight:400}
-.badge-light{background:#EAF4EF;color:#2A6B50;border:1px solid #B5D9C8}
-.badge-medium{background:#FAF0E2;color:#8A4A12;border:1px solid #E8C898}
-.badge-dark{background:#2A1A0E;color:#D4A96A;border:1px solid #5A3A1A}
-.badge-tool{background:var(--tag-bg);color:var(--muted);border:1px solid var(--border)}
+.badge-light  {background:#EAF4EF;color:#2A6B50;border:1px solid #B5D9C8}
+.badge-medium {background:#FAF0E2;color:#8A4A12;border:1px solid #E8C898}
+.badge-dark   {background:#2A1A0E;color:#D4A96A;border:1px solid #5A3A1A}
+.badge-blend  {background:#F0EAD6;color:#7A5A20;border:1px solid #D4B870}
+.badge-decaf  {background:#EAF2EA;color:#3A6A3A;border:1px solid #A8CCA8}
+.badge-limited{background:#FDF0D8;color:#8A4A00;border:1px solid #F0C060}
+.badge-tool   {background:var(--tag-bg);color:var(--muted);border:1px solid var(--border)}
 .flavor-row{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:.75rem}
 .flavor-tag{font-size:10px;padding:2px 8px;background:#EDE8FA;color:#4A3A8A;border:1px solid #C5BAEE;border-radius:10px}
 .recipe-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:.75rem 0}
@@ -496,58 +499,76 @@ const db  = getFirestore(app);
 
 // ── 豆データ（全品目） ─────────────────────
 const BEANS = [
-  // 浅煎り
-  {id:'l01',name:'WUSH WUSH カッファG1 ウォッシュド',roast:'浅煎り',origin:'エチオピア'},
-  {id:'l02',name:'エチオピア アナソラ アナエロビック',roast:'浅煎り',origin:'エチオピア'},
-  {id:'l03',name:'モカ・ヘレフG１「ナチュラル精製」',roast:'浅煎り',origin:'エチオピア'},
-  {id:'l04',name:'コロンビア ゲイシャ サーマルショック',roast:'浅煎り',origin:'コロンビア'},
-  {id:'l05',name:'コロンビア アプリコットパンチ',roast:'浅煎り',origin:'コロンビア'},
-  {id:'l06',name:'COLOMBIA Uba NITRO-WASH',roast:'浅煎り',origin:'コロンビア'},
-  {id:'l07',name:'エルディビソ サーマルショック',roast:'浅煎り',origin:'コロンビア'},
-  {id:'l08',name:'ラス・アギラス SIDRA WASHED',roast:'浅煎り',origin:'コロンビア'},
-  {id:'l09',name:'コロンビア ジューシーグレープ',roast:'浅煎り',origin:'コロンビア'},
-  {id:'l10',name:'アカシアヒルズ パカマラ',roast:'浅煎り',origin:''},
-  {id:'l11',name:'シナモン ラ・ピラグア コロンビア',roast:'浅煎り',origin:'コロンビア'},
-  {id:'l12',name:'コロンビア ゲイシャ ピーチ',roast:'浅煎り',origin:'コロンビア'},
-  {id:'l13',name:'日本初登場 ワイニーフラワー',roast:'浅煎り',origin:''},
-  {id:'l14',name:'ペルラ・デ・オトゥン SUDAN RUMME',roast:'浅煎り',origin:'コロンビア'},
-  {id:'l15',name:'コロンビア スイートベリー',roast:'浅煎り',origin:'コロンビア'},
-  {id:'l16',name:'ブラジル ゲイシャ カーボニックマセレーション',roast:'浅煎り',origin:'ブラジル'},
-  {id:'l17',name:'Brazil コヘゴ・ダ・リベルダージ COE2023 第5位',roast:'浅煎り',origin:'ブラジル'},
-  {id:'l18',name:'オーロヴェルデ ナチュラル COE2022 第3位',roast:'浅煎り',origin:''},
-  {id:'l19',name:'ルワンダ ニャマシェケ レッドブルボン',roast:'浅煎り',origin:'ルワンダ'},
-  {id:'l20',name:'パナマ グラン・デル・バル',roast:'浅煎り',origin:'パナマ'},
-  {id:'l21',name:'ウガンダ ニャビロンゴ アナエロビック',roast:'浅煎り',origin:'ウガンダ'},
-  {id:'l22',name:'雲南 レモン＆ベルガモット アナエロビックハニー',roast:'浅煎り',origin:'中国雲南'},
-  {id:'l23',name:'グアテマラ COE2024 ロス・コネホス #5',roast:'浅煎り',origin:'グアテマラ'},
-  {id:'l24',name:'ゲイシャ ナチュラル エドウィンファンカ ボリビア',roast:'浅煎り',origin:'ボリビア'},
-  {id:'l25',name:'グアテマラ ウエウエテナンゴ',roast:'浅煎り',origin:'グアテマラ'},
-  {id:'l26',name:'寿ブレンド＿華',roast:'浅煎り',origin:'ブレンド'},
-  {id:'l27',name:'寿ブレンド＿姫',roast:'浅煎り',origin:'ブレンド'},
-  {id:'l28',name:'モカ・ヘレフG１「ウォッシュド精製」',roast:'浅煎り',origin:'エチオピア'},
-  // 中煎り
-  {id:'m01',name:'ブラジル セーハ・ド・ボネ',roast:'中煎り',origin:'ブラジル'},
-  {id:'m02',name:'ブラジル カルモエステート',roast:'中煎り',origin:'ブラジル'},
-  {id:'m03',name:'ハワイ コナ',roast:'中煎り',origin:'ハワイ'},
-  {id:'m04',name:'ブルーマウンテン',roast:'中煎り',origin:'ジャマイカ'},
-  {id:'m05',name:'稀少天然 コピルアク ジャコウネコ',roast:'中煎り',origin:'インドネシア'},
-  {id:'m06',name:'デイリーブレンド',roast:'中煎り',origin:'ブレンド'},
-  {id:'m07',name:'フォレストマウンテン',roast:'中煎り',origin:''},
-  // 深煎り
-  {id:'d01',name:'ブラジル ロブスタ コニロン',roast:'深煎り',origin:'ブラジル'},
-  {id:'d02',name:'タイ OMKOI オムコイ オーガニック',roast:'深煎り',origin:'タイ'},
-  {id:'d03',name:'日本初輸入 ラヒャン インドネシア',roast:'深煎り',origin:'インドネシア'},
-  {id:'d04',name:'ペルー マチュピチュ',roast:'深煎り',origin:'ペルー'},
-  {id:'d05',name:'タンザニア ンゴロンゴロ',roast:'深煎り',origin:'タンザニア'},
-  {id:'d06',name:'インド ファインロブスタ パパクチ',roast:'深煎り',origin:'インド'},
-  {id:'d07',name:'インドネシア マンデリン',roast:'深煎り',origin:'インドネシア'},
-  {id:'d08',name:'グアテマラ アンティグア',roast:'深煎り',origin:'グアテマラ'},
-  {id:'d09',name:'ケニア ニエリ ファクトリー ウォッシュド',roast:'深煎り',origin:'ケニア'},
-  {id:'d10',name:'寿ブレンド＿殿',roast:'深煎り',origin:'ブレンド'},
-  {id:'d11',name:'アイスブレンド',roast:'深煎り',origin:'ブレンド'},
-  {id:'d12',name:'水出しコーヒー「コールドブリュー」２ℓ対応',roast:'深煎り',origin:''},
-  {id:'d13',name:'フルッタメルカドン デカフェ',roast:'深煎り',origin:''},
-  {id:'d14',name:'ドン・ラファ デカフェ',roast:'深煎り',origin:''},
+  // 100番台：浅煎り（定番）
+  {id:'101',name:'101 WUSH WUSH カッファG1 ウォッシュド',       cat:'light',   roast:'浅煎り', origin:'エチオピア カッファ',        flavors:['Citrus','Raspberry','Blacktea']},
+  {id:'103',name:'103 エチオピア アナソラ アナエロビック',       cat:'light',   roast:'浅煎り', origin:'エチオピア グジ',            flavors:['Red Wine','Blueberry','Fig']},
+  {id:'105',name:'105 モカ・ヘレフG１「ナチュラル精製」',       cat:'light',   roast:'浅煎り', origin:'エチオピア シダマ',          flavors:['Berry','Tropical Fruit','Honey','Chocolate']},
+  {id:'107',name:'107 モカ・ヘレフG１「ウォッシュド精製」',     cat:'light',   roast:'浅煎り', origin:'エチオピア シダマ',          flavors:['Citrus','Raspberry','Grape','Peach']},
+  {id:'111',name:'111 アカシアヒルズ パカマラ',                 cat:'light',   roast:'浅煎り', origin:'タンザニア',                 flavors:['Floral','Citrus','Honey','Tropical Fruit']},
+  {id:'113',name:'113 ウガンダ ニャビロンゴ アナエロビック',    cat:'light',   roast:'浅煎り', origin:'ウガンダ',                   flavors:['Tropical Fruit','Berry','Red Wine','Honey']},
+  {id:'115',name:'115 雲南 レモン＆ベルガモット アナエロビックハニー', cat:'light', roast:'浅煎り', origin:'中国（雲南）',          flavors:['Lemon','Bergamot','Honey','Floral']},
+  {id:'117',name:'117 グアテマラ ウエウエテナンゴ',             cat:'light',   roast:'浅煎り', origin:'グアテマラ ウエウエテナンゴ', flavors:['Orange','Apple','Brown Sugar','Tea']},
+  {id:'119',name:'119 パナマ グラン・デル・バル',               cat:'light',   roast:'浅煎り', origin:'パナマ',                     flavors:['Floral','Citrus','Stone Fruit','Tea']},
+  // 200番台：中煎り
+  {id:'201',name:'201 グアテマラ プリマベーラ ナチュラル',      cat:'medium',  roast:'中煎り', origin:'グアテマラ',                 flavors:['Strawberry','Berry','Caramel','Honey']},
+  {id:'203',name:'203 ブラジル セーハ・ド・ボネ',               cat:'medium',  roast:'中煎り', origin:'ブラジル',                   flavors:['Chocolate','Caramel','Nutty','Berry']},
+  {id:'205',name:'205 ブラジル カルモエステート',               cat:'medium',  roast:'中煎り', origin:'ブラジル',                   flavors:['Chocolate','Caramel','Almond','Honey']},
+  {id:'207',name:'207 ハワイ コナ',                             cat:'medium',  roast:'中煎り', origin:'ハワイ',                     flavors:['Caramel','Honey','Nutty','Chocolate']},
+  {id:'209',name:'209 ブルーマウンテン',                        cat:'medium',  roast:'中煎り', origin:'ジャマイカ',                 flavors:['Floral','Caramel','Chocolate','Citrus']},
+  {id:'211',name:'211 稀少天然 コピルアク ジャコウネコ',        cat:'medium',  roast:'中煎り', origin:'インドネシア',               flavors:['Caramel','Chocolate','Earthy','Honey','Spice']},
+  {id:'213',name:'213 ルワンダ ニャマシェケ レッドブルボン',    cat:'medium',  roast:'中煎り', origin:'ルワンダ',                   flavors:['Berry','Citrus','Floral','Honey']},
+  {id:'215',name:'215 フォレストマウンテン',                    cat:'medium',  roast:'中煎り', origin:'ブレンド',                   flavors:['Chocolate','Berry','Earthy','Caramel']},
+  // 300番台：深煎り
+  {id:'301',name:'301 ブラジル ロブスタ コニロン',              cat:'dark',    roast:'深煎り', origin:'ブラジル',                   flavors:['Chocolate','Spice','Nutty']},
+  {id:'303',name:'303 タイ OMKOI オムコイ オーガニック',        cat:'dark',    roast:'深煎り', origin:'タイ',                       flavors:['Tropical Fruit','Honey','Caramel','Tea']},
+  {id:'305',name:'305 ラヒャン インドネシア',                   cat:'dark',    roast:'深煎り', origin:'インドネシア',               flavors:['Tropical Fruit','Spice','Earthy','Chocolate']},
+  {id:'307',name:'307 ペルー マチュピチュ',                     cat:'dark',    roast:'深煎り', origin:'ペルー',                     flavors:['Chocolate','Caramel','Nutty','Citrus']},
+  {id:'309',name:'309 タンザニア ンゴロンゴロ',                 cat:'dark',    roast:'深煎り', origin:'タンザニア',                 flavors:['Berry','Citrus','Chocolate','Tea']},
+  {id:'311',name:'311 インド ファインロブスタ パパクチ',        cat:'dark',    roast:'深煎り', origin:'インド',                     flavors:['Chocolate','Spice','Earthy','Caramel']},
+  {id:'313',name:'313 インドネシア マンデリン',                 cat:'dark',    roast:'深煎り', origin:'インドネシア',               flavors:['Dark Chocolate','Spice','Cedar','Earthy','Herb']},
+  {id:'315',name:'315 グアテマラ アンティグア',                 cat:'dark',    roast:'深煎り', origin:'グアテマラ',                 flavors:['Dark Chocolate','Cacao','Roasted Nuts','Caramel']},
+  {id:'317',name:'317 ケニア ニエリ ファクトリー ウォッシュド', cat:'dark',    roast:'深煎り', origin:'ケニア',                     flavors:['Cassis','Dark Berry','Bitter Chocolate','Winey']},
+  {id:'319',name:'319 コロンビア スイートベリー',               cat:'dark',    roast:'深煎り', origin:'コロンビア',                 flavors:['Berry','Honey','Caramel','Chocolate']},
+  {id:'321',name:'321 メキシコ チアパス',                       cat:'dark',    roast:'深煎り', origin:'メキシコ',                   flavors:['Honey','Caramel','Cassis','Chocolate']},
+  // 400番台：ブレンド
+  {id:'401',name:'401 デイリーブレンド',                        cat:'blend',   roast:'中煎り', origin:'ブレンド',                   flavors:['Chocolate','Caramel','Citrus']},
+  {id:'403',name:'403 寿ブレンド＿桜 -SAKURA-',                cat:'blend',   roast:'浅煎り', origin:'ブレンド',                   flavors:['Floral','Berry','Honey','Citrus']},
+  {id:'411',name:'411 寿ブレンド＿華',                          cat:'blend',   roast:'浅煎り', origin:'ブレンド',                   flavors:['Floral','Berry','Honey','Citrus']},
+  {id:'413',name:'413 寿ブレンド＿姫',                          cat:'blend',   roast:'中煎り', origin:'ブレンド',                   flavors:['Floral','Citrus','Honey','Tea']},
+  {id:'415',name:'415 寿ブレンド＿殿',                          cat:'blend',   roast:'深煎り', origin:'ブレンド',                   flavors:['Chocolate','Caramel','Nutty']},
+  {id:'417',name:'417 寿ブレンド＿翠果 -SUIKA-',               cat:'blend',   roast:'浅煎り', origin:'ブレンド',                   flavors:['Tropical Fruit','Berry','Citrus','Honey']},
+  {id:'421',name:'421 アイスブレンド',                          cat:'blend',   roast:'深煎り', origin:'ブレンド',                   flavors:['Dark Chocolate','Caramel','Smoky']},
+  // 500番台：デカフェ
+  {id:'501',name:'501 フルッタメルカドン デカフェ',             cat:'decaf',   roast:'深煎り', origin:'ブラジル',                   flavors:['Caramel','Chocolate','Berry','Honey']},
+  {id:'503',name:'503 ドン・ラファ デカフェ',                   cat:'decaf',   roast:'深煎り', origin:'コロンビア',                 flavors:['Caramel','Citrus','Berry','Honey']},
+  // 600番台：リミテッド・COE・希少ロット
+  {id:'601',name:'601 コロンビア Las Flores GUACHARO',          cat:'limited', roast:'浅煎り', origin:'コロンビア',                 flavors:['Floral','Tropical Fruit','Citrus','Honey']},
+  {id:'603',name:'603 エチオピア ニグセゲメダ アナエロビック',  cat:'limited', roast:'浅煎り', origin:'エチオピア',                 flavors:['Strawberry','Blueberry','Tropical Fruit','Red Wine','Honey']},
+  {id:'605',name:'605 コロンビア ゲイシャ サーマルショック',    cat:'limited', roast:'浅煎り', origin:'コロンビア',                 flavors:['Jasmine','Orange Blossom','Bergamot','White Peach']},
+  {id:'607',name:'607 コロンビア アプリコットパンチ',           cat:'limited', roast:'浅煎り', origin:'コロンビア',                 flavors:['Apricot','Tropical Fruit','Citrus']},
+  {id:'609',name:'609 COLOMBIA UBA NITRO-WASH',                 cat:'limited', roast:'浅煎り', origin:'コロンビア',                 flavors:['Tropical Fruit','Floral','Citrus']},
+  {id:'611',name:'611 エルディビソ サーマルショック',           cat:'limited', roast:'浅煎り', origin:'コロンビア',                 flavors:['Floral','Stone Fruit','Citrus']},
+  {id:'613',name:'613 ラス・アギラス SIDRA WASHED',             cat:'limited', roast:'浅煎り', origin:'コロンビア',                 flavors:['Berry','Floral','Citrus','Tea']},
+  {id:'615',name:'615 コロンビア ジューシーグレープ',           cat:'limited', roast:'浅煎り', origin:'コロンビア',                 flavors:['Grape','Berry','Juicy']},
+  {id:'617',name:'617 シナモン ラ・ピラグア',                   cat:'limited', roast:'浅煎り', origin:'コロンビア',                 flavors:['Cinnamon','Spice','Caramel','Berry']},
+  {id:'619',name:'619 コロンビア ゲイシャ ピーチ',              cat:'limited', roast:'浅煎り', origin:'コロンビア',                 flavors:['Peach','Floral','Bergamot','Honey']},
+  {id:'621',name:'621 ワイニーフラワー',                        cat:'limited', roast:'浅煎り', origin:'コロンビア',                 flavors:['Red Wine','Floral','Berry','Rose']},
+  {id:'623',name:'623 ペルラ・デ・オトゥン SUDAN RUMME',        cat:'limited', roast:'浅煎り', origin:'コロンビア',                 flavors:['Tropical Fruit','Berry','Floral','Honey']},
+  {id:'625',name:'625 ブラジル ゲイシャ カーボニックマセレーション', cat:'limited', roast:'浅煎り', origin:'ブラジル',             flavors:['Strawberry','Mango','Lychee','Honey','Caramel']},
+  {id:'627',name:'627 コヘゴ・ダ・リベルダージ COE2023 第5位', cat:'limited', roast:'浅煎り', origin:'ブラジル',                   flavors:['Berry','Caramel','Floral','Honey']},
+  {id:'629',name:'629 オーロヴェルデ ナチュラル COE2022 第3位',cat:'limited', roast:'浅煎り', origin:'ブラジル',                   flavors:['Berry','Floral','Caramel','Chocolate']},
+  {id:'631',name:'631 グアテマラ COE2024 ロス・コネホス #5',   cat:'limited', roast:'浅煎り', origin:'グアテマラ',                 flavors:['Floral','Caramel','Berry','Citrus']},
+  {id:'633',name:'633 ゲイシャ ナチュラル エドウィンファンカ（ボリビア）', cat:'limited', roast:'浅煎り', origin:'ボリビア',      flavors:['Floral','Tropical Fruit','Berry','Honey']},
+];
+
+// カテゴリ定義
+const BEAN_CATS = [
+  {id:'light',   label:'浅煎り（定番）',              badge:'badge-light'},
+  {id:'medium',  label:'中煎り',                      badge:'badge-medium'},
+  {id:'dark',    label:'深煎り',                      badge:'badge-dark'},
+  {id:'blend',   label:'ブレンド',                    badge:'badge-blend'},
+  {id:'decaf',   label:'デカフェ',                    badge:'badge-decaf'},
+  {id:'limited', label:'リミテッド・COE・希少ロット', badge:'badge-limited'},
 ];
 
 // ── State ──────────────────────────────────
@@ -597,12 +618,12 @@ window.applyFilters = function() {
 // ── Populate bean select ───────────────────
 function populateBeanSelect() {
   const sel = document.getElementById('bean-select');
-  const groups = {'浅煎り':[],'中煎り':[],'深煎り':[]};
-  BEANS.forEach(b => { if(groups[b.roast]) groups[b.roast].push(b); });
   sel.innerHTML = '<option value="">— 豆を選んでください —</option>';
-  Object.entries(groups).forEach(([label, items]) => {
+  BEAN_CATS.forEach(cat => {
+    const items = BEANS.filter(b => b.cat === cat.id);
+    if (!items.length) return;
     const og = document.createElement('optgroup');
-    og.label = `── ${label} (${items.length}品) ──`;
+    og.label = `── ${cat.label}（${items.length}品）──`;
     items.forEach(b => {
       const o = document.createElement('option');
       o.value = b.id;
@@ -620,10 +641,11 @@ function showBeanPreview(id) {
   const b = BEANS.find(x => x.id===id);
   if (!b) { area.style.display='none'; return; }
   document.getElementById('bp-name').textContent = b.name;
-  const roastClass = b.roast==='浅煎り'?'badge-light':b.roast==='中煎り'?'badge-medium':'badge-dark';
+  const cat = BEAN_CATS.find(c => c.id === b.cat);
   document.getElementById('bp-badges').innerHTML =
     (b.origin ? `<span class="badge badge-tool">${b.origin}</span>` : '') +
-    `<span class="badge ${roastClass}">${b.roast}</span>`;
+    (cat ? `<span class="badge ${cat.badge}">${cat.label}</span>` : '') +
+    `<span class="badge ${roastBadgeClass(b.roast)}">${b.roast}</span>`;
   area.style.display = 'block';
 }
 
