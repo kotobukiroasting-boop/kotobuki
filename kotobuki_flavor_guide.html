@@ -1416,6 +1416,17 @@ const CATEGORIES = [
         desc:'南米ボリビアのゲイシャ種ナチュラル精製。希少な産地と品種の組み合わせ。',
         badges:[],
       },
+      {
+        name:'635 エルパライソ ライチ ダブルファーメンテーション COE2018 第10位',
+        url:'https://www.kotobukidiet.com/product-page/コロンビア-エルパライソ-ライチ-ダブルファーメンテーション-coe2018-第10位',
+        price:'¥1,100', unit:'50g',
+        country:'コロンビア カウカ県', flag:'🇨🇴', altitude:1850, altLabel:'1,750〜1,930m',
+        variety:'Castillo', process:['アナエロビック','ウォッシュド'], roast:'浅煎り', bitter:1,
+        acid:4, sweet:5, body:2,
+        flavors:['Lychee','Mango','Peach','Strawberry','Floral'],
+        desc:'2018年コロンビアCOEで10位ながら最高落札価格を記録した伝説のロット。エルパライソ農園独自のダブルアナエロビックファーメンテーション。ライチ・マンゴー・ピーチが複雑に絡み合う唯一無二のフレーバー。',
+        badges:[{cls:'sb-coe',text:'COE 2018 #10'}],
+      },
     ]
   },
 ];
@@ -1557,6 +1568,7 @@ Object.entries(originCount).sort((a,b)=>b[1]-a[1]).forEach(([key,cnt])=>{
 
   const d = document.createElement('div');
   d.className = 'og-card';
+  d.dataset.country = name;
   d.style.cssText = 'cursor:pointer;';
   d.innerHTML=`
     <div class="og-flag">${flag}</div>
@@ -1565,13 +1577,9 @@ Object.entries(originCount).sort((a,b)=>b[1]-a[1]).forEach(([key,cnt])=>{
     <div class="og-count">${cnt}</div>
     <div class="og-label">PRODUCTS IN STOCK</div>
     <div class="og-bar"><div class="og-bar-fill" data-pct="${pct}" style="width:0%"></div></div>
-    <div class="og-goto">→ 商品を見る</div>
+    <div class="og-goto">→ 絞り込む</div>
   `;
-  // smooth scroll
-  d.addEventListener('click', () => {
-    const target = document.getElementById(meta.sec);
-    if(target) target.scrollIntoView({ behavior:'smooth', block:'start' });
-  });
+  d.addEventListener('click', () => toggleOriginFilter(name));
   ogEl.appendChild(d);
 });
 
@@ -1605,13 +1613,42 @@ const maxFc = Math.max(...Object.values(flavorCount));
 // ── フィルター状態管理（フレーバー・精製方法 共通） ──
 let activeFilters  = new Set(); // フレーバー
 let activeProcessFilters = new Set(); // 精製方法
+let activeOriginFilter = null; // 産地（1つのみ）
+
+// 産地フィルター切り替え
+function toggleOriginFilter(country) {
+  if(activeOriginFilter === country) {
+    // 同じ産地を再クリック → 解除
+    activeOriginFilter = null;
+  } else {
+    activeOriginFilter = country;
+  }
+  // og-cardのアクティブ状態を更新
+  document.querySelectorAll('.og-card').forEach(c => {
+    const isActive = c.dataset.country === activeOriginFilter;
+    c.style.borderColor   = isActive ? 'var(--gold)' : '';
+    c.style.background    = isActive ? 'var(--s2)' : '';
+    c.querySelector('.og-goto').textContent = isActive ? '✓ 絞り込み中' : '→ 絞り込む';
+    c.querySelector('.og-goto').style.color = isActive ? 'var(--gold)' : '';
+    c.querySelector('.og-goto').style.opacity = isActive ? '1' : '';
+  });
+  applyFilter();
+  // フィルター後、最初の表示セクションへスクロール
+  if(activeOriginFilter) {
+    setTimeout(()=>{
+      const first = [...document.querySelectorAll('#product-sections .reveal')]
+        .find(s => s.style.display !== 'none');
+      if(first) first.scrollIntoView({ behavior:'smooth', block:'start' });
+    }, 80);
+  }
+}
 
 function applyFilter() {
   const allCards = document.querySelectorAll('.card[data-flavors]');
   const bar      = document.getElementById('filter-bar');
   const tagsEl   = document.getElementById('filter-tags');
   const countEl  = document.getElementById('filter-count');
-  const hasFilter = activeFilters.size > 0 || activeProcessFilters.size > 0;
+  const hasFilter = activeFilters.size > 0 || activeProcessFilters.size > 0 || activeOriginFilter !== null;
 
   if (!hasFilter) {
     allCards.forEach(c => { c.style.display=''; c.style.opacity=''; c.style.transform=''; });
@@ -1622,7 +1659,11 @@ function applyFilter() {
 
   bar.style.display = 'flex';
 
-  // フィルタータグ表示（フレーバー + 精製）
+  // フィルタータグ表示（産地 + フレーバー + 精製）
+  const originTags = activeOriginFilter ? [`<span style="font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.1em;padding:3px 10px;border-radius:2px;background:var(--s2);color:var(--gold);border:1px solid var(--gold)40;display:flex;align-items:center;gap:5px;">
+    🌍 ${activeOriginFilter}
+    <span onclick="toggleOriginFilter('${activeOriginFilter}')" style="cursor:pointer;opacity:.6;margin-left:4px;">✕</span>
+  </span>`] : [];
   const flavorTags = [...activeFilters].map(f => {
     const st = flavorStyle(f);
     return `<span style="font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.1em;padding:3px 10px;border-radius:2px;background:${st.bg};color:${st.color};border:1px solid ${st.color}40;display:flex;align-items:center;gap:5px;">
@@ -1637,7 +1678,7 @@ function applyFilter() {
       <span onclick="removeProcessFilter('${p}')" style="cursor:pointer;opacity:.6;margin-left:4px;">✕</span>
     </span>`;
   });
-  tagsEl.innerHTML = [...flavorTags, ...procTags].join('');
+  tagsEl.innerHTML = [...originTags, ...flavorTags, ...procTags].join('');
 
   // カードフィルタリング
   let visCount = 0;
@@ -1651,8 +1692,13 @@ function applyFilter() {
     const procMatch = activeProcessFilters.size === 0 || [...activeProcessFilters].some(p =>
       cardProcs.some(cp => cp === p)
     );
+    const originMatch = !activeOriginFilter || (() => {
+      const cardCountry = (c.dataset.country||'').toLowerCase();
+      const filter = activeOriginFilter.toLowerCase();
+      return cardCountry.includes(filter) || filter.includes(cardCountry.split(' ')[0]);
+    })();
 
-    if (flavorMatch && procMatch) {
+    if (flavorMatch && procMatch && originMatch) {
       c.style.display=''; c.style.opacity='1'; visCount++;
     } else {
       c.style.display='none';
@@ -1721,6 +1767,14 @@ function removeProcessFilter(p) {
 function clearFilter() {
   activeFilters.clear();
   activeProcessFilters.clear();
+  activeOriginFilter = null;
+  // og-cardのハイライトをリセット
+  document.querySelectorAll('.og-card').forEach(c => {
+    c.style.borderColor = '';
+    c.style.background  = '';
+    const goto = c.querySelector('.og-goto');
+    if(goto){ goto.textContent='→ 絞り込む'; goto.style.color=''; goto.style.opacity=''; }
+  });
   updateFcHighlight();
   document.querySelectorAll('.pf-card').forEach(el => el.classList.remove('active'));
   const allCards = document.querySelectorAll('.card[data-flavors]');
@@ -1869,6 +1923,7 @@ CATEGORIES.forEach((cat,ci)=>{
     card.dataset.price     = parseInt((item.price||'0').replace(/[¥,]/g,''))||0;
     card.dataset.name      = item.name;
     card.dataset.catId     = cat.id;
+    card.dataset.country   = item.country||'';
     if(item.url){ card.href=item.url; card.target='_blank'; card.rel='noopener noreferrer'; }
     card.style.cssText=`--card-accent:${cat.color};animation-delay:${ii*.04}s`;
     card.innerHTML=`
