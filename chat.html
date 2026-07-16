@@ -893,7 +893,7 @@
         } else if (data.type === "link") {
           content = `<a href="${escapeHtml(data.text)}" target="_blank" rel="noopener">${escapeHtml(data.text)}</a>`;
         } else {
-          content = linkify(nl2br(escapeHtml(data.text || "")));
+          content = nl2br(linkify(escapeHtml(data.text || "")));
         }
 
         // クーポンのスタンプボタン
@@ -1059,7 +1059,7 @@
   };
 
   function nl2br(text) { return text.replace(/\n/g, '<br>'); }
-  function linkify(text) { return text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>'); }
+  function linkify(text) { return text.replace(/(https?:\/\/[^\s\u3000-\u9fff\uff00-\uffef\u4e00-\u9faf\n\r「」【】（）。、！？]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>'); }
   function escapeHtml(str) {
     return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   }
